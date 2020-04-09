@@ -1,6 +1,7 @@
 package org.techtown.hoxy;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,12 +9,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -30,7 +33,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private AppBarConfiguration mAppBarConfiguration;
     NavigationView navigationView;
@@ -70,10 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
         //
 
-        if(sp==null){
+        if (sp == null) {
             System.out.println("??????");
         }
         setView_Profile();
+        setView_Navigationview();
         //
     }
 
@@ -99,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
         nav_header_id_text.setText(sp.getString("name", ""));
 
 
-
     }
+
     private void setView_Profile() {
         profile = nav_header_view.findViewById(R.id.profileimage);
 
@@ -109,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread() {
             public void run() {
                 try {
-                    System.out.println("test!"+sp);
+                    System.out.println("test!" + sp);
                     String urlStr = sp.getString("image_url", "");
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection();
@@ -141,5 +145,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //    public void onon(View view){
+//        Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
+//        //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+//        startActivity(intent);
+//    }
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_gallery) {
+            Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
+            startActivity(intent);
+
+        }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+    private void setView_Navigationview() {
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
 
 }
