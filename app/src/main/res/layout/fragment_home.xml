@@ -13,9 +13,10 @@
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="28dp"
+        android:background="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_home"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        app:srcCompat="@drawable/camera_color" />
 
     <ImageButton
         android:id="@+id/galleryButton"
@@ -24,9 +25,10 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginRight="30dp"
+        android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_home"
-        app:srcCompat="@android:drawable/ic_menu_gallery" />
+        app:srcCompat="@drawable/photo" />
 
     <TextView
         android:id="@+id/text_home"
@@ -84,7 +86,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_community" />
 
     <TextView
-        android:id="@+id/text_content"
+        android:id="@+id/text_content1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
@@ -95,7 +97,7 @@
         app:layout_constraintTop_toBottomOf="@+id/div_line2" />
 
     <TextView
-        android:id="@+id/text_content_time"
+        android:id="@+id/text_content1_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
@@ -113,7 +115,7 @@
         android:background="#80000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_content" />
+        app:layout_constraintTop_toBottomOf="@+id/text_content1" />
 
     <TextView
         android:id="@+id/text_content2"
