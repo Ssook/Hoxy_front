@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -27,6 +31,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.kakao.util.helper.log.Logger;
+
+import org.techtown.hoxy.ui.home.HomeFragment;
+import org.techtown.hoxy.ui.image.ImageFragment;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -78,6 +85,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         setView_Profile();
         setView_Navigationview();
+
+        //
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.nav_host_fragment,HomeFragment.newinstance()).commit();
         //
     }
 
@@ -168,4 +180,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    //
+
+    public void replaceFragment(Fragment fragment){
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentManager.popBackStack();
+        fragmentTransaction.replace(R.id.nav_host_fragment,fragment);
+        fragmentTransaction.addToBackStack(null).commit();
+
+
+    }
 }
