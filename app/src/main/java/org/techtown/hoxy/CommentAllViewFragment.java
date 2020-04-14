@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,11 +17,14 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.w3c.dom.Comment;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class CommentAllViewFragment extends Fragment {
+
     CommentAdapter adapter;
     FragmentCallback callback;
 
@@ -29,8 +34,18 @@ public class CommentAllViewFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if(context instanceof FragmentCallback){
+            callback = (FragmentCallback) context;
+        }
     }
 
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (callback != null) callback = null;
+
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,6 +60,15 @@ public class CommentAllViewFragment extends Fragment {
 
 
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CommentItem item = (CommentItem) adapter.getItem(position);
+                Toast.makeText(getContext(),item.getUserId()+"선택",Toast.LENGTH_LONG).show();
+
+
+            }
+        });
 
         FloatingActionButton fab = rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +83,26 @@ public class CommentAllViewFragment extends Fragment {
 
         return rootView;
     }
+    ////////이 아래 부분 건들여야 될듯
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if(requestCode == 101){
+            if(intent!=null){
+                // Log.e("return","에러에러에러애ㅓㅔ");
+                String contents = intent.getStringExtra("contents");
+                System.out.print(contents);
+                adapter.addItem(new CommentItem(R.drawable.user1 ,contents,"김성수","10시 20분"));
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+    public void onCommandFromMain(String command,String data) {
+        //textView.setText(data);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
 
     /*public void showCommentWriteActivity() {
         //float rating = ratingBar.getRating();
@@ -108,17 +152,10 @@ public class CommentAllViewFragment extends Fragment {
             view.setUserId(item.getUserId());
             view.setImage(item.getResId());
             view.setComment(item.getComment());
+            view.setTime(item.getTime());
 
             return view;
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    public void onCommandFromMain(String command,String data) {
-        //textView.setText(data);
-    }
 }
