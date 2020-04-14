@@ -17,7 +17,6 @@ public class CommentWriteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_write);
-        //Log.e("라이트 시작 단","errrrrrrrrrrrrrrrrrrrrrrrrr");
 
 
         contentsInput = (EditText) findViewById(R.id.contentsInput);
@@ -49,9 +48,9 @@ public class CommentWriteActivity extends AppCompatActivity {
         String contents = contentsInput.getText().toString();
 
         Intent intent = new Intent();
-        //Log.e("시발","빡치네");
+        Log.e("시발","빡치네");
         intent.putExtra("contents",contents);
-        //Log.e("정말","에러러러러");
+        Log.e("정말","에러러러러");
 
         setResult(RESULT_OK,intent);
 

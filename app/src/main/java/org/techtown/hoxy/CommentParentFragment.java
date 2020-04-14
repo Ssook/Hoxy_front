@@ -2,7 +2,6 @@ package org.techtown.hoxy;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,23 +36,16 @@ public class CommentParentFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_comment_parent,container,false);
 
+        CommentParentFragment cpf = new CommentParentFragment();
+        FragmentTransaction childFt = getChildFragmentManager().beginTransaction();
 
-        //CommentParentFragment cpf = new CommentParentFragment();
-        Log.e("부모 프레그먼트 로그","errrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-
-        //FragmentTransaction childFt = getChildFragmentManager().beginTransaction();
-        Log.e("부모 프레그먼트 트렌섹션 에러","errrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-/*
         if (!cpf.isAdded()) {
-            childFt.add(R.id.container, CommentParentFragment.newInstance());
-            Log.e("부모 에드 에러","errrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+            childFt.replace(R.id.container, cpf);
             childFt.addToBackStack(null);
-            Log.e("부모 에드에러 2","errrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
             childFt.commit();
-            Log.e("부모 에드 에러 3","errrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-
         }
-*/
+
+
         return rootView;
     }
     public void onCommandFromMain(String command,String data){

@@ -18,7 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity implements FragmentCallback{
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -32,14 +32,14 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback{
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-       // FloatingActionButton fab = findViewById(R.id.fab);
-        /*fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                       // .setAction("Action", null).show();
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
-        });*/
+        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -75,17 +75,5 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback{
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
-    //comment 부분
-    @Override
-    public void onCommand(String command) {
-        if (command.equals("show")) {
-            // 액티비티를 띄우는 경우
-            Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
-            startActivityForResult(intent, 101);
-
-
-        }
-    }
-
+    public void onCommand(String command){}
 }
