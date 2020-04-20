@@ -33,6 +33,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".CommentWriteActivity"/>
+
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="c868680e6d3732c69185d2478e9f33c0" />

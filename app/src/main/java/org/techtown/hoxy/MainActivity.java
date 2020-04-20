@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements  FragmentCallback{
 
     private AppBarConfiguration mAppBarConfiguration;
     NavigationView navigationView;
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             System.out.println("??????");
         }
         setView_Profile();
-        setView_Navigationview();
+       // setView_Navigationview();
 
         //
 
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
 //        startActivity(intent);
 //    }
-    public boolean onNavigationItemSelected(MenuItem item) {
+    /*public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -174,11 +174,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-    private void setView_Navigationview() {
+    }*/
+   /* private void setView_Navigationview() {
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
+    }*/
 
     //
 
@@ -190,6 +190,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.replace(R.id.nav_host_fragment,fragment);
         fragmentTransaction.addToBackStack(null).commit();
 
+    }
+    public void onCommand(String command){
+        if (command.equals("show")) {
+            // 액티비티를 띄우는 경우
+            Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
+            startActivityForResult(intent, 101);
+        }
+    }
+    public void fragmentChange(String command){
+        if(command == "change") {
+            CommentDetailFragment commentDetailFragment = new CommentDetailFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            //수정필요
+            // transaction.replace(R.id.container, commentDetailFragment).commit();
+        }
 
     }
 }
