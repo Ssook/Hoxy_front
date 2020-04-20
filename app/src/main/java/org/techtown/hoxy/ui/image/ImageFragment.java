@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ import com.bumptech.glide.Glide;
 
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
+import org.techtown.hoxy.ui.result.ResultFragment;
 
 import java.io.InputStream;
 
@@ -41,6 +44,10 @@ public class ImageFragment extends Fragment {
 
     private static final int REQUEST_CODE = 0;
     ImageView imageView;
+    String trash = "소파입니다";
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,9 +60,39 @@ public class ImageFragment extends Fragment {
         startActivityForResult(intent, REQUEST_CODE);
 
         TextView textView = root.findViewById(R.id.textView);
-        textView.setText("히융..");
+        textView.setText(trash);
+///////////////////////////////////////
+        ResultFragment fragment = new ResultFragment();
+        Bundle bundle = new Bundle(1);
+        bundle.putString("Trash", trash);
+        fragment.setArguments(bundle);
+/////////////////////////////////////////////
 
        imageView = (ImageView) root.findViewById(R.id.imageView);
+
+        Button button = root.findViewById(R.id.button);
+        Button button2 = root.findViewById(R.id.button2);
+
+        button.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                System.out.println("ㅎㅇㅎㅇ");
+
+                ((MainActivity)getActivity()).replaceFragment(ImageFragment.newinstance());
+            }
+        });
+
+        button2.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                System.out.println("ㅎㅇㅎㅇ");
+
+                ((MainActivity)getActivity()).replaceFragment(ResultFragment.newinstance());
+            }
+        });
+
 
 
 

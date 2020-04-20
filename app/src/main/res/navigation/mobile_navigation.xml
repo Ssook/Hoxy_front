@@ -12,24 +12,8 @@
         tools:layout="@layout/fragment_home" >
 
         <action
-            android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
-            app:destination="@id/nav_home_second" />
-        <action
             android:id="@+id/action_nav_home_to_imageFragment"
             app:destination="@id/imageFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_home_second"
-        android:name="org.techtown.hoxy.ui.home.HomeSecondFragment"
-        android:label="@string/home_second"
-        tools:layout="@layout/fragment_home_second">
-        <action
-            android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
-            app:destination="@id/nav_home" />
-
-        <argument
-            android:name="myArg"
-            app:argType="string" />
     </fragment>
 
     <fragment
@@ -47,4 +31,8 @@
         android:id="@+id/imageFragment"
         android:name="org.techtown.hoxy.ui.image.ImageFragment"
         android:label="ImageFragment" />
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="org.techtown.hoxy.ui.result.ResultFragment"
+        android:label="ResultFragment" />
 </navigation>
