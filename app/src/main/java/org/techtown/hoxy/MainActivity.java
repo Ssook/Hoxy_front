@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements  FragmentCallback
                 || super.onSupportNavigateUp();
     }
 
-    private void setView_NavHeader() {
+    private void setView_NavHeader() {//은석
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         nav_header_view = navigationView.getHeaderView(0);
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements  FragmentCallback
 
     }
 
-    private void setView_Profile() {
+    private void setView_Profile() {//은석
         profile = nav_header_view.findViewById(R.id.profileimage);
 
         String urlStr;
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements  FragmentCallback
 
     //
 
-    public void replaceFragment(Fragment fragment){
+    public void replaceFragment(Fragment fragment){//경록
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

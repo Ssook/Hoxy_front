@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
+import org.techtown.hoxy.ui.image.CameraFragment;
 import org.techtown.hoxy.ui.image.ImageFragment;
 
 public class HomeFragment extends Fragment {
@@ -95,7 +96,7 @@ public class HomeFragment extends Fragment {
         });
 
 
-
+    ////////////////갤러리로 넘어가기
     ImageButton imageButton = root.findViewById(R.id.galleryButton);
     imageButton.setOnClickListener(new View.OnClickListener(){
 
@@ -106,7 +107,15 @@ public class HomeFragment extends Fragment {
             ((MainActivity)getActivity()).replaceFragment(ImageFragment.newinstance());
         }
     });
-
+    //////////////////////
+    //카메라 클릭시
+    ImageButton cameraButton = root.findViewById(R.id.cameraButton);
+    cameraButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ((MainActivity)getActivity()).replaceFragment(CameraFragment.newinstance());
+        }
+    });
     return root;
     }
 
