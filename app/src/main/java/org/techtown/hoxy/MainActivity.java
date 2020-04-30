@@ -191,20 +191,9 @@ public class MainActivity extends AppCompatActivity implements  FragmentCallback
         fragmentTransaction.addToBackStack(null).commit();
 
     }
+    //얘도 필요 없을 듯
     public void onCommand(String command){
-        if (command.equals("show")) {
-            // 액티비티를 띄우는 경우
-            Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
-            startActivityForResult(intent, 101);
-        }
-    }
-    public void fragmentChange(String command){
-        if(command == "change") {
-            CommentDetailFragment commentDetailFragment = new CommentDetailFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            //수정필요
-            // transaction.replace(R.id.container, commentDetailFragment).commit();
-        }
 
     }
+
 }

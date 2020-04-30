@@ -6,14 +6,14 @@ public class CommentItem implements Serializable {
     int resId;
     String comment;
     String userId;
-    String time;
+    //String time;
 
 
-    public CommentItem(int resId, String comment,String userId, String time) {
+    public CommentItem(int resId, String comment,String userId) {
         this.resId = resId;
         this.comment = comment;
         this.userId=userId;
-        this.time=time;
+       // this.time=time;
 
 
 
@@ -43,14 +43,14 @@ public class CommentItem implements Serializable {
         this.userId = userId;
     }
 
-    public String getTime() {
+  /*  public String getTime() {
         return time;
     }
 
     public void setTime(String time) {
         this.time = time;
     }
-
+*/
 
 
 

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,7 +24,8 @@ public class CommentAllViewFragment extends Fragment {
 
     CommentAdapter adapter;
     FragmentCallback callback;
-
+    Bundle data;
+    CommentItem item;
     public static CommentAllViewFragment newInstance(){
         return new CommentAllViewFragment();
     }
@@ -50,19 +52,22 @@ public class CommentAllViewFragment extends Fragment {
 
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
 
+        data = new Bundle();
+
 
         adapter = new CommentAdapter();
 
-        adapter.addItem(new CommentItem(R.drawable.user1,"앙기모","kss1218","21시 10분"));
+        adapter.addItem(new CommentItem(R.drawable.user1,"앙기모","kss1218"));
 
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CommentItem item = (CommentItem) adapter.getItem(position);
+                item = (CommentItem) adapter.getItem(position);
                 Toast.makeText(getContext(),item.getUserId()+"선택",Toast.LENGTH_LONG).show();
-                callback.fragmentChange("change");
+
+                onCommand("showDetail",data);
 
             }
         });
@@ -72,9 +77,9 @@ public class CommentAllViewFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //showCommentWriteActivity();
-                if(callback != null){
-                    callback.onCommand("show");
-                }
+
+                onCommand("show",data);
+
             }
         });
 
@@ -90,7 +95,7 @@ public class CommentAllViewFragment extends Fragment {
 
                 String contents = intent.getStringExtra("contents");
                 System.out.print(contents);
-                adapter.addItem(new CommentItem(R.drawable.user1 ,contents,"김성수","10시 20분"));
+                adapter.addItem(new CommentItem(R.drawable.user1 ,contents,"김성수"));
                 adapter.notifyDataSetChanged();
             }
         }
@@ -149,10 +154,22 @@ public class CommentAllViewFragment extends Fragment {
             view.setUserId(item.getUserId());
             view.setImage(item.getResId());
             view.setComment(item.getComment());
-            view.setTime(item.getTime());
+            //view.setTime(item.getTime());
 
             return view;
         }
     }
+    public void onCommand(String command,Bundle data){
+        if (command.equals("show")) {
+            // 액티비티를 띄우는 경우
+            Intent intent = new Intent(getContext(), CommentWriteActivity.class);
+            startActivityForResult(intent, 101);
+        }
+        if (command.equals("showDetail")){
+            Intent intent = new Intent(getContext(), CommentDetailActivity.class);
 
+            intent.putExtra("item", item);
+            startActivityForResult(intent, 102);
+        }
+    }
 }

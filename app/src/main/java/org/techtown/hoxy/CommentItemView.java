@@ -46,7 +46,7 @@ public class CommentItemView extends LinearLayout {
     public void setImage(int resId) {
         userImageView.setImageResource(resId);
     }
-    public void setTime(String time){}
+    //public void setTime(String time){}
 
 
 }
