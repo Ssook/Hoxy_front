@@ -12,7 +12,7 @@ import org.techtown.hoxy.R;
 
 public class ResultFragment extends Fragment {
 
-    String trash;
+    String trash = "trash";
 
     public static ResultFragment newinstance() {
         return new ResultFragment();
@@ -22,12 +22,17 @@ public class ResultFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        if(getArguments() != null) {
+            System.out.println("00");
+
+            Bundle bundle = getArguments();
+            trash = bundle.getString("Trash");
+        }
         View root = inflater.inflate(R.layout.fragment_result, container, false);
-        //ResultFragment fragment = new ResultFragment();
-        //trash = fragment.getArguments().getString("Trash");
+
         TextView textView = root.findViewById(R.id.textView2);
 
-        textView.setText("trash");
+        textView.setText(trash);
         return root;
     }
 }

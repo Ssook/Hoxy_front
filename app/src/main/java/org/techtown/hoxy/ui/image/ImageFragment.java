@@ -57,6 +57,12 @@ public class ImageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        ///////////////////////////////////////
+        Fragment fragment = new ResultFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("Trash", trash);
+        fragment.setArguments(bundle);
+        /////////////////////////////////////////////
         View root = inflater.inflate(R.layout.fragment_image, container, false);
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -65,33 +71,26 @@ public class ImageFragment extends Fragment {
 
         TextView textView = root.findViewById(R.id.textView);
         textView.setText(trash);
-///////////////////////////////////////
-        ResultFragment fragment = new ResultFragment();
-        Bundle bundle = new Bundle(1);
-        bundle.putString("Trash", trash);
-        fragment.setArguments(bundle);
-/////////////////////////////////////////////
+
 
        imageView = (ImageView) root.findViewById(R.id.imageView);
 
         Button button = root.findViewById(R.id.button);
         Button button2 = root.findViewById(R.id.button2);
-
+    //// 다시
         button.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                System.out.println("ㅎㅇㅎㅇ");
 
                 ((MainActivity)getActivity()).replaceFragment(ImageFragment.newinstance());
             }
         });
-
+    //// 다음
         button2.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                System.out.println("ㅎㅇㅎㅇ");
 
                 ((MainActivity)getActivity()).replaceFragment(ResultFragment.newinstance());
             }
