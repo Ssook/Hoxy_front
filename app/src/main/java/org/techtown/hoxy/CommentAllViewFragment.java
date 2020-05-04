@@ -95,7 +95,7 @@ public class CommentAllViewFragment extends Fragment {
                 //String contents = intent.getStringExtra("contents");
                 String commentTitle = intent.getStringExtra("title");
                 //System.out.print(commentTitle);
-                adapter.addItem(new PostItem(R.drawable.user1 ,commentTitle,"김성수",1));
+                adapter.addItem(new PostItem(R.drawable.user1 ,commentTitle,"김성수",1,"21"));
                 adapter.notifyDataSetChanged();
             }
         }

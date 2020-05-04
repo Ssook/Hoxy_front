@@ -41,10 +41,6 @@ public class CameraFragment extends Fragment {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, TAKE_PICTURE);
         ///////////////////////////////////////////////////
-
-
-
-
         imageView = (ImageView) root.findViewById(R.id.imageView);
 
         Button button = root.findViewById(R.id.button);
@@ -79,7 +75,6 @@ public class CameraFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
         switch (requestCode) {
             case TAKE_PICTURE:
                 if (resultCode == RESULT_OK && intent.hasExtra("data")) {
@@ -87,7 +82,6 @@ public class CameraFragment extends Fragment {
                     if (bitmap != null) {
                         Glide.with(this).load(bitmap).into(imageView);
                     }
-
                 }
         }
     }

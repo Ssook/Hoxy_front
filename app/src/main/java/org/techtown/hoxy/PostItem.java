@@ -10,8 +10,9 @@ public class PostItem  implements Serializable {
     String image;
     int postNum;
     String title;
+    String reg_date;
 
-    public PostItem(int resId, String title, String userId, int postNum) {
+    public PostItem(int resId, String title, String userId, int postNum, String reg_date) {
         this.resId = resId;
         //this.comment = comment;
         this.userId = userId;
@@ -19,7 +20,7 @@ public class PostItem  implements Serializable {
         this.postNum = postNum;
         this.title = title;
     }
-    public PostItem(int resId, String comment, String userId, int postNum, String title) {
+    public PostItem(int resId, String comment, String userId, int postNum, String title,String reg_date) {
         this.resId = resId;
         this.comment = comment;
         this.userId = userId;
@@ -74,5 +75,13 @@ public class PostItem  implements Serializable {
 
     public void setPostNum(int postNum) {
         this.postNum = postNum;
+    }
+
+    public String getRegdate() {
+        return reg_date;
+    }
+
+    public void setRegdate(String date) {
+        this.reg_date = date;
     }
 }

@@ -43,8 +43,8 @@ import java.net.URLConnection;
 public class MainActivity extends AppCompatActivity implements  FragmentCallback{
 
     private AppBarConfiguration mAppBarConfiguration;
-    NavigationView navigationView;
-    SharedPreferences sp;
+    private NavigationView navigationView;
+    public SharedPreferences sp;
     private View nav_header_view;
     private TextView nav_header_id_text;
     private ImageView profile;

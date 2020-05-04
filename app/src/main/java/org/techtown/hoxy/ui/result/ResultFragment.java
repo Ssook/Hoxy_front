@@ -41,7 +41,6 @@ public class ResultFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 textView1.setText(parent.getItemAtPosition(position).toString());
-
             }
 
             @Override
