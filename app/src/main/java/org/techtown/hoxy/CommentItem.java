@@ -14,9 +14,6 @@ public class CommentItem implements Serializable {
         this.comment = comment;
         this.userId=userId;
        // this.time=time;
-
-
-
     }
 
     public int getResId() {
