@@ -12,11 +12,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CommentItemView extends LinearLayout {
 
-    TextView userIdView;
-    TextView commentView;
-    CircleImageView userImageView;
-    TextView timeView;
-    float point;
+    private TextView userIdView;
+    private TextView commentView;
+    private CircleImageView userImageView;
+    private TextView timeView;
+
     public CommentItemView(Context context) {
         super(context);
         init(context);

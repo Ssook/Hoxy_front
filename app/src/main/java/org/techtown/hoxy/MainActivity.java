@@ -43,8 +43,8 @@ import java.net.URLConnection;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    NavigationView navigationView;
-    SharedPreferences sp;
+    private NavigationView navigationView;
+    private SharedPreferences sp;
     private View nav_header_view;
     private TextView nav_header_id_text;
     private ImageView profile;

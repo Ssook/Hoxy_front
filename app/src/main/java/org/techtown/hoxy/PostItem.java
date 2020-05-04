@@ -78,7 +78,7 @@ public class PostItem  implements Serializable {
     public void setPostNum(int postNum) {
         this.postNum = postNum;
     }
-    public JSONObject userToJSON(){
+    public JSONObject PostToJSON(){
         JSONObject jsonobj=new JSONObject();
         try {
             jsonobj.put("id",this.getUserId());

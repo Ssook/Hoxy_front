@@ -19,9 +19,9 @@ import androidx.core.app.ActivityCompat;
 public class CommentWriteActivity extends AppCompatActivity {
     final String TAG = getClass().getSimpleName();
     final static int TAKE_PICTURE = 1;
-    ImageView picture;
-    EditText contentsInput;
-    EditText commentTitle;
+    private ImageView picture;
+    private EditText contentsInput;
+    private EditText commentTitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

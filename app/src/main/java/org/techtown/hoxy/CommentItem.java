@@ -53,7 +53,7 @@ public class CommentItem implements Serializable {
         this.commentNum = commentNum;
     }
 
-    public JSONObject userToJSON(){
+    public JSONObject CommentToJSON(){
         JSONObject jsonobj=new JSONObject();
         try {
             jsonobj.put("id",this.getUserId());

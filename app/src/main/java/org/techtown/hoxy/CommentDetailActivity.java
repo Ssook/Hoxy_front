@@ -27,10 +27,10 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 public class CommentDetailActivity extends AppCompatActivity{
-    PostItem item;
-    CommentAdapter adapter;
-    String comment;
-    EditText othersComment;
+    private PostItem item;
+    private CommentAdapter adapter;
+    private String comment;
+    private EditText othersComment;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {

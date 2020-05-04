@@ -22,10 +22,9 @@ import java.util.ArrayList;
 
 public class CommentAllViewFragment extends Fragment {
 
-    CommentAdapter adapter;
-    //FragmentCallback callback;
-    Bundle data;
-    PostItem item;
+    private CommentAdapter adapter;
+    private Bundle data;
+    private PostItem item;
     public static CommentAllViewFragment newInstance(){
         return new CommentAllViewFragment();
     }
