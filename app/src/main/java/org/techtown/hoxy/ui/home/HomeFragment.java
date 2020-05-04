@@ -81,10 +81,5 @@ public class HomeFragment extends Fragment {
     });
     return root;
     }
-<<<<<<< HEAD
 
-
-
-=======
->>>>>>> 2adc9562401438c7a2d0189c66bd20b9ff28cd32
 }
