@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class CommentAllViewFragment extends Fragment {
 
     CommentAdapter adapter;
-    FragmentCallback callback;
+    //FragmentCallback callback;
     Bundle data;
     PostItem item;
     public static CommentAllViewFragment newInstance(){
@@ -32,16 +32,16 @@ public class CommentAllViewFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof FragmentCallback){
+        /*if(context instanceof FragmentCallback){
             callback = (FragmentCallback) context;
-        }
+        }*/
     }
 
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if (callback != null) callback = null;
+        //if (callback != null) callback = null;
 
     }
     @Nullable
@@ -92,10 +92,10 @@ public class CommentAllViewFragment extends Fragment {
         if(requestCode == 101){
             if(intent!=null){
 
-                //String contents = intent.getStringExtra("contents");
+                String contents = intent.getStringExtra("contents");
                 String commentTitle = intent.getStringExtra("title");
                 //System.out.print(commentTitle);
-                adapter.addItem(new PostItem(R.drawable.user1 ,commentTitle,"김성수",1));
+                adapter.addItem(new PostItem(R.drawable.user1 ,contents,"김성수",1,commentTitle));
                 adapter.notifyDataSetChanged();
             }
         }

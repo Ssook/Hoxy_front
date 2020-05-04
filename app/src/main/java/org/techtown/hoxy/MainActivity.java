@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class MainActivity extends AppCompatActivity implements  FragmentCallback{
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     NavigationView navigationView;
@@ -191,9 +191,6 @@ public class MainActivity extends AppCompatActivity implements  FragmentCallback
         fragmentTransaction.addToBackStack(null).commit();
 
     }
-    //얘도 필요 없을 듯
-    public void onCommand(String command){
 
-    }
 
 }

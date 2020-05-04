@@ -3,10 +3,10 @@ package org.techtown.hoxy;
 import java.io.Serializable;
 
 public class CommentItem implements Serializable {
-    int resId;
-    String comment;
-    String userId;
-    int commentNum;
+    private int resId;
+    private String comment;
+    private String userId;
+    private int commentNum;
     //String time;
 
 

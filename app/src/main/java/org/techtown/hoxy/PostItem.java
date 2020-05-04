@@ -4,12 +4,12 @@ package org.techtown.hoxy;
 import java.io.Serializable;
 
 public class PostItem  implements Serializable {
-    int resId;
-    String comment;
-    String userId;
-    String image;
-    int postNum;
-    String title;
+    private int resId;
+    private String comment;
+    private String userId;
+    private String image;
+    private int postNum;
+    private String title;
 
     public PostItem(int resId, String title, String userId, int postNum) {
         this.resId = resId;

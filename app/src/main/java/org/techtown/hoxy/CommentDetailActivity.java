@@ -50,10 +50,11 @@ public class CommentDetailActivity extends AppCompatActivity{
         Toast.makeText(getApplicationContext(),"들어와쏭",Toast.LENGTH_LONG).show();
 
         userId.setText( item.getUserId());
-        title.setText( item.getComment());
+        title.setText( item.getTitle());
         userImage.setImageResource( item.getResId());
 
         title2.setText(item.getComment());
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
