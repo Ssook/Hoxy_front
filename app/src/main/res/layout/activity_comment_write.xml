@@ -36,16 +36,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=" 제목 : "
             android:textSize="20dp"/>
-        <TextView
+        <EditText
+            android:id="@+id/commentTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20dp"
+            android:hint="제목을 입력해주세요"
+            android:background="@null"
             />
     </LinearLayout>
     <View
@@ -53,14 +58,6 @@
         android:layout_height="2dp"
         android:layout_centerInParent="true"
         android:background="@color/colorPrimaryDark"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="5dp"
-        android:text="내용을 입력해주세요"
-        android:textSize="40dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -71,7 +68,12 @@
             android:id="@+id/pictureView"
             android:layout_width="match_parent"
             android:layout_height="202dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:src="@drawable/camera_color" />
+
     </LinearLayout>
 
     <EditText
@@ -90,7 +92,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
 
         <View
             android:layout_width="0dp"

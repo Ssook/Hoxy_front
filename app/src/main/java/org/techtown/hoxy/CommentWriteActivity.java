@@ -21,12 +21,15 @@ public class CommentWriteActivity extends AppCompatActivity {
     final static int TAKE_PICTURE = 1;
     ImageView picture;
     EditText contentsInput;
+    EditText commentTitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_write);
 
         contentsInput = (EditText) findViewById(R.id.contentsInput);
+
+        commentTitle = (EditText) findViewById(R.id.commentTitle);
 
         Button saveButton = (Button) findViewById(R.id.saveButton);
         Button cancelButton = (Button) findViewById(R.id.cancelButton);
@@ -81,9 +84,10 @@ public class CommentWriteActivity extends AppCompatActivity {
     //모든 리스트뷰에 데이터 돌려보내기
     protected void returnToMain(){
         String contents = contentsInput.getText().toString();
-
+        String title = commentTitle.getText().toString();
         Intent intent = new Intent();
 
+        intent.putExtra("title",title);
         intent.putExtra("contents",contents);
 
         setResult(RESULT_OK,intent);

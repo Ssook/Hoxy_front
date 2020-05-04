@@ -54,7 +54,6 @@ public class CommentAllViewFragment extends Fragment {
 
         data = new Bundle();
 
-
         adapter = new CommentAdapter();
 
         adapter.addItem(new CommentItem(R.drawable.user1,"앙기모","kss1218"));
@@ -93,9 +92,10 @@ public class CommentAllViewFragment extends Fragment {
         if(requestCode == 101){
             if(intent!=null){
 
-                String contents = intent.getStringExtra("contents");
-                System.out.print(contents);
-                adapter.addItem(new CommentItem(R.drawable.user1 ,contents,"김성수"));
+                //String contents = intent.getStringExtra("contents");
+                String commentTitle = intent.getStringExtra("title");
+                //System.out.print(commentTitle);
+                adapter.addItem(new CommentItem(R.drawable.user1 ,commentTitle,"김성수"));
                 adapter.notifyDataSetChanged();
             }
         }

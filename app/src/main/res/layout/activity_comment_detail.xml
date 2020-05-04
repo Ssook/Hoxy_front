@@ -111,6 +111,7 @@
         android:layout_marginRight="3dp">
 
         <EditText
+            android:id="@+id/othersComment"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginLeft="15dp"
@@ -122,6 +123,7 @@
             android:textCursorDrawable="@android:color/holo_red_dark" />
 
         <ImageButton
+            android:id="@+id/writeButton"
             android:layout_width="80dp"
             android:layout_height="30dp"
             android:layout_marginTop="10dp"
