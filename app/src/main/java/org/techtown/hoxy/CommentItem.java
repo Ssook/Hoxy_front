@@ -6,6 +6,7 @@ public class CommentItem implements Serializable {
     int resId;
     String comment;
     String userId;
+    int commentNum;
     //String time;
 
 
@@ -14,9 +15,6 @@ public class CommentItem implements Serializable {
         this.comment = comment;
         this.userId=userId;
        // this.time=time;
-
-
-
     }
 
     public int getResId() {
@@ -43,23 +41,13 @@ public class CommentItem implements Serializable {
         this.userId = userId;
     }
 
-  /*  public String getTime() {
-        return time;
+    public int getCommnetNum() {
+        return commentNum;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setCodeNum(int commentNum) {
+        this.commentNum = commentNum;
     }
-*/
 
 
-
-
-    @Override
-    public String toString() {
-        return "CommentItem{" +
-                "resId=" + resId +
-                ", comment='" + comment + '\'' +
-                '}';
-    }
 }

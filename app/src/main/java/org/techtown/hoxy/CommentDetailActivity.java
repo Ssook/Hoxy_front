@@ -1,7 +1,10 @@
 package org.techtown.hoxy;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,7 +15,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,10 +27,11 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 public class CommentDetailActivity extends AppCompatActivity{
-    CommentItem item;
+    PostItem item;
     CommentAdapter adapter;
     String comment;
     EditText othersComment;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,10 +45,7 @@ public class CommentDetailActivity extends AppCompatActivity{
         ImageButton writeButton = (ImageButton) findViewById(R.id.writeButton);
         othersComment = (EditText) findViewById(R.id.othersComment);
 
-
-
-
-        item = (CommentItem) getIntent().getSerializableExtra("item");
+        item = (PostItem) getIntent().getSerializableExtra("item");
 
         Toast.makeText(getApplicationContext(),"들어와쏭",Toast.LENGTH_LONG).show();
 
@@ -118,5 +122,30 @@ public class CommentDetailActivity extends AppCompatActivity{
 
             return view;
         }
+    }
+
+    //actionbar 관련 코드
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail_main,menu);
+
+        return true;
+    }
+    //actionbar 관련 코드
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int curId = item.getItemId();
+        switch(curId){
+            case R.id.menu_modify:
+                Toast.makeText(this,"새로고침 메뉴 클릭",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.menu_delete:
+                Toast.makeText(this,"검색 클릭",Toast.LENGTH_LONG).show();
+                break;
+
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

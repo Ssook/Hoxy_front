@@ -25,7 +25,7 @@ public class CommentAllViewFragment extends Fragment {
     CommentAdapter adapter;
     FragmentCallback callback;
     Bundle data;
-    CommentItem item;
+    PostItem item;
     public static CommentAllViewFragment newInstance(){
         return new CommentAllViewFragment();
     }
@@ -56,14 +56,14 @@ public class CommentAllViewFragment extends Fragment {
 
         adapter = new CommentAdapter();
 
-        adapter.addItem(new CommentItem(R.drawable.user1,"앙기모","kss1218"));
+        adapter.addItem(new PostItem(R.drawable.user1,"앙기모","kss1218",1,"dndnd"));
 
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                item = (CommentItem) adapter.getItem(position);
+                item = (PostItem) adapter.getItem(position);
                 Toast.makeText(getContext(),item.getUserId()+"선택",Toast.LENGTH_LONG).show();
 
                 onCommand("showDetail",data);
@@ -95,7 +95,7 @@ public class CommentAllViewFragment extends Fragment {
                 //String contents = intent.getStringExtra("contents");
                 String commentTitle = intent.getStringExtra("title");
                 //System.out.print(commentTitle);
-                adapter.addItem(new CommentItem(R.drawable.user1 ,commentTitle,"김성수"));
+                adapter.addItem(new PostItem(R.drawable.user1 ,commentTitle,"김성수",1));
                 adapter.notifyDataSetChanged();
             }
         }
@@ -117,14 +117,14 @@ public class CommentAllViewFragment extends Fragment {
      */
     class CommentAdapter extends BaseAdapter {
 
-        ArrayList<CommentItem> items = new ArrayList<CommentItem>();
+        ArrayList<PostItem> items = new ArrayList<PostItem>();
 
         @Override
         public int getCount() {
             return items.size();
         }
 
-        public void addItem(CommentItem item){
+        public void addItem(PostItem item){
             items.add(item);
 
         }
@@ -150,10 +150,10 @@ public class CommentAllViewFragment extends Fragment {
                 view = (CommentItemView) convertView;
 
             }
-            CommentItem item = items.get(position);
+            PostItem item = items.get(position);
             view.setUserId(item.getUserId());
             view.setImage(item.getResId());
-            view.setComment(item.getComment());
+            view.setComment(item.getTitle());
             //view.setTime(item.getTime());
 
             return view;
