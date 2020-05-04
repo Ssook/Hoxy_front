@@ -34,7 +34,8 @@
         </activity>
 
         <activity android:name=".CommentWriteActivity"/>
-        <activity android:name=".CommentDetailActivity" />
+        <activity android:name=".CommentDetailActivity"
+            />
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="c868680e6d3732c69185d2478e9f33c0" />
