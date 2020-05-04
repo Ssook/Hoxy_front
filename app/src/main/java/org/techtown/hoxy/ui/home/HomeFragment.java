@@ -21,8 +21,16 @@ import org.techtown.hoxy.ui.image.ImageFragment;
 
 public class HomeFragment extends Fragment {
 
-    String text_title, text_content1, text_content2, text_content3, text_content1_time, text_content2_time, text_content3_time;
-        public static HomeFragment newinstance(){
+    private String text_title;
+    private String text_content1;
+    private String text_content2;
+    private String text_content3;
+    private String text_content1_time;
+    private String text_content2_time;
+    private String text_content3_time;
+    private TextView home_main_textView,content_textView,content2_textView ,content3_textView, content1_time_textView, content2_time_textView, content3_time_textView;
+
+    public static HomeFragment newinstance(){
             return new HomeFragment();
         }
 
@@ -30,13 +38,13 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView home_main_textView = root.findViewById(R.id.text_home); //혹시 어떻게 버리지??
-        final TextView content_textView = root.findViewById(R.id.text_content1); // 첫번째 게시글
-        final TextView content2_textView = root.findViewById(R.id.text_content2); // 두번째 게시글
-        final TextView content3_textView = root.findViewById(R.id.text_content3); // 세번째 게시글
-        final TextView content1_time_textView = root.findViewById(R.id.text_content1_time); // 첫번째 게시글 작성일
-        final TextView content2_time_textView = root.findViewById(R.id.text_content2_time); // 첫번째 게시글 작성일
-        final TextView content3_time_textView = root.findViewById(R.id.text_content3_time); // 첫번째 게시글 작성일
+          home_main_textView = root.findViewById(R.id.text_home); //혹시 어떻게 버리지??
+          content_textView = root.findViewById(R.id.text_content1); // 첫번째 게시글
+          content2_textView = root.findViewById(R.id.text_content2); // 두번째 게시글
+          content3_textView = root.findViewById(R.id.text_content3); // 세번째 게시글
+          content1_time_textView = root.findViewById(R.id.text_content1_time); // 첫번째 게시글 작성일
+          content2_time_textView = root.findViewById(R.id.text_content2_time); // 첫번째 게시글 작성일
+          content3_time_textView = root.findViewById(R.id.text_content3_time); // 첫번째 게시글 작성일
 
         text_title = "혹시 어떻게 버리지..?";
 
@@ -81,5 +89,63 @@ public class HomeFragment extends Fragment {
     });
     return root;
     }
+
+
+
+    /*public String getText_title() {
+        return text_title;
+    }
+
+    public void setText_title(String text_title) {
+        this.text_title = text_title;
+    }
+
+    public String getText_content1() {
+        return text_content1;
+    }
+
+    public void setText_content1(String text_content1) {
+        this.text_content1 = text_content1;
+    }
+
+    public String getText_content2() {
+        return text_content2;
+    }
+
+    public void setText_content2(String text_content2) {
+        this.text_content2 = text_content2;
+    }
+
+    public String getText_content3() {
+        return text_content3;
+    }
+
+    public void setText_content3(String text_content3) {
+        this.text_content3 = text_content3;
+    }
+
+    public String getText_content1_time() {
+        return text_content1_time;
+    }
+
+    public void setText_content1_time(String text_content1_time) {
+        this.text_content1_time = text_content1_time;
+    }
+
+    public String getText_content2_time() {
+        return text_content2_time;
+    }
+
+    public void setText_content2_time(String text_content2_time) {
+        this.text_content2_time = text_content2_time;
+    }
+
+    public String getText_content3_time() {
+        return text_content3_time;
+    }
+
+    public void setText_content3_time(String text_content3_time) {
+        this.text_content3_time = text_content3_time;
+    }*/
 
 }

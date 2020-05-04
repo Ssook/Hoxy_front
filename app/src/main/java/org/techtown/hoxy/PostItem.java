@@ -1,16 +1,18 @@
 
 package org.techtown.hoxy;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 public class PostItem  implements Serializable {
-    int resId;
-    String comment;
-    String userId;
-    String image;
-    int postNum;
-    String title;
-    String reg_date;
+    private int resId;
+    private String comment;
+    private String userId;
+    private String image;
+    private int postNum;
+    private String title;
 
     public PostItem(int resId, String title, String userId, int postNum, String reg_date) {
         this.resId = resId;
@@ -34,7 +36,7 @@ public class PostItem  implements Serializable {
     }
 
     public void setTitle(String title) {
-        title = title;
+        this.title = title;
     }
 
     public int getResId() {
@@ -77,11 +79,18 @@ public class PostItem  implements Serializable {
         this.postNum = postNum;
     }
 
-    public String getRegdate() {
-        return reg_date;
-    }
-
-    public void setRegdate(String date) {
-        this.reg_date = date;
+    public JSONObject PostToJSON(){
+        JSONObject jsonobj=new JSONObject();
+        try {
+            jsonobj.put("id",this.getUserId());
+            jsonobj.put("comment",this.getComment());
+            jsonobj.put("resId",this.getResId());
+            jsonobj.put("image",this.getImage());
+            jsonobj.put("postNum",this.getPostNum());
+            jsonobj.put("title",this.getTitle());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonobj;
     }
 }

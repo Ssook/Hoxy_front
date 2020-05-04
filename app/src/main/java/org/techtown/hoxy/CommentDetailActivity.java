@@ -27,10 +27,10 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 public class CommentDetailActivity extends AppCompatActivity{
-    PostItem item;
-    CommentAdapter adapter;
-    String comment;
-    EditText othersComment;
+    private PostItem item;
+    private CommentAdapter adapter;
+    private String comment;
+    private EditText othersComment;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +50,11 @@ public class CommentDetailActivity extends AppCompatActivity{
         Toast.makeText(getApplicationContext(),"들어와쏭",Toast.LENGTH_LONG).show();
 
         userId.setText( item.getUserId());
-        title.setText( item.getComment());
+        title.setText( item.getTitle());
         userImage.setImageResource( item.getResId());
 
         title2.setText(item.getComment());
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +71,7 @@ public class CommentDetailActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 comment = othersComment.getText().toString();
-                adapter.addItem(new CommentItem(R.drawable.user1,comment,"김성수"));
+                adapter.addItem(new CommentItem(R.drawable.user1,comment,"김성수",1));
                 adapter.notifyDataSetChanged();
                 othersComment.setText(null);
 
