@@ -1,19 +1,23 @@
 package org.techtown.hoxy;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 public class CommentItem implements Serializable {
-    int resId;
-    String comment;
-    String userId;
-    int commentNum;
+    private int resId;
+    private String comment;
+    private String userId;
+    private int commentNum;
     //String time;
 
 
-    public CommentItem(int resId, String comment,String userId) {
+    public CommentItem(int resId, String comment,String userId,int commentNum) {
         this.resId = resId;
         this.comment = comment;
         this.userId=userId;
+        this.commentNum=commentNum;
        // this.time=time;
     }
 
@@ -41,13 +45,25 @@ public class CommentItem implements Serializable {
         this.userId = userId;
     }
 
-    public int getCommnetNum() {
+    public int getCommentNum() {
         return commentNum;
     }
 
-    public void setCodeNum(int commentNum) {
+    public void setCommentNum(int commentNum) {
         this.commentNum = commentNum;
     }
 
+    public JSONObject CommentToJSON(){
+        JSONObject jsonobj=new JSONObject();
+        try {
+            jsonobj.put("id",this.getUserId());
+            jsonobj.put("comment",this.getComment());
+            jsonobj.put("resId",this.getResId());
+            jsonobj.put("postNum",this.getCommentNum());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonobj;
+    }
 
 }
