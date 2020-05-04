@@ -45,10 +45,6 @@ public class CommentDetailActivity extends AppCompatActivity{
         ImageButton writeButton = (ImageButton) findViewById(R.id.writeButton);
         othersComment = (EditText) findViewById(R.id.othersComment);
 
-
-
-
-
         item = (PostItem) getIntent().getSerializableExtra("item");
 
         Toast.makeText(getApplicationContext(),"들어와쏭",Toast.LENGTH_LONG).show();
