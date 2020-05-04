@@ -71,7 +71,7 @@ public class CommentDetailActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 comment = othersComment.getText().toString();
-                adapter.addItem(new CommentItem(R.drawable.user1,comment,"김성수"));
+                adapter.addItem(new CommentItem(R.drawable.user1,comment,"김성수",1));
                 adapter.notifyDataSetChanged();
                 othersComment.setText(null);
 
