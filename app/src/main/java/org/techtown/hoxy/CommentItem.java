@@ -15,10 +15,7 @@ public class CommentItem implements Serializable {
         this.comment = comment;
         this.userId=userId;
        // this.time=time;
-<<<<<<< HEAD
 
-=======
->>>>>>> 38eee6c6719116e84006524e3c81dbb79439cb34
     }
 
     public int getResId() {
