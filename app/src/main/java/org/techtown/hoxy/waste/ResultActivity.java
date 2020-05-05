@@ -1,4 +1,4 @@
-package org.techtown.hoxy.ui.result;
+package org.techtown.hoxy.waste;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,14 +10,13 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.techtown.hoxy.HomeActivity;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
-import org.techtown.hoxy.ui.home.HomeActivity;
-import org.techtown.hoxy.ui.image.ImageActivity;
-import org.techtown.hoxy.ui.image.TrashName;
+import org.techtown.hoxy.TrashName;
 
 public class ResultActivity extends AppCompatActivity {
-    private String trashName = TrashName.getTrash();
+    private String trashName33 = TrashName.getTrash();
     private String[] trashSizeArray = new String[]{"Test1" ,"Test2" ,"Test3" ,"Test4"};
     private Button next_button, again_button, howto_button;
     private TextView trash_code_textView, trash_fee_textView;

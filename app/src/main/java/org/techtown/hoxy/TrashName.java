@@ -1,4 +1,4 @@
-package org.techtown.hoxy.ui.image;
+package org.techtown.hoxy;
 
 public class TrashName {
     public static String getTrash() {

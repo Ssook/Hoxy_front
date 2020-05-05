@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
-import org.techtown.hoxy.ui.image.CameraActivity;
-import org.techtown.hoxy.ui.image.ImageActivity;
 
 public class HomeActivity extends AppCompatActivity {
 

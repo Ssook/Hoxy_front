@@ -1,4 +1,4 @@
-package org.techtown.hoxy.ui.image;
+package org.techtown.hoxy;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,10 +13,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.techtown.hoxy.MainActivity;
-import org.techtown.hoxy.R;
-import org.techtown.hoxy.ui.result.ResultActivity;
 
+import org.techtown.hoxy.waste.ResultActivity;
+import org.techtown.hoxy.TrashName;
 import java.io.InputStream;
 
 public class ImageActivity extends AppCompatActivity {
