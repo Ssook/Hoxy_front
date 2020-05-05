@@ -49,9 +49,6 @@ public class CameraFragment extends Fragment {
 
         ///////////////////////////////////////////////////
 
-
-
-
         trash_ImageView = (ImageView) root.findViewById(R.id.imageView);
 
          again_button = root.findViewById(R.id.button);
@@ -86,7 +83,6 @@ public class CameraFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
         switch (requestCode) {
             case TAKE_PICTURE:
                 if (resultCode == RESULT_OK && intent.hasExtra("data")) {
@@ -97,7 +93,6 @@ public class CameraFragment extends Fragment {
                         trash_textView.setText(trashName);
                         Glide.with(this).load(trash_bitmap).into(trash_ImageView);
                     }
-
                 }
         }
     }

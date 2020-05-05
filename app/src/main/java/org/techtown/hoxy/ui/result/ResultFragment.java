@@ -57,6 +57,7 @@ public class ResultFragment extends Fragment {
         trash_size_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 //textView1.setText(parent.getItemAtPosition(position).toString());
 
             }

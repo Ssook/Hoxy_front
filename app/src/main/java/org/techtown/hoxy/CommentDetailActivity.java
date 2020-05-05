@@ -1,5 +1,6 @@
 package org.techtown.hoxy;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,11 +32,14 @@ public class CommentDetailActivity extends AppCompatActivity{
     private CommentAdapter adapter;
     private String comment;
     private EditText othersComment;
+
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_detail);
+
 
         TextView userId = (TextView) findViewById(R.id.useridView);
         TextView title = (TextView) findViewById(R.id.title);
@@ -136,12 +140,17 @@ public class CommentDetailActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int curId = item.getItemId();
+
         switch(curId){
             case R.id.menu_modify:
-                Toast.makeText(this,"새로고침 메뉴 클릭",Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"게시글 수정",Toast.LENGTH_LONG).show();
+
                 break;
             case R.id.menu_delete:
-                Toast.makeText(this,"검색 클릭",Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"게시글 삭제",Toast.LENGTH_LONG).show();
+
+
+                finish();
                 break;
 
             default:

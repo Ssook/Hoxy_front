@@ -1,64 +1,49 @@
 package org.techtown.hoxy;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
-public class CommentAllViewFragment extends Fragment {
-
+public class CommentAllViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private CommentAdapter adapter;
     private Bundle data;
     private PostItem item;
     private ListView listView;
     private ArrayList<PostItem> items;
-    public static CommentAllViewFragment newInstance(){
-        return new CommentAllViewFragment();
-    }
+    DrawerLayout drawer;
+    NavigationView navigationView;
+    ActionBarDrawerToggle toggle;
+    Toolbar toolbar;
+    View nav_header_view;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        /*if(context instanceof FragmentCallback){
-            callback = (FragmentCallback) context;
-        }*/
-    }
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initLayoutMapActivity();
 
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        //if (callback != null) callback = null;
-
-    }
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_comment_all_view,container,false);
-
-
-        listView = (ListView) rootView.findViewById(R.id.listView);
-
+        listView = (ListView) findViewById(R.id.listView);
         data = new Bundle();
-
         adapter = new CommentAdapter();
-
         adapter.addItem(new PostItem(R.drawable.user1,"앙기모","kss1218",1,"dndnd"));
 
 
@@ -67,28 +52,24 @@ public class CommentAllViewFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 item = (PostItem) adapter.getItem(position);
-                Toast.makeText(getContext(),item.getUserId()+"선택",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),item.getUserId()+"선택",Toast.LENGTH_LONG).show();
 
                 onCommand("showDetail",data);
 
             }
         });
 
-        FloatingActionButton fab = rootView.findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //showCommentWriteActivity();
 
-                onCommand("show",data);
+                onCommand("writeComment",data);
 
             }
         });
-
-        return rootView;
     }
-    ////////이 아래 부분 건들여야 될듯
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -99,27 +80,37 @@ public class CommentAllViewFragment extends Fragment {
                 String contents = intent.getStringExtra("contents");
                 String commentTitle = intent.getStringExtra("title");
                 //System.out.print(commentTitle);
+                Toast.makeText(getApplicationContext(),"메뉴화면으로부터 응답 : "+ commentTitle, Toast.LENGTH_LONG).show();
                 adapter.addItem(new PostItem(R.drawable.user1, contents, "김성수", 1, commentTitle));
                 adapter.notifyDataSetChanged();
             }
         }
 
     }
-    public void onCommandToDetail(String command) {
-        //textView.setText(data);
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+
+        if (id == R.id.nav_home) {
+            // Handle the camera action
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+           // intent.putExtra("태그","전체");
+            startActivity(intent);
+
+        } else if (id == R.id.nav_community) {
+
+        }else if (id == R.id.nav_slideshow) {
+
+        }
+        drawer = findViewById(R.id.drawer_layout);//??
+        drawer.closeDrawer(GravityCompat.START);
+
+        return false;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
-
-    /*public void showCommentWriteActivity() {
-        //float rating = ratingBar.getRating();
-
-        Intent intent = new Intent(getContext(),CommentWriteActivity.class);
-        //intent.putExtra("rating",rating);
-
-        startActivityForResult(intent, 101);
-    }
-     */
     class CommentAdapter extends BaseAdapter {
 
         ArrayList<PostItem>items = new ArrayList<PostItem>();
@@ -148,7 +139,7 @@ public class CommentAllViewFragment extends Fragment {
 
             CommentItemView view = null;
             if(convertView == null){
-                view = new CommentItemView(getContext());
+                view = new CommentItemView(getApplicationContext());
 
             }
             else{
@@ -165,19 +156,20 @@ public class CommentAllViewFragment extends Fragment {
         }
     }
     public void onCommand(String command,Bundle data){
-        if (command.equals("show")) {
+        if (command.equals("writeComment")) {
             // 액티비티를 띄우는 경우
-            Intent intent = new Intent(getContext(), CommentWriteActivity.class);
+            Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
+
             startActivityForResult(intent, 101);
         }
         if (command.equals("showDetail")){
-            Intent intent = new Intent(getContext(), CommentDetailActivity.class);
+            Intent intent = new Intent(getApplicationContext(), CommentDetailActivity.class);
 
             intent.putExtra("item", item);
             startActivityForResult(intent, 102);
         }
     }
-    public void removePost(String command){
+    /*public void removePost(String command){
         int check;
         if(command.equals("remove")) {
             check = listView.getCheckedItemPosition();
@@ -187,5 +179,37 @@ public class CommentAllViewFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         }
+    }*/
+    public void initLayoutMapActivity() {           //레이아웃 정의
+        setContentView(R.layout.activity_community_main);
+        setView_Toolbar();
+        setView_NavHeader();
+        setView_Drawer();
     }
+
+    private void setView_Drawer() {
+        drawer = findViewById(R.id.drawer_layout);
+
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open , R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    private void setView_NavHeader() {
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        nav_header_view = navigationView.getHeaderView(0);
+      //  nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
+
+        //nav_header_id_text.setText(sp.getString("name", ""));
+    }
+
+    private void setView_Toolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Community");
+        toolbar.setTitleMargin(5, 0, 5, 0);
+    }
+
 }
