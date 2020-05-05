@@ -10,8 +10,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.techtown.hoxy.HomeActivity;
-
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.TrashName;
 
@@ -22,7 +20,7 @@ public class WasteInfoActivity extends AppCompatActivity {
     private TextView waste_code_textView, waste_fee_textView;
     private String trash_code, trash_fee;
     private Spinner waste_size_spinner;
-
+    private String intent_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +34,9 @@ public class WasteInfoActivity extends AppCompatActivity {
         howto_button = findViewById(R.id.button6);
         next_button = findViewById(R.id.button5);
 
+        Intent intent_get = getIntent();
+
+        intent_text = intent_get.getExtras().getString("intent_text");
      /*   List<String> spinnerArray = new ArrayList<String>();
         spinnerArray.add("item1");
         spinnerArray.add("item2");
@@ -64,7 +65,8 @@ public class WasteInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                Intent intent = new Intent(WasteInfoActivity.this, HomeActivity.class);
+                Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
+                intent.putExtra("intent_text", intent_text);
                 startActivity(intent);
             }
         });

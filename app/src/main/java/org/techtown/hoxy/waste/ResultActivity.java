@@ -1,4 +1,4 @@
-package org.techtown.hoxy.ui.image;
+package org.techtown.hoxy.waste;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,7 +11,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import com.bumptech.glide.Glide;
+
+
+import org.techtown.hoxy.MainActivity;
 
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.TrashName;
@@ -64,22 +68,25 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                finish();
-                Intent intent = new Intent(ResultActivity.this, ResultActivity.class);
-                intent.putExtra("intent_text",intent_text);
-                startActivity(intent);
-            }
-        });
-        //// 다음
+
+            finish();
+            Intent intent = new Intent(ResultActivity.this, ResultActivity.class);
+            intent.putExtra("intent_text",intent_text);
+            startActivity(intent);
+        }
+    });
+
+    //// 다음
         next_button.setOnClickListener(new View.OnClickListener(){
 
-            @Override
-            public void onClick(View v) {
+        @Override
+        public void onClick(View v) {
 
-                Intent intent = new Intent(ResultActivity.this, WasteInfoActivity.class);
-                startActivity(intent);
-            }
-        });
+            Intent intent = new Intent(ResultActivity.this, WasteInfoActivity.class);
+            intent.putExtra("intent_text",intent_text);
+            startActivity(intent);
+        }
+    });
 
 
 

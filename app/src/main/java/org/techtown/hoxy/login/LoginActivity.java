@@ -1,6 +1,5 @@
 package org.techtown.hoxy.login;
 
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,6 +29,7 @@ import java.util.List;
 
 public class LoginActivity extends Activity {
     private SessionCallback callback;
+    private User user_data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

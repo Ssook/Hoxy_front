@@ -22,7 +22,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import org.techtown.hoxy.CommentItemView;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 
