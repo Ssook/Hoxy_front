@@ -1,4 +1,5 @@
 package org.techtown.hoxy.community;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -26,9 +27,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.techtown.hoxy.community.CommentItem;
 import org.w3c.dom.Text;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CommentDetailActivity extends AppCompatActivity{
+public class CommentDetailActivity extends Activity implements Serializable {
     private PostItem item;
     private CommentAdapter adapter;
     private String comment;
@@ -50,7 +53,12 @@ public class CommentDetailActivity extends AppCompatActivity{
         ImageButton writeButton = (ImageButton) findViewById(R.id.writeButton);
         othersComment = (EditText) findViewById(R.id.othersComment);
 
-        item = (PostItem) getIntent().getSerializableExtra("item");
+
+        if(item==null){
+        System.out.println("tjdtntlqkf");}
+        else {
+            System.out.println(getIntent().getSerializableExtra("item")+"tlqkf");
+        }
 
         Toast.makeText(getApplicationContext(),"들어와쏭",Toast.LENGTH_LONG).show();
 

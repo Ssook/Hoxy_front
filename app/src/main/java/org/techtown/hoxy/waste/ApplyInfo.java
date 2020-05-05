@@ -4,22 +4,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ApplyInfo {
-
-
     private String user_No;
     private int apply_fee;
     private String address;
     private String phone_No;
     private int waste_No;
     private String img_Url;
+    private String apply_date;
 
-    public ApplyInfo(String user_No, int apply_fee, String address, String phone_No, int waste_No, String img_Url) {
+    public ApplyInfo(String user_No, int apply_fee, String address, String phone_No, int waste_No, String img_Url,String apply_date) {
         this.user_No = user_No;
         this.apply_fee = apply_fee;
         this.address = address;
         this.phone_No = phone_No;
         this.waste_No = waste_No;
         this.img_Url = img_Url;
+        this.apply_date=apply_date;
     }
 
     public String getUser_No() {
@@ -70,6 +70,9 @@ public class ApplyInfo {
         this.img_Url = img_Url;
     }
 
+    public String getApply_date() { return apply_date; }
+
+    public void setApply_date(String apply_date) { this.apply_date = apply_date; }
     public JSONObject applyInfoToJSON(){
         JSONObject jsonobj=new JSONObject();
 
@@ -85,5 +88,6 @@ public class ApplyInfo {
         }
         return jsonobj;
     }
+
 
 }
