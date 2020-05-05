@@ -10,8 +10,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.techtown.hoxy.R;
+
 import org.techtown.hoxy.ui.image.ResultActivity;
-import org.techtown.hoxy.ui.result.WasteInfoActivity;
+
 
 public class HomeActivity extends AppCompatActivity {
 

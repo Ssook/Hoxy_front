@@ -1,4 +1,4 @@
-package org.techtown.hoxy.ui.result;
+package org.techtown.hoxy.waste;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,8 +11,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.techtown.hoxy.HomeActivity;
+
 import org.techtown.hoxy.R;
-import org.techtown.hoxy.ui.image.TrashName;
+import org.techtown.hoxy.TrashName;
 
 public class WasteInfoActivity extends AppCompatActivity {
     private String trashName = TrashName.getTrash();

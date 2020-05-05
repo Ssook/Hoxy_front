@@ -14,7 +14,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import org.techtown.hoxy.R;
-import org.techtown.hoxy.ui.result.WasteInfoActivity;
+import org.techtown.hoxy.TrashName;
+import org.techtown.hoxy.waste.WasteInfoActivity;
 
 import java.io.InputStream;
 
