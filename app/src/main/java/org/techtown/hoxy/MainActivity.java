@@ -36,6 +36,7 @@ import com.kakao.util.helper.log.Logger;
 
 
 import org.techtown.hoxy.community.CommentAllViewActivity;
+import org.techtown.hoxy.waste.ResultActivity;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -136,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
         ////////////////갤러리로 넘어가기
         ImageButton imageButton = findViewById(R.id.galleryButton);
         imageButton.setOnClickListener(new View.OnClickListener(){
@@ -144,7 +146,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 System.out.println("ㅎㅇㅎㅇ");
 
-                Intent intent = new Intent(MainActivity.this, ImageActivity.class);
+                Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+                intent.putExtra("intent_text", "image");
                 startActivity(intent);
             }
         });
@@ -154,7 +157,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+                intent.putExtra("intent_text", "camera");
                 startActivity(intent);
             }
         });
