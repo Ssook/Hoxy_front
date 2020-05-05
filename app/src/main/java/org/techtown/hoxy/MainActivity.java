@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
     private SharedPreferences sp;
+
     private View nav_header_view;
     private TextView nav_header_id_text;
     private ImageView profile;

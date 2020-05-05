@@ -27,7 +27,12 @@ public class CameraFragment extends Fragment {
         return new CameraFragment();
     }
 
-    ImageView imageView;
+    private ImageView trash_ImageView;
+    private TextView trash_textView;
+    private Button again_button, next_button;
+
+    private Bitmap trash_bitmap;
+    private String trashName ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,22 +40,21 @@ public class CameraFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_image, container, false);
 
-        TextView textView = root.findViewById(R.id.textView);
-        textView.setText("trash");
+        trash_textView = root.findViewById(R.id.textView);
+
+
         ////////////////////////////////////////////////////////
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, TAKE_PICTURE);
+
         ///////////////////////////////////////////////////
 
+        trash_ImageView = (ImageView) root.findViewById(R.id.imageView);
 
-
-
-        imageView = (ImageView) root.findViewById(R.id.imageView);
-
-        Button button = root.findViewById(R.id.button);
-        Button button2 = root.findViewById(R.id.button2);
+         again_button = root.findViewById(R.id.button);
+         next_button = root.findViewById(R.id.button2);
         //// 다시
-        button.setOnClickListener(new View.OnClickListener(){
+        again_button.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
@@ -59,7 +63,7 @@ public class CameraFragment extends Fragment {
             }
         });
         //// 다음
-        button2.setOnClickListener(new View.OnClickListener(){
+        next_button.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
@@ -79,15 +83,16 @@ public class CameraFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
         switch (requestCode) {
             case TAKE_PICTURE:
                 if (resultCode == RESULT_OK && intent.hasExtra("data")) {
-                    Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
-                    if (bitmap != null) {
-                        Glide.with(this).load(bitmap).into(imageView);
+                    trash_bitmap = (Bitmap) intent.getExtras().get("data");
+                    if (trash_bitmap != null) {
+                        TrashName.setTrash("쇼파아님");
+                        trashName = TrashName.getTrash();
+                        trash_textView.setText(trashName);
+                        Glide.with(this).load(trash_bitmap).into(trash_ImageView);
                     }
-
                 }
         }
     }
