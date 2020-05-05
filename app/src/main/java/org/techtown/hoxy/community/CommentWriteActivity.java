@@ -1,4 +1,4 @@
-package org.techtown.hoxy;
+package org.techtown.hoxy.community;
 
 import android.Manifest;
 import android.app.Activity;
@@ -18,7 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
+import org.techtown.hoxy.R;
 public class CommentWriteActivity extends AppCompatActivity {
     final String TAG = getClass().getSimpleName();
     final static int TAKE_PICTURE = 1;

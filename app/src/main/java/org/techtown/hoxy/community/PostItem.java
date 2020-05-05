@@ -1,5 +1,5 @@
 
-package org.techtown.hoxy;
+package org.techtown.hoxy.community;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package org.techtown.hoxy;
+package org.techtown.hoxy.login;
 
 import android.app.Application;
 import android.content.Context;

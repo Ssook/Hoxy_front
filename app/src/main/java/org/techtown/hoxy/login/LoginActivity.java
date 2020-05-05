@@ -1,4 +1,4 @@
-package org.techtown.hoxy;
+package org.techtown.hoxy.login;
 
 
 import androidx.annotation.Nullable;
@@ -21,6 +21,9 @@ import com.kakao.usermgmt.callback.UnLinkResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
+
+import org.techtown.hoxy.MainActivity;
+import org.techtown.hoxy.R;
 
 import java.util.ArrayList;
 import java.util.List;

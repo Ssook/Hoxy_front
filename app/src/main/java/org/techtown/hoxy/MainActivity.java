@@ -35,6 +35,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.kakao.util.helper.log.Logger;
 
 
+import org.techtown.hoxy.community.CommentAllViewActivity;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;

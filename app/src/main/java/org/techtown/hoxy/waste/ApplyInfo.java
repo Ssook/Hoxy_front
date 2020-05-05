@@ -1,4 +1,4 @@
-package org.techtown.hoxy;
+package org.techtown.hoxy.waste;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,5 +1,4 @@
-package org.techtown.hoxy;
-
+package org.techtown.hoxy.community;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -18,13 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import org.techtown.hoxy.CommentItemView;
+import org.techtown.hoxy.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.techtown.hoxy.CommentItem;
 import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class CommentDetailActivity extends AppCompatActivity{
@@ -32,7 +33,7 @@ public class CommentDetailActivity extends AppCompatActivity{
     private CommentAdapter adapter;
     private String comment;
     private EditText othersComment;
-
+    private ArrayList<CommentItem> items = new ArrayList<CommentItem>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -86,7 +87,7 @@ public class CommentDetailActivity extends AppCompatActivity{
     }
     class CommentAdapter extends BaseAdapter {
 
-        ArrayList<CommentItem> items = new ArrayList<CommentItem>();
+
 
         @Override
         public int getCount() {
