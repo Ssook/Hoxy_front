@@ -17,7 +17,6 @@ import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.ui.home.HomeActivity;
 import org.techtown.hoxy.ui.result.ResultActivity;
-import org.techtown.hoxy.ui.result.ResultFragment;
 
 public class CameraActivity extends AppCompatActivity {
     final static int TAKE_PICTURE = 1;

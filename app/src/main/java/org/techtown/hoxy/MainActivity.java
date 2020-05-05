@@ -34,8 +34,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.kakao.util.helper.log.Logger;
 
-import org.techtown.hoxy.ui.home.HomeFragment;
-import org.techtown.hoxy.ui.image.ImageFragment;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -58,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
@@ -101,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.nav_host_fragment,HomeFragment.newinstance()).commit();
+      /*  FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.nav_host_fragment,HomeFragment.newinstance()).commit();*/
         //
 
     }
@@ -199,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //
 
-    public void replaceFragment(Fragment fragment){//경록
+   /* public void replaceFragment(Fragment fragment){//경록
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -207,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.replace(R.id.nav_host_fragment,fragment);
         fragmentTransaction.addToBackStack(null).commit();
 
-    }
+    }*/
 
     private void setView_Drawer(Toolbar toolbar) {
         drawer = findViewById(R.id.drawer_layout);

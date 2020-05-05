@@ -11,9 +11,7 @@ import android.widget.TextView;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.ui.image.CameraActivity;
-import org.techtown.hoxy.ui.image.CameraFragment;
 import org.techtown.hoxy.ui.image.ImageActivity;
-import org.techtown.hoxy.ui.image.ImageFragment;
 
 public class HomeActivity extends AppCompatActivity {
 

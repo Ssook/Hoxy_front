@@ -1,3 +1,4 @@
+/*
 package org.techtown.hoxy.ui.result;
 
 import android.os.Bundle;
@@ -47,13 +48,15 @@ public class ResultFragment extends Fragment {
         howto_button = root.findViewById(R.id.button6);
         next_button = root.findViewById(R.id.button5);
 
-     /*   List<String> spinnerArray = new ArrayList<String>();
+     */
+/*   List<String> spinnerArray = new ArrayList<String>();
         spinnerArray.add("item1");
         spinnerArray.add("item2");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, trashSizeArray);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        trash_size_spinner.setAdapter(adapter);*/
+        trash_size_spinner.setAdapter(adapter);*//*
+
         trash_size_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -99,4 +102,4 @@ public class ResultFragment extends Fragment {
 
         return root;
     }
-}
+}*/

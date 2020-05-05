@@ -1,3 +1,4 @@
+/*
 package org.techtown.hoxy.ui.image;
 
 import android.content.Intent;
@@ -96,4 +97,4 @@ public class CameraFragment extends Fragment {
                 }
         }
     }
-}
+}*/

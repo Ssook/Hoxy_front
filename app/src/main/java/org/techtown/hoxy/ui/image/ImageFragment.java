@@ -1,3 +1,4 @@
+/*
 package org.techtown.hoxy.ui.image;
 
 import android.content.Intent;
@@ -19,10 +20,12 @@ import java.io.InputStream;
 
 import static android.app.Activity.RESULT_OK;
 
+*/
 /*
 -경록
  메인 단에서 갤러리 호출을 위한 프레그먼트
-* */
+* *//*
+
 public class ImageFragment extends Fragment {
 
 
@@ -114,3 +117,4 @@ public class ImageFragment extends Fragment {
     }
 
 }
+*/

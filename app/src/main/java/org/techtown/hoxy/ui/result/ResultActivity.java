@@ -13,7 +13,6 @@ import android.widget.TextView;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.ui.home.HomeActivity;
-import org.techtown.hoxy.ui.home.HomeFragment;
 import org.techtown.hoxy.ui.image.ImageActivity;
 import org.techtown.hoxy.ui.image.TrashName;
 

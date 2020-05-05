@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.ui.result.ResultActivity;
-import org.techtown.hoxy.ui.result.ResultFragment;
 
 import java.io.InputStream;
 
