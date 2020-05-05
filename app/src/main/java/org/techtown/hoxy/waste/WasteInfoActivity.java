@@ -14,11 +14,11 @@ import org.techtown.hoxy.R;
 import org.techtown.hoxy.TrashName;
 
 public class WasteInfoActivity extends AppCompatActivity {
-    private String trashName = TrashName.getTrash();
-    private String[] trashSizeArray = new String[]{"Test1" ,"Test2" ,"Test3" ,"Test4"};
+    private String wasteName = TrashName.getTrash();
+    private String[] wasteSizeArray = new String[]{"Test1" ,"Test2" ,"Test3" ,"Test4"};
     private Button next_button, again_button, howto_button;
     private TextView waste_code_textView, waste_fee_textView;
-    private String trash_code, trash_fee;
+    private String waste_code, waste_fee;
     private Spinner waste_size_spinner;
     private String intent_text;
     @Override
