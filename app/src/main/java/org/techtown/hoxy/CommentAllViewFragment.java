@@ -43,6 +43,7 @@ public class CommentAllViewFragment extends Fragment {
         //if (callback != null) callback = null;
 
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
