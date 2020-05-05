@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import org.techtown.hoxy.R;
-public class CommentWriteActivity extends Activity {
+public class CommentWriteActivity extends Activity  {
     final String TAG = getClass().getSimpleName();
     final static int TAKE_PICTURE = 1;
     private ImageView picture;

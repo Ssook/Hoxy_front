@@ -284,10 +284,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.putExtra("태그","전체");
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            //intent.putExtra("태그","전체");
             startActivity(intent);
-
         }else if (id == R.id.nav_slideshow) {
 
         }

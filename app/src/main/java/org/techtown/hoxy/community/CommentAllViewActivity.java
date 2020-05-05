@@ -26,9 +26,10 @@ import com.google.android.material.navigation.NavigationView;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CommentAllViewActivity extends Activity implements NavigationView.OnNavigationItemSelectedListener {
+public class CommentAllViewActivity extends Activity implements NavigationView.OnNavigationItemSelectedListener, Serializable {
     private CommentAdapter adapter;
     private Bundle data;
     private PostItem item;
