@@ -17,7 +17,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/nav_community"
         android:name="org.techtown.hoxy.CommentAllViewFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_comment_all_view" />

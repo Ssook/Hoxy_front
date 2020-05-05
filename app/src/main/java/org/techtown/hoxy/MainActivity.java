@@ -15,6 +15,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -40,7 +42,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
@@ -48,14 +50,19 @@ public class MainActivity extends AppCompatActivity {
     private View nav_header_view;
     private TextView nav_header_id_text;
     private ImageView profile;
+    private DrawerLayout drawer;
+    ActionBarDrawerToggle toggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         setSupportActionBar(toolbar);
+
         setView_NavHeader();
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -66,17 +73,22 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+
+        setView_Drawer(toolbar);
+
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        //NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        //NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.setNavigationItemSelectedListener(this);
 
         //
 
@@ -91,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.nav_host_fragment,HomeFragment.newinstance()).commit();
         //
+
     }
 
     @Override
@@ -157,6 +170,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+
     //    public void onon(View view){
 //        Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
 //        //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
@@ -166,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_comment) {
             Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
             startActivity(intent);
 
@@ -192,5 +208,33 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setView_Drawer(Toolbar toolbar) {
+        drawer = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+
+        if (id == R.id.nav_home) {
+            // Handle the camera action
+        } else if (id == R.id.nav_community) {
+            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.putExtra("태그","전체");
+            startActivity(intent);
+
+        }else if (id == R.id.nav_slideshow) {
+
+        }
+        drawer = findViewById(R.id.drawer_layout);//??
+        drawer.closeDrawer(GravityCompat.START);
+        return false;
+
+    }
 }
