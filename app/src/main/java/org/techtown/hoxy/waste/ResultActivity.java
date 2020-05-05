@@ -81,7 +81,7 @@ public class ResultActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-
+            finish();
             Intent intent = new Intent(ResultActivity.this, WasteInfoActivity.class);
             intent.putExtra("intent_text",intent_text);
             startActivity(intent);

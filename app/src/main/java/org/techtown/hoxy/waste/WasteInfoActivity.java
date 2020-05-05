@@ -21,6 +21,8 @@ public class WasteInfoActivity extends AppCompatActivity {
     private String waste_code, waste_fee;
     private Spinner waste_size_spinner;
     private String intent_text;
+    private WasteInfoItem waste_item;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +66,7 @@ public class WasteInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
+                finish();
                 Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
                 intent.putExtra("intent_text", intent_text);
                 startActivity(intent);
@@ -76,7 +78,7 @@ public class WasteInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                Intent intent = new Intent(WasteInfoActivity.this, WasteInfoActivity.class);
+                Intent intent = new Intent(WasteInfoActivity.this, WasteApplyActivity.class);
                 startActivity(intent);
             }
         });

@@ -10,6 +10,10 @@ public class WasteInfoItem {
     private int waste_No;
     private String img_Url;
 
+
+
+
+
    /* public String getWaste_name() {
         return waste_name;
     }
