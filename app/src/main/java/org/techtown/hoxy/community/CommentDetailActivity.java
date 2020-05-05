@@ -17,14 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import org.techtown.hoxy.CommentItemView;
+
 import org.techtown.hoxy.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.techtown.hoxy.CommentItem;
+import org.techtown.hoxy.community.CommentItem;
 import org.w3c.dom.Text;
 import java.util.ArrayList;
 

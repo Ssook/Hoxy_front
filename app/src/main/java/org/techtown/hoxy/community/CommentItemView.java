@@ -1,4 +1,4 @@
-package org.techtown.hoxy;
+package org.techtown.hoxy.community;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -7,6 +7,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+
+import org.techtown.hoxy.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

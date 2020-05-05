@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.techtown.hoxy.HomeActivity;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.TrashName;
@@ -64,7 +63,7 @@ public class ResultActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                Intent intent = new Intent(ResultActivity.this, HomeActivity.class);
+                Intent intent = new Intent(ResultActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
