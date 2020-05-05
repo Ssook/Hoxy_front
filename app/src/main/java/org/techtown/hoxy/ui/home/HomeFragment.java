@@ -1,3 +1,4 @@
+/*
 package org.techtown.hoxy.ui.home;
 
 import android.content.Intent;
@@ -92,7 +93,8 @@ public class HomeFragment extends Fragment {
 
 
 
-    /*public String getText_title() {
+    */
+/*public String getText_title() {
         return text_title;
     }
 
@@ -146,6 +148,8 @@ public class HomeFragment extends Fragment {
 
     public void setText_content3_time(String text_content3_time) {
         this.text_content3_time = text_content3_time;
-    }*/
+    }*//*
+
 
 }
+*/
