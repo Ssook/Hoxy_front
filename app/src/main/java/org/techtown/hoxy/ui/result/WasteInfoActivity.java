@@ -10,29 +10,27 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.techtown.hoxy.MainActivity;
+import org.techtown.hoxy.HomeActivity;
 import org.techtown.hoxy.R;
-import org.techtown.hoxy.ui.home.HomeActivity;
-import org.techtown.hoxy.ui.image.ImageActivity;
 import org.techtown.hoxy.ui.image.TrashName;
 
-public class ResultActivity extends AppCompatActivity {
+public class WasteInfoActivity extends AppCompatActivity {
     private String trashName = TrashName.getTrash();
     private String[] trashSizeArray = new String[]{"Test1" ,"Test2" ,"Test3" ,"Test4"};
     private Button next_button, again_button, howto_button;
-    private TextView trash_code_textView, trash_fee_textView;
+    private TextView waste_code_textView, waste_fee_textView;
     private String trash_code, trash_fee;
-    private Spinner trash_size_spinner;
+    private Spinner waste_size_spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_result);
+        setContentView(R.layout.activity_wasteinfo);
 
-        trash_size_spinner = (Spinner)findViewById(R.id.spinner);
+        waste_size_spinner = (Spinner)findViewById(R.id.spinner);
 
-        trash_code_textView =findViewById(R.id.textView2);
-        trash_fee_textView  = findViewById(R.id.textView4);
+        waste_code_textView =findViewById(R.id.textView2);
+        waste_fee_textView = findViewById(R.id.textView4);
         again_button = findViewById(R.id.button3);
         howto_button = findViewById(R.id.button6);
         next_button = findViewById(R.id.button5);
@@ -44,7 +42,7 @@ public class ResultActivity extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         trash_size_spinner.setAdapter(adapter);*/
-        trash_size_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        waste_size_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //textView1.setText(parent.getItemAtPosition(position).toString());
@@ -65,7 +63,7 @@ public class ResultActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                Intent intent = new Intent(ResultActivity.this, HomeActivity.class);
+                Intent intent = new Intent(WasteInfoActivity.this, HomeActivity.class);
                 startActivity(intent);
             }
         });
@@ -74,9 +72,8 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
-
-                Intent intent = new Intent(ResultActivity.this, ResultActivity.class);
+                finish();
+                Intent intent = new Intent(WasteInfoActivity.this, WasteInfoActivity.class);
                 startActivity(intent);
             }
         });

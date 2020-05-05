@@ -2,16 +2,16 @@ package org.techtown.hoxy;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
-import org.techtown.hoxy.ui.image.CameraActivity;
-import org.techtown.hoxy.ui.image.ImageActivity;
+import org.techtown.hoxy.ui.image.ResultActivity;
+import org.techtown.hoxy.ui.result.WasteInfoActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -65,7 +65,8 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 System.out.println("ㅎㅇㅎㅇ");
 
-                Intent intent = new Intent(HomeActivity.this, ImageActivity.class);
+                Intent intent = new Intent(HomeActivity.this, ResultActivity.class);
+                intent.putExtra("intent_text", "image");
                 startActivity(intent);
             }
         });
@@ -75,7 +76,8 @@ public class HomeActivity extends AppCompatActivity {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, CameraActivity.class);
+                Intent intent = new Intent(HomeActivity.this, ResultActivity.class);
+                intent.putExtra("intent_text", "camera");
                 startActivity(intent);
             }
         });
