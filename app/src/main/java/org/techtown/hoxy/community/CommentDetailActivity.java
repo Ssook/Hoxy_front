@@ -1,4 +1,5 @@
 package org.techtown.hoxy.community;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -28,7 +29,7 @@ import org.techtown.hoxy.community.CommentItem;
 import org.w3c.dom.Text;
 import java.util.ArrayList;
 
-public class CommentDetailActivity extends AppCompatActivity{
+public class CommentDetailActivity extends Activity {
     private PostItem item;
     private CommentAdapter adapter;
     private String comment;

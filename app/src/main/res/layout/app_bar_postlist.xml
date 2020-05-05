@@ -24,5 +24,4 @@
     <include layout="@layout/content_postlist"/>
 
 
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
