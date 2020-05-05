@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.result.WasteInfoActivity">
+    tools:context="waste.WasteInfoActivity">
 
         <View
             android:id="@+id/div_line5"
