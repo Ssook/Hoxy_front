@@ -1,7 +1,10 @@
 package org.techtown.hoxy.community;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,8 +26,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
+import org.techtown.hoxy.RequestHttpURLConnection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,6 +47,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
     ActionBarDrawerToggle toggle;
     Toolbar toolbar;
     View nav_header_view;
+    JSONArray ja_title_data;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,10 +57,42 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         listView = (ListView) findViewById(R.id.listView);
         data = new Bundle();
         adapter = new CommentAdapter();
-        adapter.addItem(new PostItem(R.drawable.user1,"앙기모","kss1218",1,"dndnd"));
+
+        //http Thread 연결
+        RequestHttpURLConnection req = new RequestHttpURLConnection("select_board_title/", "");
+        req.start();
+        try {
+            req.join();
+
+            String str_res = req.getRes();
+            JSONArray ja_res = new JSONArray(str_res);
+            System.out.println("data : " + ja_res);
+            System.out.println("ja_res.length(): " + ja_res.length());
+            System.out.println("ja_res.getJSONObject(0): " + ja_res.getJSONObject(0));
+
+            if(ja_res != null) {
+                for (int i = 0; i < ja_res.length(); i++) {
+                    try {
+                        JSONObject jo_data = ja_res.getJSONObject(i);
+                        jo_data.getInt("board_no");
+                        String title = jo_data.getString("board_title");
+                        String user_name = jo_data.getString("board_user_name");
+                        int area_no = jo_data.getInt("board_waste_area_no");
+                        String reg_date = jo_data.getString("board_reg_date");
+
+                        adapter.addItem(new PostItem(R.drawable.user1, title, user_name, area_no, reg_date));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            listView.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
-        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -74,7 +114,11 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
             }
         });
+
+      //  NetworkTask networkTask = new NetworkTask( this, "");
+      //  networkTask.execute();
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -190,6 +234,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         setView_Toolbar();
         setView_NavHeader();
         setView_Drawer();
+
     }
 
     private void setView_Drawer() {
