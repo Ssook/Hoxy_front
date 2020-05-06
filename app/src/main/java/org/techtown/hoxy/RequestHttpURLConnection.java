@@ -64,31 +64,42 @@ public class RequestHttpURLConnection extends Thread{
             str_URL = "http://" + server_ip + ":" + server_port + "/" + str_URL;
             URL url = new URL(str_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("Content-Type", "Application/json");
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept-Charset", "UTF-8");
-            conn.setDoInput(true);
+            //--------------------------
+            //   전송 모드 설정 - 기본적인 설정이다
+            //--------------------------
+            conn.setDefaultUseCaches(false);
+            conn.setDoInput(true);                         // 서버에서 읽기 모드 지정
+            conn.setDoOutput(true);                       // 서버로 쓰기 모드 지정
+            conn.setRequestMethod("POST");         // 전송 방식은 POST
 
-            //전송 받기
-            if (conn.getResponseCode() == conn.HTTP_OK) {
-                InputStreamReader tmp = new InputStreamReader(conn.getInputStream(), "UTF-8");
-                BufferedReader reader = new BufferedReader(tmp);
-                StringBuffer buffer = new StringBuffer();
-                while ((str = reader.readLine()) != null) {
-                    buffer.append(str);
-                }
-                res = buffer.toString();
-                System.out.println("req_2 : " + res);
-            } else {
-                System.out.println("에러 발생");
+            // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+            //   서버로 값 전송
+            //--------------------------
+            StringBuffer buffer = new StringBuffer();
+            String data = "data=" + "\"sample\"";
+
+            buffer.append(data);
+
+            OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+            PrintWriter writer = new PrintWriter(outStream);
+            writer.write(buffer.toString());
+            writer.flush();
+
+            //--------------------------
+            //   서버에서 전송받기
+            //--------------------------
+            InputStreamReader tmp = new InputStreamReader(conn.getInputStream(), "UTF-8");
+            BufferedReader reader = new BufferedReader(tmp);
+            StringBuilder builder = new StringBuilder();
+            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            System.out.println("에러 발생");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("에러 발생");
+            res = builder.toString();
+            } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 /*
