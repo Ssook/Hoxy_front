@@ -29,7 +29,7 @@ import org.techtown.hoxy.R;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CommentAllViewActivity extends Activity implements NavigationView.OnNavigationItemSelectedListener, Serializable {
+public class CommentAllViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Serializable {
     private CommentAdapter adapter;
     private Bundle data;
     private PostItem item;
