@@ -14,7 +14,7 @@ public class PostItem  implements Serializable {
     private int postNum;
     private String title;
 
-    public PostItem(int resId, String title, String userId, int postNum, String reg_date) {
+    public PostItem(int resId, String title, String userId, int postNum/*, String reg_date*/) {
         this.resId = resId;
         //this.comment = comment;
         this.userId = userId;
@@ -22,7 +22,7 @@ public class PostItem  implements Serializable {
         this.postNum = postNum;
         this.title = title;
     }
-    public PostItem(int resId, String comment, String userId, int postNum, String title,String reg_date) {
+    public PostItem(int resId, String comment, String userId, int postNum, String title/*,String reg_date*/) {
         this.resId = resId;
         this.comment = comment;
         this.userId = userId;
