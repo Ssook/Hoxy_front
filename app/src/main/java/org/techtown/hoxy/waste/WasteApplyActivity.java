@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class WasteApplyActivity extends AppCompatActivity {
 
-    private ArrayList<WasteInfoItem> apply_waste_list;
+
     private ApplyInfo applyInfo;
     private EditText editText_user_name, editText_phone_num, editText_address, editText_address_detail, editText_date;
     private ListView listView_applied_waste;

@@ -3,6 +3,8 @@ package org.techtown.hoxy.waste;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class ApplyInfo {
     private String user_No;
     private int apply_fee;
@@ -11,6 +13,8 @@ public class ApplyInfo {
     private int waste_No;
     private String img_Url;
     private String apply_date;
+    private WasteInfoItem apply_waste_item;
+    private ArrayList<WasteInfoItem> apply_waste_list;
 
     public ApplyInfo(String user_No, int apply_fee, String address, String phone_No, int waste_No, String img_Url,String apply_date) {
         this.user_No = user_No;
@@ -21,6 +25,10 @@ public class ApplyInfo {
         this.img_Url = img_Url;
         this.apply_date=apply_date;
     }
+
+    public ArrayList<WasteInfoItem> getApply_waste_list() {return apply_waste_list;}
+
+    public void setApply_waste_list(WasteInfoItem waste_item) {apply_waste_list.add(waste_item);}
 
     public String getUser_No() {
         return user_No;
