@@ -287,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             //intent.putExtra("태그","전체");
             startActivity(intent);
+            finish();
         }else if (id == R.id.nav_slideshow) {
 
         }

@@ -16,10 +16,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
+
+import org.json.JSONArray;
+import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
-public class CommentWriteActivity extends Activity  {
+public class CommentWriteActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
     final String TAG = getClass().getSimpleName();
     final static int TAKE_PICTURE = 1;
     private ImageView picture;
@@ -27,10 +36,16 @@ public class CommentWriteActivity extends Activity  {
     private EditText commentTitle;
     private Intent intent;
     Button saveButton;
+    DrawerLayout drawer;
+    NavigationView navigationView;
+    ActionBarDrawerToggle toggle;
+    Toolbar toolbar;
+    View nav_header_view;
+    JSONArray ja_title_data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_comment_write);
+        initLayoutPostWriteActivity();
 
         contentsInput = (EditText) findViewById(R.id.contentsInput);
 
@@ -53,6 +68,64 @@ public class CommentWriteActivity extends Activity  {
         });
         call_the_camera();
     }
+    public void initLayoutPostWriteActivity() {           //레이아웃 정의
+        setContentView(R.layout.activity_comment_write);
+
+        setView_Toolbar();
+        setView_NavHeader();
+        setView_Drawer();
+
+
+    }
+    private void setView_Drawer() {
+        drawer = findViewById(R.id.drawer_layout);
+
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open , R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    private void setView_NavHeader() {
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        nav_header_view = navigationView.getHeaderView(0);
+        //  nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
+
+        //nav_header_id_text.setText(sp.getString("name", ""));
+    }
+
+    private void setView_Toolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Community");
+        toolbar.setTitleMargin(5, 0, 5, 0);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+
+        if (id == R.id.nav_home) {
+            // Handle the camera action
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            // intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
+
+        } else if (id == R.id.nav_community) {
+
+        }else if (id == R.id.nav_slideshow) {
+
+        }
+        drawer = findViewById(R.id.drawer_layout);//??
+        drawer.closeDrawer(GravityCompat.START);
+
+        return false;
+    }
+
     // 권한 요청
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
