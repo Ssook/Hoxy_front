@@ -1,6 +1,8 @@
 package org.techtown.hoxy.waste;
 
-public class WasteInfoItem {
+import java.io.Serializable;
+
+public class WasteInfoItem  implements Serializable {
 
     private String waste_name;
     private String waste_size;
