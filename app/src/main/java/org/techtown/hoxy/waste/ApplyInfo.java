@@ -13,7 +13,9 @@ public class ApplyInfo {
     private int waste_No;
     private String img_Url;
     private String apply_date;
+
     private WasteInfoItem apply_waste_item;
+
     private ArrayList<WasteInfoItem> apply_waste_list;
 
     public ApplyInfo(String user_No, int apply_fee, String address, String phone_No, int waste_No, String img_Url,String apply_date) {
