@@ -13,9 +13,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".waste.WasteApplyActivity"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".waste.PaymentActivity"
+            android:label="@string/title_activity_payment"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".waste.WasteApplyActivity" />
         <activity android:name=".waste.WasteInfoActivity" />
         <activity android:name=".waste.ResultActivity" />
         <activity android:name=".login.LoginActivity">
@@ -35,12 +39,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-
         <activity android:name=".community.CommentWriteActivity" />
         <activity android:name=".community.CommentDetailActivity" />
-        <activity android:name=".community.CommentAllViewActivity"/>
+        <activity android:name=".community.CommentAllViewActivity" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"

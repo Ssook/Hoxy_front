@@ -12,6 +12,7 @@
     <string name="menu_slideshow">이용가이드</string>
 
     <string name="home_second">Home Second</string>
+    <string name="title_activity_payment">PaymentActivity</string>
 
 
 </resources>
