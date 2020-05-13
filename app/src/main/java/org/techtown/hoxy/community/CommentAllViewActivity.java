@@ -37,14 +37,29 @@ import org.techtown.hoxy.RequestHttpURLConnection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CommentAllViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Serializable {
-    private CommentAdapter adapter;
+    private PostAdapter adapter;
     private Bundle data;
     private PostItem item;
     private ListView listView;
     private ArrayList<PostItem> items;
     private CommentItemView view;
+
+    //postItem의 객체정보 값을 갖는 array들
+    ArrayList<String> arrayregDate = new ArrayList<String>();
+    ArrayList<String> arrayregUser = new ArrayList<String>();
+    //ArrayList<String> arraytag = new ArrayList<String>();
+    ArrayList<String> arraytitle = new ArrayList<String>();
+    //ArrayList<String> arrayctnt = new ArrayList<String>();
+    ArrayList<Integer> arrayPostNo = new ArrayList<Integer>();
+    ArrayList<Integer> arrayimage = new ArrayList<Integer>();
+    ArrayList<String> arrayContetnt = new ArrayList<String>();
+    //PostItem 클래스 타입의 ArrayList
+    ArrayList<PostItem> postList = new ArrayList<PostItem>();
+
+
     DrawerLayout drawer;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
@@ -60,65 +75,11 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
         listView = (ListView) findViewById(R.id.listView);
         data = new Bundle();
-        adapter = new CommentAdapter();
-        adapter.addItem(new PostItem(R.drawable.user1,"앙기모","kss1218",1,"dndnd"));
-        listView.setAdapter(adapter);
-        /*        //http Thread 연결
-        RequestHttpURLConnection req = new RequestHttpURLConnection("select_board_title/", "");
-        req.start();
-        try {
-            req.join();
-
-            String str_res = req.getRes();
-            JSONArray ja_res = new JSONArray(str_res);
-            System.out.println("data : " + ja_res);
-            System.out.println("ja_res.length(): " + ja_res.length());
-            System.out.println("ja_res.getJSONObject(0): " + ja_res.getJSONObject(0));
-
-            if(ja_res != null) {
-                for (int i = 0; i < ja_res.length(); i++) {
-                    try {
-                        JSONObject jo_data = ja_res.getJSONObject(i);
-                        jo_data.getInt("board_no");
-                        String title = jo_data.getString("board_title");
-                        String user_name = jo_data.getString("board_user_name");
-                        int area_no = jo_data.getInt("board_waste_area_no");
-                        String reg_date = jo_data.getString("board_reg_date");
-
-                        adapter.addItem(new PostItem(R.drawable.user1, title, user_name, area_no, reg_date));
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            listView.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                item = (PostItem) adapter.getItem(position);
-                Toast.makeText(getApplicationContext(),item.getUserId()+"선택",Toast.LENGTH_LONG).show();
-
-                onCommand("showDetail",data);
-
-            }
-        });
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //showCommentWriteActivity();
-
-                onCommand("writeComment",data);
-
-            }
-        });
+        //adapter = new PostAdapter();
+        //adapter.addItem(new PostItem(R.drawable.user1,"앙기모","kss1218",1,"dndnd"));
+       // listView.setAdapter(adapter);
+        connect_http();
+        set_button_action();
 
       //  NetworkTask networkTask = new NetworkTask( this, "");
       //  networkTask.execute();
@@ -135,7 +96,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
                 String commentTitle = intent.getStringExtra("title");
                 //System.out.print(commentTitle);
                 Toast.makeText(getApplicationContext(),"메뉴화면으로부터 응답 : "+ commentTitle, Toast.LENGTH_LONG).show();
-                adapter.addItem(new PostItem(R.drawable.user1, contents, "김성수", 1, commentTitle));
+                //adapter.addItem(new PostItem(R.drawable.user1, contents, "김성수", 1, commentTitle));
                 adapter.notifyDataSetChanged();
             }
         }
@@ -165,23 +126,102 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
         return false;
     }
+    public void connect_http(){
+        //http Thread 연결
+        RequestHttpURLConnection req = new RequestHttpURLConnection("select_board_title/", "");
+        req.start();
+        try {
+            req.join();
 
-    class CommentAdapter extends BaseAdapter {
+            String str_res = req.getRes();
+            JSONArray ja_res = new JSONArray(str_res);
+            System.out.println("data : " + ja_res);
+            System.out.println("ja_res.length(): " + ja_res.length());
+            System.out.println("ja_res.getJSONObject(0): " + ja_res.getJSONObject(0));
 
-        ArrayList<PostItem>items = new ArrayList<PostItem>();
+
+
+            if(ja_res != null) {
+                for (int i = 0; i < ja_res.length(); i++) {
+                    try {
+                        JSONObject jo_data = ja_res.getJSONObject(i);
+                        arrayPostNo.add(jo_data.getInt("board_no"));
+                        arraytitle.add( jo_data.getString("board_title"));
+                        arrayregUser.add(jo_data.getString("board_user_name"));
+                        //int area_no = jo_data.getInt("board_waste_area_no"));
+                        arrayregDate.add(jo_data.getString("board_reg_date"));
+
+                        //adapter.addItem(new PostItem(R.drawable.user1, title, user_name, post_no/*, reg_date*/));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            for (int i = 0; i < arraytitle.size(); i++) {
+                PostItem postItem = new PostItem(R.drawable.user1, arraytitle.get(i), arrayregUser.get(i), arrayPostNo.get(i),arrayregDate.get(i));
+                //bind all strings in an array
+                postList.add(postItem);
+                adapter = new PostAdapter(postList);
+            }
+            listView.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void set_button_action(){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                item = (PostItem) adapter.getItem(position);
+                Toast.makeText(getApplicationContext(),item.getUserId()+"선택",Toast.LENGTH_LONG).show();
+
+                onCommand("showDetail",data);
+
+            }
+        });
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //showCommentWriteActivity();
+
+                onCommand("writeComment",data);
+
+            }
+        });
+
+    }
+
+    public class PostAdapter extends BaseAdapter {
+
+        ArrayList<PostItem> postItems; // main으로부터 modellist들을 전달 받을 객체
+        //ArrayList<PostItem> postList; // modellist로부터 받은 모델을 array형으로 받을 객체
+        //postList = postItems;
+        public PostAdapter(ArrayList<PostItem> postItems)
+        {
+            this.postItems = postItems;
+        }
+
+       // ArrayList<PostItem>items = new ArrayList<PostItem>();
+       public class ViewHolder{
+
+       }
 
         @Override
         public int getCount() {
-            return items.size();
+            return postItems.size();
         }
 
         public void addItem(PostItem item){
-            items.add(item);
+            postItems.add(item);
 
         }
         @Override
         public Object getItem(int position) {
-            return items.get(position);
+            return postItems.get(position);
         }
 
         @Override
@@ -202,11 +242,11 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
                 view = (CommentItemView) convertView;
 
             }
-            PostItem item = items.get(position);
+            PostItem item = postItems.get(position);
             view.setUserId(item.getUserId());
             view.setImage(item.getResId());
             view.setComment(item.getTitle());
-            //view.setTime(item.getTime());
+            view.setReg_date(item.getReg_date());
 
             return view;
         }
@@ -220,14 +260,14 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         if (command.equals("writeComment")) {
             // 액티비티를 띄우는 경우
             Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
-            Log.e("tlqkf","tlqkf");
+
             startActivity(intent);
 
         }
         if (command.equals("showDetail")){
             Intent intent = new Intent(getApplicationContext(), CommentDetailActivity.class);
-
-            intent.putExtra("item", item);
+            intent.putExtra("post_no",item.getPost_no());
+            //intent.putExtra("")
             startActivityForResult(intent, 102);
 
         }
