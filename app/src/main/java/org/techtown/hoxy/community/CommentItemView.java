@@ -17,7 +17,11 @@ public class CommentItemView extends LinearLayout {
     private TextView userIdView;
     private TextView commentView;
     private CircleImageView userImageView;
+
     private TextView reg_date;
+
+
+
 
     public CommentItemView(Context context) {
         super(context);
