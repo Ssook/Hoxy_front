@@ -24,7 +24,9 @@ public class CodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wasteinfo);
 
-//        codeView=findViewById(R.id.tv_codeview);
+
+      //  codeView=findViewById(R.id.tv_codeview);
+
 
         Intent intent_get = getIntent();
 

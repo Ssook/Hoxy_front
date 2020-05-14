@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -42,6 +44,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
     private PostItem item;
     private ListView listView;
     private ArrayList<PostItem> items;
+    private CommentItemView view;
     DrawerLayout drawer;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
@@ -52,13 +55,15 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initLayoutMapActivity();
+        initLayoutPostListActivity();
+
 
         listView = (ListView) findViewById(R.id.listView);
         data = new Bundle();
         adapter = new CommentAdapter();
-
-        //http Thread 연결
+        adapter.addItem(new PostItem(R.drawable.user1,"앙기모","kss1218",1,"dndnd"));
+        listView.setAdapter(adapter);
+        /*        //http Thread 연결
         RequestHttpURLConnection req = new RequestHttpURLConnection("select_board_title/", "");
         req.start();
         try {
@@ -90,7 +95,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             listView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -145,9 +150,10 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             // Handle the camera action
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
            // intent.putExtra("태그","전체");
             startActivity(intent);
+            finish();
 
         } else if (id == R.id.nav_community) {
 
@@ -186,7 +192,8 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            CommentItemView view = null;
+
+            view = null;
             if(convertView == null){
                 view = new CommentItemView(getApplicationContext());
 
@@ -204,18 +211,25 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             return view;
         }
     }
+
     public void onCommand(String command,Bundle data){
+        /*
+        *postList 혹은 fab버튼을 click시 화면 전환을 위한 함수
+        * 화면 전환을 위한
+        * */
         if (command.equals("writeComment")) {
             // 액티비티를 띄우는 경우
             Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
+            Log.e("tlqkf","tlqkf");
+            startActivity(intent);
 
-            startActivityForResult(intent, 101);
         }
         if (command.equals("showDetail")){
             Intent intent = new Intent(getApplicationContext(), CommentDetailActivity.class);
 
             intent.putExtra("item", item);
             startActivityForResult(intent, 102);
+
         }
     }
     /*public void removePost(String command){
@@ -229,7 +243,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             }
         }
     }*/
-    public void initLayoutMapActivity() {           //레이아웃 정의
+    public void initLayoutPostListActivity() {           //레이아웃 정의
         setContentView(R.layout.activity_community_main);
         setView_Toolbar();
         setView_NavHeader();
