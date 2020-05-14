@@ -14,6 +14,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.TrashName;
@@ -28,8 +30,7 @@ public class WasteInfoActivity extends AppCompatActivity{
     private Spinner waste_size_spinner;
     private String intent_text;
     //추가
-    private ArrayList<WasteInfoItem> wasteInfoItems;
-    private WasteInfoItem wasteInfoItem;
+    private JSONArray wasteInfoItems;
     private int position;
 
 
@@ -50,17 +51,20 @@ public class WasteInfoActivity extends AppCompatActivity{
         //전 화면에서 받아오기
         Intent intent_get = getIntent();
         intent_text = intent_get.getExtras().getString("intent_text");
-        wasteInfoItems = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wasteInfoItems");
+        String temp_wasteInfoItems = (String) intent_get.getSerializableExtra("wasteInfoItems");
+        try {
+            wasteInfoItems = new JSONArray(temp_wasteInfoItems);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         position = intent_get.getExtras().getInt("position");
-        wasteInfoItem = wasteInfoItems.get(position);
-        System.out.println(wasteInfoItems.size());
-        System.out.println(wasteInfoItem.getWaste_name());
+        //System.out.println(wasteInfoItem.getWaste_name());
         System.out.println(position);
 
 
 
         //스피너 아이템 추가
-        spinnerArray.add(wasteInfoItem.getWaste_size());
+       // spinnerArray.add(wasteInfoItem.getWaste_size());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -98,7 +102,7 @@ public class WasteInfoActivity extends AppCompatActivity{
                 finish();
                 Intent intent = new Intent(WasteInfoActivity.this, WasteApplyActivity.class);
                 intent.putExtra("position", position);
-                intent.putExtra("wasteInfoItems", wasteInfoItems);
+                intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
                 startActivity(intent);
             }
         });
@@ -120,7 +124,7 @@ public class WasteInfoActivity extends AppCompatActivity{
                                     Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
                                     intent.putExtra("intent_text","camera");
                                     intent.putExtra("position", ++position);
-                                    intent.putExtra("wasteInfoItems", wasteInfoItems);
+                                    intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
                                     startActivity(intent);
                                 }
                                 else if(index == 1){
@@ -128,7 +132,7 @@ public class WasteInfoActivity extends AppCompatActivity{
                                     Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
                                     intent.putExtra("intent_text","image");
                                     intent.putExtra("position", ++position);
-                                    intent.putExtra("wasteInfoItems", wasteInfoItems);
+                                    intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
                                     startActivity(intent);
                                 }
                                 else

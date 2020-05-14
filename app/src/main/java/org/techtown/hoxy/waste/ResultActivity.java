@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
@@ -64,8 +65,7 @@ public class ResultActivity extends AppCompatActivity {
     private String deep_learning_answer;
 
     ////추가
-    private ArrayList<WasteInfoItem> wasteInfoItems;
-    private WasteInfoItem wasteInfoItem;
+    private String wasteInfoItems;
     private int position = 0;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -75,12 +75,13 @@ public class ResultActivity extends AppCompatActivity {
         //인텐트 받아오기
         Intent intent_get = getIntent();
         intent_text = Objects.requireNonNull(intent_get.getExtras()).getString("intent_text");
-        wasteInfoItems = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wasteInfoItems");
+        wasteInfoItems = (String) intent_get.getSerializableExtra("wasteInfoItems");
         position = intent_get.getExtras().getInt("position");
         System.out.println(intent_text);
+        waste_textView = findViewById(R.id.textView);
+        waste_textView.setText("이미지 검색중..");
 
-
-     //갤러리로 이동
+        //갤러리로 이동
         if(intent_text.equals("image")) {
 
             Intent intent = new Intent(Intent.ACTION_PICK);
@@ -93,7 +94,6 @@ public class ResultActivity extends AppCompatActivity {
             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(cameraIntent, TAKE_PICTURE);
         }
-        waste_textView = findViewById(R.id.textView);
 
 
         waste_ImageView = (ImageView) findViewById(R.id.imageView);
@@ -111,7 +111,7 @@ public class ResultActivity extends AppCompatActivity {
             Intent intent = new Intent(ResultActivity.this, ResultActivity.class);
             intent.putExtra("intent_text",intent_text);
             intent.putExtra("position", position);
-            intent.putExtra("wasteInfoItems", wasteInfoItems);
+            intent.putExtra("wasteInfoItems", deep_learning_answer);
             startActivity(intent);
         }
     });
@@ -120,13 +120,13 @@ public class ResultActivity extends AppCompatActivity {
         next_button.setOnClickListener(new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            if(wasteInfoItems == null)
-               wasteInfoItems = new ArrayList<WasteInfoItem>();
-            wasteInfoItems.add(wasteInfoItem);
+            //if(wasteInfoItems == null)
+           //    wasteInfoItems = new ArrayList<WasteInfoItem>();
+            //wasteInfoItems.add(wasteInfoItem);
             finish();
             Intent intent = new Intent(ResultActivity.this, WasteInfoActivity.class);
             intent.putExtra("intent_text",intent_text);
-            intent.putExtra("wasteInfoItems", wasteInfoItems);
+            intent.putExtra("wasteInfoItems", deep_learning_answer);
             intent.putExtra("position", position);
             startActivity(intent);
         }
