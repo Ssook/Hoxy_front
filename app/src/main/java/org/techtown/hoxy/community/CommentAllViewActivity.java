@@ -25,6 +25,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.kakao.auth.StringSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +34,14 @@ import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class CommentAllViewActivity extends Activity implements NavigationView.OnNavigationItemSelectedListener, Serializable {
@@ -59,38 +67,8 @@ public class CommentAllViewActivity extends Activity implements NavigationView.O
         adapter = new CommentAdapter();
 
         //http Thread 연결
-        RequestHttpURLConnection req = new RequestHttpURLConnection("select_board_title/", "");
-        req.start();
-        try {
-            req.join();
-
-            String str_res = req.getRes();
-            JSONArray ja_res = new JSONArray(str_res);
-            System.out.println("data : " + ja_res);
-            System.out.println("ja_res.length(): " + ja_res.length());
-            System.out.println("ja_res.getJSONObject(0): " + ja_res.getJSONObject(0));
-
-            if(ja_res != null) {
-                for (int i = 0; i < ja_res.length(); i++) {
-                    try {
-                        JSONObject jo_data = ja_res.getJSONObject(i);
-                        jo_data.getInt("board_no");
-                        String title = jo_data.getString("board_title");
-                        String user_name = jo_data.getString("board_user_name");
-                        int area_no = jo_data.getInt("board_waste_area_no");
-                        String reg_date = jo_data.getString("board_reg_date");
-
-                        adapter.addItem(new PostItem(R.drawable.user1, title, user_name, area_no, reg_date));
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            listView.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        http_task task = new http_task("select_board_title");
+        task.execute("select_board_title");
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -261,5 +239,91 @@ public class CommentAllViewActivity extends Activity implements NavigationView.O
         toolbar.setTitle("Community");
         toolbar.setTitleMargin(5, 0, 5, 0);
     }
+
+    public class http_task extends AsyncTask<String, String, String> {
+        String sub_url = "";
+        http_task(String sub_url){
+            this.sub_url = sub_url;
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "";
+            try {
+                String str = "";
+                String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/" + sub_url + "/";
+                System.out.println("str_URL : " + str_URL);
+                URL url = new URL(str_URL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                //--------------------------
+                //   전송 모드 설정 - 기본적인 설정이다
+                //--------------------------
+                conn.setDefaultUseCaches(false);
+                conn.setDoInput(true);                         // 서버에서 읽기 모드 지정
+                conn.setDoOutput(true);                       // 서버로 쓰기 모드 지정
+                conn.setRequestMethod("POST");         // 전송 방식은 POST
+
+                // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+                //   서버로 값 전송
+                //--------------------------
+                StringBuffer buffer = new StringBuffer();
+                String data = "data=" + "\"sample\"";
+
+                buffer.append(data);
+
+                OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+                PrintWriter writer = new PrintWriter(outStream);
+                writer.write(buffer.toString());
+                writer.flush();
+
+                //--------------------------
+                //   서버에서 전송받기
+                //--------------------------
+                InputStreamReader tmp = new InputStreamReader(conn.getInputStream(), "UTF-8");
+                BufferedReader reader = new BufferedReader(tmp);
+                StringBuilder builder = new StringBuilder();
+                while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                    builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
+                }
+                System.out.println("res : " + res);
+                res = builder.toString();
+                res = res.replace("&#39;","\"");
+            } catch (MalformedURLException ex) {
+                ex.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return res;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                String str_res = result;
+                JSONArray ja_res = new JSONArray(str_res);
+
+                if(ja_res != null) {
+                    for (int i = 0; i < ja_res.length(); i++) {
+                        try {
+                            JSONObject jo_data = ja_res.getJSONObject(i);
+                            jo_data.getInt("board_no");
+                            String title = jo_data.getString("board_title");
+                            String user_name = jo_data.getString("board_user_name");
+                            int area_no = jo_data.getInt("board_waste_area_no");
+                            String reg_date = jo_data.getString("board_reg_date");
+
+                            adapter.addItem(new PostItem(R.drawable.user1, title, user_name, area_no, reg_date));
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                listView.setAdapter(adapter);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 }
