@@ -17,7 +17,11 @@ public class CommentItemView extends LinearLayout {
     private TextView userIdView;
     private TextView commentView;
     private CircleImageView userImageView;
-    private TextView timeView;
+
+    private TextView reg_date;
+
+
+
 
     public CommentItemView(Context context) {
         super(context);
@@ -36,7 +40,7 @@ public class CommentItemView extends LinearLayout {
         userIdView = (TextView) findViewById(R.id.useridView);
         commentView = (TextView) findViewById(R.id.comment);
         userImageView = (CircleImageView) findViewById(R.id.userImage);
-        timeView = (TextView) findViewById(R.id.time);
+        reg_date = (TextView) findViewById(R.id.reg_date);
 
     }
 
@@ -48,6 +52,7 @@ public class CommentItemView extends LinearLayout {
     public void setImage(int resId) {
         userImageView.setImageResource(resId);
     }
+    public void setReg_date(String _reg_date){ reg_date.setText(_reg_date);}
     //public void setTime(String time){}
 
 

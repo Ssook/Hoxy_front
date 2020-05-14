@@ -8,27 +8,30 @@ import java.io.Serializable;
 
 public class PostItem  implements Serializable {
     private int resId;
-    private String comment;
+    private String content;
     private String userId;
     private String image;
-    private int postNum;
+    private int post_no;
     private String title;
+    private String reg_date;
 
-    public PostItem(int resId, String title, String userId, int postNum, String reg_date) {
+    public PostItem(int resId, String title, String userId, int post_no, String reg_date) {
         this.resId = resId;
-        //this.comment = comment;
+        this.content = content;
         this.userId = userId;
         // this.image = image;
-        this.postNum = postNum;
+        this.post_no = post_no;
         this.title = title;
+        this.reg_date = reg_date;
     }
-    public PostItem(int resId, String comment, String userId, int postNum, String title,String reg_date) {
+    public PostItem(int resId, String content, String userId, int post_no, String title,String reg_date) {
         this.resId = resId;
-        this.comment = comment;
+        this.content = content;
         this.userId = userId;
        // this.image = image;
-        this.postNum = postNum;
+        this.post_no = post_no;
         this.title = title;
+        this.reg_date = reg_date;
     }
 
     public String getTitle() {
@@ -47,12 +50,12 @@ public class PostItem  implements Serializable {
         this.resId = resId;
     }
 
-    public String getComment() {
-        return comment;
+    public String getContent() {
+        return content;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getUserId() {
@@ -71,22 +74,30 @@ public class PostItem  implements Serializable {
         this.image = image;
     }
 
-    public int getPostNum() {
-        return postNum;
+    public int getPost_no() {
+        return post_no;
     }
 
-    public void setPostNum(int postNum) {
-        this.postNum = postNum;
+    public void setPost_no(int post_no) {
+        this.post_no = post_no;
+    }
+
+    public String getReg_date() {
+        return reg_date;
+    }
+
+    public void setReg_date(String reg_date) {
+        this.reg_date = reg_date;
     }
 
     public JSONObject PostToJSON(){
         JSONObject jsonobj=new JSONObject();
         try {
             jsonobj.put("id",this.getUserId());
-            jsonobj.put("comment",this.getComment());
+            jsonobj.put("content",this.getContent());
             jsonobj.put("resId",this.getResId());
             jsonobj.put("image",this.getImage());
-            jsonobj.put("postNum",this.getPostNum());
+            jsonobj.put("post_no",this.getPost_no());
             jsonobj.put("title",this.getTitle());
         } catch (JSONException e) {
             e.printStackTrace();
