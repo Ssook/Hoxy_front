@@ -3,6 +3,7 @@ package org.techtown.hoxy.waste;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -47,7 +48,9 @@ import static android.util.Base64.DEFAULT;
 import static android.util.Base64.NO_WRAP;
 import static android.util.Base64.encodeToString;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 public class ResultActivity extends AppCompatActivity {
@@ -189,6 +192,14 @@ public class ResultActivity extends AppCompatActivity {
         }
     }
     public void image_send(Bitmap waste_bitmap){
+        SharedPreferences sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        String user_id = sp.getString("token","");
+
+        SimpleDateFormat format1 = new SimpleDateFormat( "yyyyMMddHHmmss");
+        Calendar time = Calendar.getInstance();
+        String format_time1 = format1.format(time.getTime());
+
+        String file_name = format_time1 + user_id;
         files = encodeTobase64(waste_bitmap);
 
         int area_no = 1;
@@ -196,6 +207,7 @@ public class ResultActivity extends AppCompatActivity {
         try {
             jo_data.put("area_no",area_no);
             jo_data.put("files",files);
+            jo_data.put("file_name",file_name);
             send_data = jo_data.toString();
             send_data = "{\"area_no\":1, \"files\": \""+files+"\"}";
         } catch (JSONException e) {
