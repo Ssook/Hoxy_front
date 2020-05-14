@@ -8,12 +8,14 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -32,18 +34,22 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
 import com.kakao.util.helper.log.Logger;
 
 
 import org.techtown.hoxy.community.CommentAllViewActivity;
+import org.techtown.hoxy.login.LoginActivity;
 import org.techtown.hoxy.waste.ResultActivity;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+import org.techtown.hoxy.login.LoginActivity;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
@@ -62,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String text_content1_time;
     private String text_content2_time;
     private String text_content3_time;
-    private TextView home_main_textView,content_textView,content2_textView ,content3_textView, content1_time_textView, content2_time_textView, content3_time_textView;
+    private TextView home_main_textView, content_textView, content2_textView, content3_textView, content1_time_textView, content2_time_textView, content3_time_textView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             System.out.println("??????");
         }
         setView_Profile();
-       // setView_Navigationview();
+        // setView_Navigationview();
 
         //
 
@@ -136,11 +143,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         content3_time_textView.setText(text_content3_time);
 
 
-
-
         ////////////////갤러리로 넘어가기
         ImageButton imageButton = findViewById(R.id.galleryButton);
-        imageButton.setOnClickListener(new View.OnClickListener(){
+        imageButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -170,6 +175,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            onClickLogout();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    public void onClickLogout() {
+        UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
+                System.out.println(errorResult+"????");
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
+            }
+
+            @Override
+            public void onSuccess(Long result) {
+                Log.e("session success", "카카오 로그아웃 onSuccess");
+
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -230,8 +273,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
-
     //    public void onon(View view){
 //        Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
 //        //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
@@ -288,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
-        }else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_slideshow) {
 
         }
         drawer = findViewById(R.id.drawer_layout);//??
