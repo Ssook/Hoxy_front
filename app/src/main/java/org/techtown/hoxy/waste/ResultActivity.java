@@ -197,6 +197,7 @@ public class ResultActivity extends AppCompatActivity {
             jo_data.put("area_no",area_no);
             jo_data.put("files",files);
             send_data = jo_data.toString();
+
             send_data = "{\"area_no\":1, \"files\": \""+files+"\"}";
         } catch (JSONException e) {
             e.printStackTrace();
