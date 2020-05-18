@@ -71,6 +71,8 @@ public class ResultActivity extends AppCompatActivity {
     ////추가
     private String wasteInfoItems;
     private int position = 0;
+    private ArrayList<WasteInfoItem> waste_basket;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,7 @@ public class ResultActivity extends AppCompatActivity {
         Intent intent_get = getIntent();
         intent_text = Objects.requireNonNull(intent_get.getExtras()).getString("intent_text");
         wasteInfoItems = (String) intent_get.getSerializableExtra("wasteInfoItems");
+        waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
         position = intent_get.getExtras().getInt("position");
         System.out.println(intent_text);
         waste_textView = findViewById(R.id.textView);
@@ -117,6 +120,7 @@ public class ResultActivity extends AppCompatActivity {
             intent.putExtra("intent_text",intent_text);
             intent.putExtra("position", position);
             intent.putExtra("wasteInfoItems", deep_learning_answer);
+
             startActivity(intent);
         }
     });
@@ -125,13 +129,14 @@ public class ResultActivity extends AppCompatActivity {
         next_button.setOnClickListener(new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            //if(wasteInfoItems == null)
-           //    wasteInfoItems = new ArrayList<WasteInfoItem>();
-            //wasteInfoItems.add(wasteInfoItem);
+            if(waste_basket == null)
+               waste_basket = new ArrayList<WasteInfoItem>();
+
             finish();
             Intent intent = new Intent(ResultActivity.this, WasteInfoActivity.class);
             intent.putExtra("intent_text",intent_text);
             intent.putExtra("wasteInfoItems", deep_learning_answer);
+            intent.putExtra("wastebasket", waste_basket);
             intent.putExtra("position", position);
             startActivity(intent);
         }
