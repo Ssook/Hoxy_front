@@ -76,7 +76,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
     private TextView title;
     private TextView content;
     private ImageView userImage;
-    private TextView reg_date;
+    private TextView post_reg_date;
 
     private Button backButton;
     private ImageButton writeButton;
@@ -88,6 +88,9 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         super.onCreate(savedInstanceState);
         initLayoutPostWriteActivity();//init
         findView();//View들과 연결
+
+
+        //postListActivity로부터 선택된 게시판의 post-no을 받아 서버에서 추가 적인 정보들을 가져옴
         post_List_post_no = getIntent().getIntExtra("post_no", 0);
         JSONObject jsonObject = new JSONObject();
         try {
@@ -98,11 +101,13 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         //System.out.println(post_List_post_no);
        // item = (PostItem) getIntent().getSerializableExtra("item");
 
-        Toast.makeText(getApplicationContext(),"들어와쏭",Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),"들어와쏭",Toast.LENGTH_LONG).show();
         CommentDetailActivity.NetworkTask networkTask = new CommentDetailActivity.NetworkTask(this, jsonObject.toString());
-        System.out.println("network_task1");
+        //System.out.println("network_task1");
         networkTask.execute();
-        System.out.println("network_tast2");
+        //System.out.println("network_tast2");
+
+        get_comment();
 
         ///////listview
         ListView listView = (ListView) findViewById(R.id.detailCommentList);
@@ -188,6 +193,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         backButton = (Button) findViewById(R.id.goToAllViewButton);
         writeButton = (ImageButton) findViewById(R.id.writeButton);
         othersComment = (EditText) findViewById(R.id.othersComment);
+        post_reg_date = (TextView) findViewById(R.id.reg_date);
     }
 
     public String request_post_data(String value) throws JSONException {
@@ -199,7 +205,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-            URL url = new URL("http://172.16.46.22:8000/select_board/");
+            URL url = new URL("http://172.16.5.240:8000/select_board/");
             System.out.println("URL_connect");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
@@ -216,7 +222,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             http.setRequestMethod("POST");         // 전송 방식은 POST
 
             // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
-            http.setRequestProperty("waste-type", "application/x-www-form-urlencoded;charset=UTF-8]");            //--------------------------
+            http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
             System.out.println("set_Property");
             //   서버로 값 전송
             //--------------------------
@@ -263,7 +269,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         return result;
     }
 
-        public void set_component(int _area_no, String _title, String _user_name,String _content, String _reg_date){
+       /* public void set_component(int _area_no, String _title, String _user_name,String _content, String _reg_date){
         userId.setText( _user_name);
         title.setText( _title);
         userImage.setImageResource(R.drawable.user1);
@@ -276,7 +282,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                 finish();
             }
         });
-    }
+    }*/
     /*
     * 안드로이드에서 Post형식으로 서버에 데이터를 보내는 코드
     *
@@ -362,6 +368,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
     //---------------------------------------
     /* 해당 게시글의 모든 정보를 받아오는 클래스*/
     //---------------------------------------
+    @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     public class NetworkTask extends AsyncTask<Void, Void, String> {
 
         String values;
@@ -416,9 +423,9 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                         String time = jsonObject.getString("board_reg_date");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         Date date = null;
-                        try {
+                        //try {
                             date = simpleDateFormat.parse(time);
-                        } catch (ParseException e) {
+                        /*} catch (ParseException e) {
                             SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
                             try {
                                 date = simpleDateFormat1.parse(time);
@@ -432,15 +439,15 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                                 ex.printStackTrace();
                             }
                             e.printStackTrace();
-                        }
+                        }*/
                         /*Long longDate = date.getTime();
                         arrayregDate.add(TimeString.formatTimeString(longDate));*/
                         userId.setText(jsonObject.getString("board_user_name"));
                         title.setText(jsonObject.getString("board_title"));
                         content.setText(jsonObject.getString("board_ctnt"));//content로 변경해야됨(주용이와 대화 필요)
                         userImage.setImageResource(R.drawable.user1);
-
-                    } catch (JSONException e) {
+                        post_reg_date.setText(jsonObject.getString("board_reg_date"));
+                    } catch (JSONException | ParseException e) {
                         e.printStackTrace();
                     }
                 //}
@@ -451,4 +458,9 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             }
         }//onPostExecute func()
     }//NetWorkTask Class
+
+    public void get_comment(){
+
+
+    }
 }
