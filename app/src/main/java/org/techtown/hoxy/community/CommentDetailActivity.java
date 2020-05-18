@@ -195,11 +195,12 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         System.out.println("request_post_Data");
         int TIMEOUT_VALUE = 1000;
         String result = "";
+        String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/" + "select_board" + "/";
         try {
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-            URL url = new URL("http://172.16.46.22:8000/select_board/");
+            URL url = new URL(str_URL);
             System.out.println("URL_connect");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
