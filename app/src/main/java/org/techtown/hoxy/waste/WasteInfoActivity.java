@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 public class WasteInfoActivity extends AppCompatActivity{
     private String wasteName = TrashName.getTrash();
+    String select_name, select_size, select_fee;
+    int select_no;
     ArrayList<String> spinnerArray = new ArrayList<String>();
     private Button next_button, cancle_button, again_button;
     private TextView waste_code_textView, waste_fee_textView;
@@ -35,6 +37,8 @@ public class WasteInfoActivity extends AppCompatActivity{
     private int position;
     private ArrayList<Integer> waste_type_no = new ArrayList<>();
     private ArrayList<String> waste_name = new ArrayList<>(), waste_fee = new ArrayList<>(), waste_size= new ArrayList<>();
+
+    private ArrayList<WasteInfoItem> waste_basket;
 
 
     @Override
@@ -55,6 +59,7 @@ public class WasteInfoActivity extends AppCompatActivity{
         Intent intent_get = getIntent();
         intent_text = intent_get.getExtras().getString("intent_text");
         String temp_wasteInfoItems = (String) intent_get.getSerializableExtra("wasteInfoItems");
+        waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
         try {
             wasteInfoItems = new JSONArray(temp_wasteInfoItems);
         } catch (JSONException e) {
@@ -91,6 +96,10 @@ public class WasteInfoActivity extends AppCompatActivity{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 waste_code_textView.setText(waste_name.get(position));
                 waste_fee_textView.setText(waste_fee.get(position));
+                select_fee = waste_fee.get(position);
+                select_size = waste_size.get(position);
+                select_name = waste_name.get(position);
+                select_no = waste_type_no.get(position);
 
             }
 
@@ -120,7 +129,8 @@ public class WasteInfoActivity extends AppCompatActivity{
                 finish();
                 Intent intent = new Intent(WasteInfoActivity.this, WasteApplyActivity.class);
                 intent.putExtra("position", position);
-                intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
+                addBasket(select_name,select_fee,select_size,select_no);
+                intent.putExtra("wastebasket", waste_basket);
                 startActivity(intent);
             }
         });
@@ -143,6 +153,8 @@ public class WasteInfoActivity extends AppCompatActivity{
                                     intent.putExtra("intent_text","camera");
                                     intent.putExtra("position", ++position);
                                     intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
+                                    addBasket(select_name,select_fee,select_size,select_no);
+                                    intent.putExtra("wastebasket", waste_basket);
                                     startActivity(intent);
                                 }
                                 else if(index == 1){
@@ -151,6 +163,8 @@ public class WasteInfoActivity extends AppCompatActivity{
                                     intent.putExtra("intent_text","image");
                                     intent.putExtra("position", ++position);
                                     intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
+                                    addBasket(select_name,select_fee,select_size,select_no);
+                                    intent.putExtra("wastebasket", waste_basket);
                                     startActivity(intent);
                                 }
                                 else
@@ -162,6 +176,11 @@ public class WasteInfoActivity extends AppCompatActivity{
 
                 AlertDialog dialog = builder.create();    // 알림창 객체 생성
                 dialog.show();    // 알림창 띄우기
+    }
+
+    private  void addBasket(String name, String fee, String size, int no){
+        WasteInfoItem wasteInfoItem = new WasteInfoItem(name, size, Integer.parseInt(fee), no, "");
+        waste_basket.add(wasteInfoItem);
     }
 }
 
