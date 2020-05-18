@@ -62,7 +62,6 @@ public class WasteApplyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_waste_apply);
             //가져오기
@@ -241,12 +240,9 @@ public class WasteApplyActivity extends AppCompatActivity {
                         .addHeader("Content-Type", "application/x-www-form-urlencoded")
                         .addHeader("Content-Type", "application/x-www-form-urlencoded")
                         .build();
-
-
                 ///
                 //동기 처리시 execute함수 사용
                 Response response = client.newCall(request).execute();
-
                 //출력
                 String message = response.body().string();
                 JSONObject jo1 = new JSONObject(message);
@@ -259,8 +255,6 @@ public class WasteApplyActivity extends AppCompatActivity {
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
                 intent.setData(Uri.parse(jo1.getString("android_app_scheme")));
                 startActivity(intent);
-
-
             } catch (Exception e) {
                 System.err.println(e.toString());
             }
@@ -299,8 +293,6 @@ public class WasteApplyActivity extends AppCompatActivity {
                 Intent intent = new Intent(WasteApplyActivity.this, MainActivity.class);
                 startActivity(intent);
             }
-
-
         }
 
 

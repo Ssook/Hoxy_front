@@ -260,6 +260,7 @@ public class ResultActivity extends AppCompatActivity {
                 }
 
                 res = builder.toString();
+                System.out.println("response : " + res);
                 res = res.replace("&#39;","\"");
                 System.out.println("res : " + res);
                 deep_learning_answer = res;
@@ -272,17 +273,33 @@ public class ResultActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(String result) {
-            JSONArray jsonArray = null;
-            try {
-                jsonArray = new JSONArray(deep_learning_answer);
-                String waste_name = "";
-                waste_name = jsonArray.getJSONObject(0).getString("waste_type_kor_name");
-                System.out.println("waste_name : " + waste_name);
-                waste_textView.setText(waste_name);
-                next_button.setVisibility(View.VISIBLE);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            ///////////////
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // runOnUiThread를 추가하고 그 안에 UI작업을 한다.
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONArray jsonArray = new JSONArray(deep_learning_answer);
+                                String waste_name = "";
+                                waste_name = jsonArray.getJSONObject(0).getString("waste_type_kor_name");
+                                System.out.println("waste_name : " + waste_name);
+                                waste_textView.setText(waste_name);
+                                next_button.setVisibility(View.VISIBLE);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }).start();
+
+            ////////////////////////
+
+
+            ///////////////////
             }
     }
 }
