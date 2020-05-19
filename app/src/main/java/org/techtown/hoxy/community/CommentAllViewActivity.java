@@ -85,6 +85,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
         listView = (ListView) findViewById(R.id.listView);
         data = new Bundle();
+
         //----------------------------
         /*      게시글을 전부 가져옴  */
         //----------------------------
@@ -231,9 +232,9 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         }
 
         // ArrayList<PostItem>items = new ArrayList<PostItem>();
-        public class ViewHolder{
+        /*public class ViewHolder{
 
-        }
+        }*/
 
         @Override
         public int getCount() {

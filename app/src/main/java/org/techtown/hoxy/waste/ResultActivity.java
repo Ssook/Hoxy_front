@@ -71,6 +71,8 @@ public class ResultActivity extends AppCompatActivity {
     ////추가
     private String wasteInfoItems;
     private int position = 0;
+    private ArrayList<WasteInfoItem> waste_basket;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,7 @@ public class ResultActivity extends AppCompatActivity {
         Intent intent_get = getIntent();
         intent_text = Objects.requireNonNull(intent_get.getExtras()).getString("intent_text");
         wasteInfoItems = (String) intent_get.getSerializableExtra("wasteInfoItems");
+        waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
         position = intent_get.getExtras().getInt("position");
         System.out.println(intent_text);
         waste_textView = findViewById(R.id.textView);
@@ -117,6 +120,7 @@ public class ResultActivity extends AppCompatActivity {
             intent.putExtra("intent_text",intent_text);
             intent.putExtra("position", position);
             intent.putExtra("wasteInfoItems", deep_learning_answer);
+
             startActivity(intent);
         }
     });
@@ -125,13 +129,14 @@ public class ResultActivity extends AppCompatActivity {
         next_button.setOnClickListener(new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            //if(wasteInfoItems == null)
-           //    wasteInfoItems = new ArrayList<WasteInfoItem>();
-            //wasteInfoItems.add(wasteInfoItem);
+            if(waste_basket == null)
+               waste_basket = new ArrayList<WasteInfoItem>();
+
             finish();
             Intent intent = new Intent(ResultActivity.this, WasteInfoActivity.class);
             intent.putExtra("intent_text",intent_text);
             intent.putExtra("wasteInfoItems", deep_learning_answer);
+            intent.putExtra("wastebasket", waste_basket);
             intent.putExtra("position", position);
             startActivity(intent);
         }
@@ -199,20 +204,13 @@ public class ResultActivity extends AppCompatActivity {
         Calendar time = Calendar.getInstance();
         String format_time1 = format1.format(time.getTime());
 
-        String file_name = format_time1 + user_id;
+        String file_name = format_time1 + user_id+".jpg";
+        System.out.println("뭐나옴"+file_name);
         files = encodeTobase64(waste_bitmap);
 
         int area_no = 1;
         JSONObject jo_data = new JSONObject();
-        try {
-            jo_data.put("area_no",area_no);
-            jo_data.put("files",files);
-            jo_data.put("file_name",file_name);
-            send_data = jo_data.toString();
-            send_data = "{\"area_no\":1, \"files\": \""+files+"\"}";
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        send_data = "{\"area_no\":1, \"files\": \""+files+"\",\"file_name\":\""+file_name+"\"}";
         http_task http_task = new http_task("select_waste_type");
         http_task.execute();
 
@@ -267,6 +265,7 @@ public class ResultActivity extends AppCompatActivity {
                 }
 
                 res = builder.toString();
+                System.out.println("response : " + res);
                 res = res.replace("&#39;","\"");
                 System.out.println("res : " + res);
                 deep_learning_answer = res;
@@ -279,17 +278,33 @@ public class ResultActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(String result) {
-            JSONArray jsonArray = null;
-            try {
-                jsonArray = new JSONArray(deep_learning_answer);
-                String waste_name = "";
-                waste_name = jsonArray.getJSONObject(0).getString("waste_type_kor_name");
-                System.out.println("waste_name : " + waste_name);
-                waste_textView.setText(waste_name);
-                next_button.setVisibility(View.VISIBLE);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            ///////////////
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // runOnUiThread를 추가하고 그 안에 UI작업을 한다.
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONArray jsonArray = new JSONArray(deep_learning_answer);
+                                String waste_name = "";
+                                waste_name = jsonArray.getJSONObject(0).getString("waste_type_kor_name");
+                                System.out.println("waste_name : " + waste_name);
+                                waste_textView.setText(waste_name);
+                                next_button.setVisibility(View.VISIBLE);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }).start();
+
+            ////////////////////////
+
+
+            ///////////////////
             }
     }
 }

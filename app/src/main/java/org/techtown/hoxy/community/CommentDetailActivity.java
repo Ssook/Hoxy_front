@@ -105,7 +105,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         initLayoutPostWriteActivity();//init
         findView();//View들과 연결
         Intent intent = getIntent();
-
+        adapter = new CommentAdapter();
         //postListActivity로부터 선택된 게시판의 post-no을 받아 서버에서 추가 적인 정보들을 가져옴
         post_List_post_no = getIntent().getIntExtra("post_no", 0);
         JSONObject jsonObject = new JSONObject();
@@ -118,6 +118,8 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         //System.out.println(post_List_post_no);
        // item = (PostItem) getIntent().getSerializableExtra("item");
 
+        /*서버에서 게시글의 디테일을 가져옴
+        * */
         //Toast.makeText(getApplicationContext(),"들어와쏭",Toast.LENGTH_LONG).show();
         NetworkTask networkTask = new NetworkTask(this, jsonObject.toString());
         //System.out.println("network_task1");
@@ -128,8 +130,12 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
 
         ///////listview
         listView = (ListView) findViewById(R.id.detailCommentList);
+        //CommentList서버에서 받아오기
         Network_comment_select_task comment_select_task = new Network_comment_select_task("select_board_review");
         comment_select_task.execute();
+        /*
+        텍스트 입력 후 버튼 선택시 서버에 댓글을 보냄
+        * */
         writeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,11 +232,15 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         System.out.println("request_post_Data");
         int TIMEOUT_VALUE = 1000;
         String result = "";
+        String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/" + "select_board" + "/";
         try {
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
+/*<<<<<<< HEAD
             String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/select_board/";
+=======
+>>>>>>> 53b08a86994f46963143d548be318abb1a358ed6*/
             URL url = new URL(str_URL);
             System.out.println("URL_connect");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
@@ -324,6 +334,10 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             this.commentItems = commentItems;
         }
 
+        public CommentAdapter() {
+
+        }
+
 
         @Override
         public int getCount() {
@@ -361,7 +375,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             view.setImage(item.getResId());
             view.setComment(item.getComment());
             //view.setTime(item.getTime());
-
+            view.setReg_date(item.getReg_date());
             return view;
         }
     }
@@ -520,7 +534,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
                 String data = "data=" + "{\"board_review_board_no\":"+ post_List_post_no + "}";
-                //System.out.println("data = "+data);
+                System.out.println(data);
                 buffer.append(data);
 
                 OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
@@ -570,12 +584,12 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                       /*  arrayReviewNo.add(jo_data.getInt("board_review_no"));
                         arrayReviewContent.add( jo_data.getString("board_review_ctnt"));
                         arrayReviewUser.add(jo_data.getString("board_review_user_name"));
-                        //int area_no = jo_data.getInt("board_waste_area_no"));
+
                         arrayReviewDate.add(jo_data.getString("board_review_reg_date"));*/
                         int review_no = jo_data.getInt("board_review_no");
                         String review_ctnt =jo_data.getString("board_review_ctnt");
-                        String review_user_name = jo_data.getString("board_user_name");
-                        int area_no = jo_data.getInt("board_waste_area_no");
+                        String review_user_name = jo_data.getString("board_review_user_name");
+                        //int area_no = jo_data.getInt("board_waste_area_no");
                         String review_reg_date = jo_data.getString("board_review_reg_date");
 
                         adapter.addItem(new CommentItem(R.drawable.user1, review_ctnt, review_user_name , review_no,review_reg_date));
