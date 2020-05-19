@@ -90,7 +90,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         //----------------------------
         Intent intent = getIntent();
         System.out.println("allViewIntent");
-        try {
+        /*try {
             if(!(intent.getExtras().isEmpty()))
             {
                // tag=intent.getExtras().getString("태그");
@@ -98,7 +98,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         } catch (NullPointerException e) {
             //tag="전체";
             e.printStackTrace();
-        }
+        }*/
         //adapter = new PostAdapter();
         //adapter.addItem(new PostItem(R.drawable.user1,"앙기모","kss1218",1,"dndnd"));
         //listView.setAdapter(adapter);
@@ -354,7 +354,6 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
                 System.out.println("str_URL : " + str_URL);
                 URL url = new URL(str_URL);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                System.out.println("conn HttpURLConnectoin err");
                 //--------------------------
                 //   전송 모드 설정 - 기본적인 설정이다
                 //--------------------------
@@ -371,7 +370,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
                 String data = "data=" + "";
-                System.out.println("data = "+data);
+                //System.out.println("data = "+data);
                 buffer.append(data);
 
                 OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");

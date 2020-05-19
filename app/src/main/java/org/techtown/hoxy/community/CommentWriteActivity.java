@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
+import org.techtown.hoxy.RequestHttpURLConnection;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -230,26 +231,10 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         //JSONObject에 서버로 보낼 게시글 정보를 담음
         JSONObject board_data = new JSONObject();
         try {
-            board_data.put("board_reg_user_no", user_id);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            board_data.put("board_user_no", user_id);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
             board_data.put("board_title", title);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
             board_data.put("board_ctnt", contents);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }try {
-            board_data.put("board_area_no", "1");
+            board_data.put("board_reg_user_no", user_id);
+            board_data.put("board_area_no", 1);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -311,10 +296,11 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
+            String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/insert_board/";
 
-            URL url = new URL("http://172.16.5.240/insert_board/");
+            URL url = new URL(str_URL);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
-            Log.d("eee", values);
+            //Log.d("eee", values);
 
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
@@ -329,7 +315,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             //   서버로 값 전송
             //--------------------------
             StringBuffer buffer = new StringBuffer();
-            String regdata = "board_param=" + values;
+            String regdata = "data=" + values;
             Log.d("board_data", regdata);
             System.out.println("regdata : "+ regdata);
             buffer.append(regdata);                 // php 변수에 값 대입

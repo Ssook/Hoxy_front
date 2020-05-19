@@ -9,15 +9,17 @@ public class CommentItem implements Serializable {
     private int resId;
     private String comment;
     private String userId;
-    private int commentNum;
+    private int comment_no;
+    private String reg_date;
     //String time;
 
 
-    public CommentItem(int resId, String comment,String userId,int commentNum) {
+    public CommentItem(int resId, String comment, String userId, int comment_no, String reg_date) {
         this.resId = resId;
         this.comment = comment;
         this.userId=userId;
-        this.commentNum=commentNum;
+        this.comment_no=comment_no;
+        this.reg_date = reg_date;
        // this.time=time;
     }
 
@@ -45,12 +47,20 @@ public class CommentItem implements Serializable {
         this.userId = userId;
     }
 
-    public int getCommentNum() {
-        return commentNum;
+    public int getComment_no() {
+        return comment_no;
     }
 
-    public void setCommentNum(int commentNum) {
-        this.commentNum = commentNum;
+    public void setComment_no(int comment_no) {
+        this.comment_no = comment_no;
+    }
+
+    public String getReg_date() {
+        return reg_date;
+    }
+
+    public void setReg_date(String reg_date) {
+        this.reg_date = reg_date;
     }
 
     public JSONObject CommentToJSON(){
@@ -59,7 +69,8 @@ public class CommentItem implements Serializable {
             jsonobj.put("id",this.getUserId());
             jsonobj.put("comment",this.getComment());
             jsonobj.put("resId",this.getResId());
-            jsonobj.put("postNum",this.getCommentNum());
+            jsonobj.put("postNum",this.getComment_no());
+            jsonobj.put("teg_date",this.getReg_date());
         } catch (JSONException e) {
             e.printStackTrace();
         }
