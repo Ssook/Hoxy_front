@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
+import org.techtown.hoxy.RequestHttpURLConnection;
+import org.techtown.hoxy.login.LoginActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,7 +55,8 @@ public class WasteApplyActivity extends AppCompatActivity {
     private ListView listView_applied_waste;
     private Button button_cancle, button_next;
     private String receiveMsg;
-    private WebView mWebView;
+    private WebView mWebView; // 웹뷰 선언
+    private WebSettings mWebSettings; //웹뷰세팅
     EditText editText;
 
     private String user_name, phone_num, address, address_detail, date;
@@ -104,8 +108,8 @@ public class WasteApplyActivity extends AppCompatActivity {
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                payThread t1 = new payThread();
-                t1.start();
+                Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
+                startActivity(intent);
 
 //                user_name = editText_user_name.getText().toString();
 //                phone_num = editText_phone_num.getText().toString();
@@ -152,10 +156,6 @@ public class WasteApplyActivity extends AppCompatActivity {
         });//setOnClickListener
 
 
-
-
-
-
     }
 
 
@@ -182,7 +182,7 @@ public class WasteApplyActivity extends AppCompatActivity {
     public class payThread extends Thread {
         @Override
         public void run() {
-            try {
+//            try {
 //            OkHttpClient client = new OkHttpClient();
 //            Request request = new Request.Builder()
 //                    .addHeader("x-api-key", RestTestCommon.API_KEY)
@@ -190,72 +190,73 @@ public class WasteApplyActivity extends AppCompatActivity {
 //                    .post(RequestBody.create(MediaType.parse("application/json"), jsonMessage)) //POST로 전달할 내용 설정
 //                    .build();
 
-                //
-                OkHttpClient client = new OkHttpClient().newBuilder()
-                        .build();
-                MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded,application/x-www-form-urlencoded");
-                RequestBody body = RequestBody.create(mediaType, "cid=TC0ONETIME&partner_order_id=1001&partner_user_id=gorany&item_name=test&quantity=1&total_amount=22230&tax_free_amount=0&approval_url=http://172.16.46.22:8000/test/&cancel_url=http://172.16.46.22:8000/test/&fail_url=http://172.16.46.22:8000/test/");
+            //
+//                String url= "http://"+RequestHttpURLConnection.server_ip+":"+RequestHttpURLConnection.server_port+"/KakaoPay/";
+//                OkHttpClient client = new OkHttpClient().newBuilder()
+//                        .build();
+//                MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded,application/x-www-form-urlencoded");
+//                RequestBody body = RequestBody.create(mediaType, "cid=TC0ONETIME&partner_order_id=1001&partner_user_id=gorany&item_name=test&quantity=1&total_amount=22230&tax_free_amount=0&approval_url=http://localhost:8000&cancel_url=http://localhost:8000&fail_url=http://localhost:8000");
+//                Request request = new Request.Builder()
+//                        .url(url)
+//                        .method("POST", body)
+//                        .addHeader("Authorization", "KakaoAK 07bd56b63267b53895005b8792088d79")
+//                        .addHeader("Content-Type", "application/x-www-form-urlencoded")
+//                        .build();
+//                ///
+//                System.out.println("err1");
+//                //동기 처리시 execute함수 사용
+//                Response response = client.newCall(request).execute();
+//                //출력
+//                String message = response.body().toString();
+//                System.out.println("ssook"+message);
+//                //JSONObject jo1 = new JSONObject(message);
+//                System.out.println("err2");
+//                //System.out.println(jo1.getString("android_app_scheme") + "111ssook");
+//                System.out.println(message + "ssook");
+//                Intent intent = new Intent();
+//                intent.setAction(Intent.ACTION_VIEW);
+//                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+//                intent.addCategory(Intent.CATEGORY_DEFAULT);
+//                //intent.setData(Uri.parse(jo1.getString("android_app_scheme")));
+//                startActivity(intent);
+//            } catch (Exception e) {
+//                System.out.println(e+"여기서에러");
+        }
+    }
 
-                Request request = new Request.Builder()
-                        .url("https://kapi.kakao.com/v1/payment/ready")
-                        .method("POST", body)
-                        .addHeader("Authorization", "KakaoAK 07bd56b63267b53895005b8792088d79")
-                        .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                        .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                        .build();
-                ///
-                //동기 처리시 execute함수 사용
-                Response response = client.newCall(request).execute();
-                //출력
-                String message = response.body().string();
-                JSONObject jo1 = new JSONObject(message);
-                System.out.println(jo1.getString("android_app_scheme") + "111ssook");
-                System.out.println(message + "ssook");
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.setData(Uri.parse(jo1.getString("android_app_scheme")));
-                startActivity(intent);
-            } catch (Exception e) {
-                System.err.println(e.toString());
+    public void check_validate() {
+        user_name = editText_user_name.getText().toString();
+        phone_num = editText_phone_num.getText().toString();
+        address = editText_address.getText().toString();
+        address_detail = editText_address_detail.getText().toString();
+        date = editText_date.getText().toString();
+
+        if (user_name.equals("") || phone_num.equals("") || address.equals("") || address_detail.equals("") || date.equals("")) {
+            if (user_name.equals("")) {
+                editText_user_name.requestFocus();
+                toastMessage("이름을 작성해주세요.");
+            } else if (phone_num.equals("")) {
+                editText_phone_num.requestFocus();
+                toastMessage("휴대폰 번호를 작성해주세요.");
+            } else if (address.equals("")) {
+                editText_address.requestFocus();
+                toastMessage("배출 주소를 작성해주세요.");
+            } else if (address_detail.equals("")) {
+                editText_address_detail.requestFocus();
+                toastMessage("상세 주소를 작성해주세요.");
+            } else {
+                editText_date.requestFocus();
+                toastMessage("배출 날짜를 작성해주세요.");
             }
+        } //입력이 하나라도 비었을때
+        else {
+            System.out.println(user_name);
+            finish();
+            Intent intent = new Intent(WasteApplyActivity.this, MainActivity.class);
+            startActivity(intent);
         }
 
-        public void check_validate() {
-            user_name = editText_user_name.getText().toString();
-            phone_num = editText_phone_num.getText().toString();
-            address = editText_address.getText().toString();
-            address_detail = editText_address_detail.getText().toString();
-            date = editText_date.getText().toString();
 
-            if (user_name.equals("") || phone_num.equals("") || address.equals("") || address_detail.equals("") || date.equals("")) {
-                if (user_name.equals("")) {
-                    editText_user_name.requestFocus();
-                    toastMessage("이름을 작성해주세요.");
-                } else if (phone_num.equals("")) {
-                    editText_phone_num.requestFocus();
-                    toastMessage("휴대폰 번호를 작성해주세요.");
-                } else if (address.equals("")) {
-                    editText_address.requestFocus();
-                    toastMessage("배출 주소를 작성해주세요.");
-                } else if (address_detail.equals("")) {
-                    editText_address_detail.requestFocus();
-                    toastMessage("상세 주소를 작성해주세요.");
-                } else {
-                    editText_date.requestFocus();
-                    toastMessage("배출 날짜를 작성해주세요.");
-                }
-            } //입력이 하나라도 비었을때
-            else {
-                System.out.println(user_name);
-                finish();
-                Intent intent = new Intent(WasteApplyActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-
-
-        }
     }
 
     // }//onCreate
@@ -290,5 +291,6 @@ public class WasteApplyActivity extends AppCompatActivity {
 
         listView.requestLayout();
     }
+
 
 }
