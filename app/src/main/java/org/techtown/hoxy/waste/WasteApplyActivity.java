@@ -19,12 +19,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.techtown.hoxy.CodeActivity;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
@@ -52,6 +54,7 @@ public class WasteApplyActivity extends AppCompatActivity {
 
     private ApplyInfo applyInfo;
     private EditText editText_user_name, editText_phone_num, editText_address, editText_address_detail, editText_date;
+    private TextView textView_count, textView_all_fee;
     private ListView listView_applied_waste;
     private Button button_cancle, button_next;
     private String receiveMsg;
@@ -80,6 +83,8 @@ public class WasteApplyActivity extends AppCompatActivity {
         button_cancle = findViewById(R.id.button_cancle);
         button_next = findViewById(R.id.button_next);
         listView_applied_waste = findViewById(R.id.waste_list_view);
+        textView_count = findViewById(R.id.tv_count);
+        textView_all_fee = findViewById(R.id.tv_fee);
 
         //
 
@@ -92,7 +97,7 @@ public class WasteApplyActivity extends AppCompatActivity {
         System.out.println(position);
 
 
-        for (int i = 0; i <= position; i++) {
+       /* for (int i = 0; i <= position; i++) {
 
             LIST_MENU.add(waste_basket.get(i).getWaste_size());
             System.out.println(waste_basket.get(i).getWaste_size());
@@ -102,8 +107,24 @@ public class WasteApplyActivity extends AppCompatActivity {
 
         ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, LIST_MENU);
         listView_applied_waste.setAdapter(adapter);
-        //
-        setListViewHeightBasedOnChildren(listView_applied_waste);
+        //*/
+
+       //리스트 뷰 만들기
+       WasteListAdapter adapter;
+
+       adapter = new WasteListAdapter(waste_basket);
+
+       listView_applied_waste.setAdapter(adapter);
+       int num = 0;
+
+       for(int i = 0 ; i<waste_basket.size(); i++)
+       {
+           num += waste_basket.get(i).getWaste_fee();
+       }
+       textView_all_fee.setText(String.valueOf(num));
+       textView_count. setText(String.valueOf(waste_basket.size()));
+
+       setListViewHeightBasedOnChildren(listView_applied_waste);
         //// 신청 버튼 클릭시
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,7 +177,9 @@ public class WasteApplyActivity extends AppCompatActivity {
         });//setOnClickListener
 
 
+
     }
+
 
 
 /*    class WebClient extends WebViewClient {
@@ -189,6 +212,7 @@ public class WasteApplyActivity extends AppCompatActivity {
 //                    .url(requestURL)
 //                    .post(RequestBody.create(MediaType.parse("application/json"), jsonMessage)) //POST로 전달할 내용 설정
 //                    .build();
+
 
             //
 //                String url= "http://"+RequestHttpURLConnection.server_ip+":"+RequestHttpURLConnection.server_port+"/KakaoPay/";
@@ -257,9 +281,11 @@ public class WasteApplyActivity extends AppCompatActivity {
         }
 
 
+
     }
 
-    // }//onCreate
+
+// }//onCreate
 
     private void toastMessage(String string) {
         Toast myToast = Toast.makeText(this.getApplicationContext(), string, Toast.LENGTH_SHORT);
@@ -293,4 +319,6 @@ public class WasteApplyActivity extends AppCompatActivity {
     }
 
 
+
 }
+
