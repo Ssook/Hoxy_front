@@ -2,7 +2,9 @@ package org.techtown.hoxy.waste;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -68,6 +70,7 @@ public class WasteApplyActivity extends AppCompatActivity {
     private ArrayList<WasteInfoItem> waste_basket;
     private WasteInfoItem wasteInfoItem;
     private int position;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,29 +112,32 @@ public class WasteApplyActivity extends AppCompatActivity {
         listView_applied_waste.setAdapter(adapter);
         //*/
 
-       //리스트 뷰 만들기
-       WasteListAdapter adapter;
+        //리스트 뷰 만들기
+        WasteListAdapter adapter;
 
-       adapter = new WasteListAdapter(waste_basket);
+        adapter = new WasteListAdapter(waste_basket);
 
-       listView_applied_waste.setAdapter(adapter);
-       total_fee = 0;
+        listView_applied_waste.setAdapter(adapter);
+        total_fee = 0;
 
-       for(int i = 0 ; i<waste_basket.size(); i++)
-       {
-           total_fee += waste_basket.get(i).getWaste_fee();
-       }
-       textView_all_fee.setText(String.valueOf(total_fee));
-       textView_count.setText(String.valueOf(waste_basket.size()));
+        for (int i = 0; i < waste_basket.size(); i++) {
+            total_fee += waste_basket.get(i).getWaste_fee();
+        }
+        textView_all_fee.setText(String.valueOf(total_fee));
+        textView_count.setText(String.valueOf(waste_basket.size()));
 
-       setListViewHeightBasedOnChildren(listView_applied_waste);
+        setListViewHeightBasedOnChildren(listView_applied_waste);
         //// 신청 버튼 클릭시
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
-                intent.putExtra("total_fee",total_fee);
-                intent.putExtra("size",waste_basket.size());
+                sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+                System.out.println("rudfhr" + total_fee + waste_basket.size() + waste_basket.get(0).getWaste_name());
+                intent.putExtra("user",sp.getString("token",""));
+                intent.putExtra("total_fee", String.valueOf(total_fee));
+                intent.putExtra("size", String.valueOf(waste_basket.size()));
+                intent.putExtra("name", waste_basket.get(0).getWaste_name());
                 startActivity(intent);
 
 //                user_name = editText_user_name.getText().toString();
@@ -177,7 +183,6 @@ public class WasteApplyActivity extends AppCompatActivity {
                 startActivity(intent);
             }//onClick
         });//setOnClickListener
-
 
 
     }
@@ -283,7 +288,6 @@ public class WasteApplyActivity extends AppCompatActivity {
         }
 
 
-
     }
 
 
@@ -319,7 +323,6 @@ public class WasteApplyActivity extends AppCompatActivity {
 
         listView.requestLayout();
     }
-
 
 
 }

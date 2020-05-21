@@ -15,6 +15,7 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,11 +32,16 @@ import java.net.MalformedURLException;
 
 import java.net.URL;
 
+import static java.lang.Integer.parseInt;
+
 
 public class PaymentActivity extends AppCompatActivity {
     private WebView webView; // 웹뷰 선언
     private String total_fee;
     private String size;
+    private String name;
+    private String user_name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +49,11 @@ public class PaymentActivity extends AppCompatActivity {
         webView = findViewById(R.id.webView);
 
         Intent intent_get = getIntent();
-        total_fee = intent_get.getExtras().getString("intent_text");
-        size =intent_get.getExtras().getString("size");
-        System.out.println(total_fee+size+"testest");
+        user_name=intent_get.getExtras().getString("user");
+        total_fee = intent_get.getExtras().getString("total_fee");
+        size = intent_get.getExtras().getString("size");
+        name = intent_get.getExtras().getString("name");
+        System.out.println(total_fee + size + "testest" + name);
 
         http_task http_task = new http_task("KakaoPay");
         http_task.execute();
@@ -59,6 +67,19 @@ public class PaymentActivity extends AppCompatActivity {
 //            }
 //        });
 
+    }
+
+    public JSONObject apply_info_json(String name, String total_fee, String size,String user_name) throws JSONException {
+        JSONObject jo1 = new JSONObject();
+        if (parseInt(size) >1) {
+            name=name+" 외 "+(parseInt(size)-1);
+        }
+        jo1.put("name", name);
+        jo1.put("total_fee", total_fee);
+        jo1.put("size", size);
+        jo1.put("user_name",user_name);
+
+        return jo1;
     }
 
     public class http_task extends AsyncTask<String, String, String> {
@@ -90,7 +111,7 @@ public class PaymentActivity extends AppCompatActivity {
                 //   서버로 값 전송
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
-                String data = "data=";
+                String data = "data="+apply_info_json(name,total_fee,size,user_name).toString();
                 System.out.println("ssssss" + data);
                 buffer.append(data);
 
