@@ -300,11 +300,6 @@ public class ResultActivity extends AppCompatActivity {
                     });
                 }
             }).start();
-
-            ////////////////////////
-
-
-            ///////////////////
             }
     }
 }

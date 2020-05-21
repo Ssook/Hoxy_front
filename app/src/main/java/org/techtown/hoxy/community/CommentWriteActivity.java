@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,8 @@ import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -46,6 +49,11 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.util.Base64.NO_WRAP;
+import static android.util.Base64.encodeToString;
+
+//import static org.techtown.hoxy.waste.ResultActivity.encodeTobase64;
+
 public class CommentWriteActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
     final String TAG = getClass().getSimpleName();
     final static int TAKE_PICTURE = 1;
@@ -53,13 +61,17 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
     private EditText contentsInput;
     private EditText commentTitle;
     private Intent intent;
-    Button saveButton;
-    DrawerLayout drawer;
-    NavigationView navigationView;
-    ActionBarDrawerToggle toggle;
-    Toolbar toolbar;
-    View nav_header_view;
-    Button cancelButton;
+    private Bitmap waste_bitmap;
+
+    private Button saveButton;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private ActionBarDrawerToggle toggle;
+    private Toolbar toolbar;
+    private View nav_header_view;
+    private Button cancelButton;
+    private String files;
+    private String file_name;
     JSONArray ja_title_data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +80,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
 
         set_inflate();
 
+        call_the_camera();
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +95,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
                 clicked_CancelButton();
             }
         });
-        call_the_camera();
+
     }
     public void initLayoutPostWriteActivity() {           //레이아웃 정의
         setContentView(R.layout.activity_comment_write);
@@ -172,8 +185,9 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
                 switch(v.getId()){
                     case R.id.pictureView:
                         // 카메라 앱을 여는 소스
-                        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(cameraIntent, TAKE_PICTURE);
+                        System.out.println("사진창띄우기 성공");
                         break;
                 }
             }
@@ -194,18 +208,30 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
-        switch (requestCode) {
-            case TAKE_PICTURE:
+        if(requestCode == TAKE_PICTURE){
+            System.out.println("코드확인");
                 if (resultCode == RESULT_OK && intent.hasExtra("data")) {
-                    Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
-                    if (bitmap != null) {
-                        picture.setImageBitmap(bitmap);
-                    }
+                    waste_bitmap = (Bitmap) intent.getExtras().get("data");
 
+                    System.out.println("사진데이터 갖고 오기 성공");
+                    if (waste_bitmap != null) {
+                        picture.setImageBitmap(waste_bitmap);
+                        System.out.println("사진등록완료");
+                    }
                 }
-                break;
         }
+
+        files = encodeTobase64(waste_bitmap);
+
+    }
+    public static String encodeTobase64(Bitmap image)
+    {
+        Bitmap immagex=image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = encodeToString(b, NO_WRAP);
+        return imageEncoded;
     }
     public void set_inflate(){
         contentsInput = (EditText) findViewById(R.id.contentsInput);
@@ -230,6 +256,8 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         Date mDate = new Date(now);
         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String board_reg_date = simpleDate.format(mDate);
+
+        String file_name = board_reg_date + user_id+".jpg";
         System.out.println("review_reg_date = "+ board_reg_date);
         //서버로 보내기
         // URL 설정.
@@ -242,6 +270,8 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             board_data.put("board_reg_user_no", user_id);
             board_data.put("board_area_no", 1);
             board_data.put("board_reg_date",board_reg_date);
+            board_data.put("files",files);
+            board_data.put("file_name",file_name);
         } catch (JSONException e) {
             e.printStackTrace();
         }

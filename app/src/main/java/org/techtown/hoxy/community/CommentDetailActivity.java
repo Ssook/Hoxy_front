@@ -635,12 +635,15 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         // URL 설정.
         //String url = "192.168.1.238:8080/select_board_title";
         //JSONObject에 서버로 보낼 게시글 정보를 담음
+       /* files (이미지 디코딩)
+        file_name (현재시간+아이디 고유값)*/
         JSONObject board_data = new JSONObject();
         try {
             board_data.put("board_review_board_no", post_List_post_no);
             board_data.put("board_review_ctnt", comment);
             board_data.put("board_review_reg_user_id", user_id);
             board_data.put("board_review_reg_date",review_reg_date);
+            //board_data.put("files", 인코딩 값);
         } catch (JSONException e) {
             e.printStackTrace();
         }
