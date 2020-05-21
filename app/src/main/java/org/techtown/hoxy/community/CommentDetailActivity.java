@@ -60,6 +60,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CommentDetailActivity extends Activity implements Serializable, NavigationView.OnNavigationItemSelectedListener {
    // private PostItem item;
@@ -96,7 +97,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
     //ArrayList<Integer> arrayimage = new ArrayList<Integer>();
 
     //PostItem 클래스 타입의 ArrayList
-    ArrayList<CommentItem> postList = new ArrayList<CommentItem>();
+    ArrayList<CommentItem> commentList = new ArrayList<CommentItem>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -341,16 +342,16 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
 
         @Override
         public int getCount() {
-            return items.size();
+            return commentItems.size();
         }
 
         public void addItem(CommentItem item){
-            items.add(item);
+            commentItems.add(item);
 
         }
         @Override
         public Object getItem(int position) {
-            return items.get(position);
+            return commentItems.get(position);
         }
 
         @Override
@@ -370,7 +371,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                 view = (CommentItemView) convertView;
 
             }
-            CommentItem item = items.get(position);
+            CommentItem item = commentItems.get(position);
             view.setUserId(item.getUserId());
             view.setImage(item.getResId());
             view.setComment(item.getComment());
@@ -581,34 +582,34 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                 for (int i = 0; i < ja_res.length(); i++) {
                     try {
                         JSONObject jo_data = ja_res.getJSONObject(i);
-                      /*  arrayReviewNo.add(jo_data.getInt("board_review_no"));
+                        arrayReviewNo.add(jo_data.getInt("board_review_no"));
                         arrayReviewContent.add( jo_data.getString("board_review_ctnt"));
                         arrayReviewUser.add(jo_data.getString("board_review_user_name"));
 
-                        arrayReviewDate.add(jo_data.getString("board_review_reg_date"));*/
-                        int review_no = jo_data.getInt("board_review_no");
+                        arrayReviewDate.add(jo_data.getString("board_review_reg_date"));
+                        /*int review_no = jo_data.getInt("board_review_no");
                         String review_ctnt =jo_data.getString("board_review_ctnt");
                         String review_user_name = jo_data.getString("board_review_user_name");
                         //int area_no = jo_data.getInt("board_waste_area_no");
                         String review_reg_date = jo_data.getString("board_review_reg_date");
 
-                        adapter.addItem(new CommentItem(R.drawable.user1, review_ctnt, review_user_name , review_no,review_reg_date));
+                        adapter.addItem(new CommentItem(R.drawable.user1, review_ctnt, review_user_name , review_no,review_reg_date));*/
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
-           /* System.out.println("arrayReviewContent.Size()"+arrayReviewContent.size());
+            System.out.println("arrayReviewContent.Size()"+arrayReviewContent.size());
             for (int i = 0; i < arrayReviewContent.size(); i++) {
                 CommentItem commentItem = new CommentItem(R.drawable.user1, arrayReviewContent.get(i), arrayReviewUser.get(i), arrayReviewNo.get(i),arrayReviewDate.get(i));
                 //CommentItem(int resId, String comment,String userId,int commentNum, String reg_date)
                 //bind all strings in an array
-                postList.add(commentItem);
-                System.out.println("postList.Size(): "+i+" "+postList.size());
+                commentList.add(commentItem);
+                System.out.println("postList.Size(): "+i+" "+commentList.size());
 
             }
-            adapter = new CommentAdapter(postList);*/
+            adapter = new CommentAdapter(commentList);
             listView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
@@ -625,16 +626,21 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         //adapter.notifyDataSetChanged();
         othersComment.setText(null);
 
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String review_reg_date = simpleDate.format(mDate);
+        System.out.println("review_reg_date = "+ review_reg_date);
         //서버로 보내기
         // URL 설정.
         //String url = "192.168.1.238:8080/select_board_title";
         //JSONObject에 서버로 보낼 게시글 정보를 담음
         JSONObject board_data = new JSONObject();
         try {
-
+            board_data.put("board_review_board_no", post_List_post_no);
             board_data.put("board_review_ctnt", comment);
             board_data.put("board_review_reg_user_id", user_id);
-            board_data.put("board_review_board_no", post_List_post_no);
+            board_data.put("board_review_reg_date",review_reg_date);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -651,6 +657,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         intent.putExtra("contents",contents);*/
         //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         //startActivity(intent);
+
         Toast.makeText(CommentDetailActivity.this, "댓글 등록 성공", Toast.LENGTH_SHORT).show();
     }
     //--------------------------------
@@ -687,6 +694,16 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
+            //Toast.makeText(getApplicationContext(),"댓글갱신",Toast.LENGTH_LONG).show();
+            //adapter.notifyDataSetChanged();
+            /*
+            * 댓글 추가 후 댓글리스트 갱신을 위한 작업
+            * */
+            commentList.clear();
+            adapter = new CommentAdapter(commentList);
+            listView.setAdapter(adapter);
+            Network_comment_select_task comment_select_task = new Network_comment_select_task("select_board_review");
+            comment_select_task.execute();
         }
     }
     public String sendCommentWrite(String values) throws JSONException {
@@ -717,7 +734,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             StringBuffer buffer = new StringBuffer();
             String regdata = "data=" + values;
             //Log.d("board_data", regdata);
-            System.out.println("regdata : "+ regdata);
+            System.out.println("comment_data : "+ regdata);
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
@@ -732,7 +749,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             BufferedReader reader = new BufferedReader(tmp);
             StringBuilder builder = new StringBuilder();
             String str;
-            System.out.println("Builder ; "+builder);
+            System.out.println("comment_Builder ; "+builder);
 
 
             while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
@@ -746,8 +763,5 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         System.out.println(result);
         return result;
     } // HttpPostDat
-    /*public void get_comment(){
 
-
-    }*/
 }

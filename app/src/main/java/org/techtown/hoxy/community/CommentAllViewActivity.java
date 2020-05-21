@@ -91,6 +91,8 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         //----------------------------
         Intent intent = getIntent();
         System.out.println("allViewIntent");
+
+
         /*try {
             if(!(intent.getExtras().isEmpty()))
             {

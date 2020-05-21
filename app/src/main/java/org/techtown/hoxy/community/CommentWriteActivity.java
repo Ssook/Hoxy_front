@@ -43,6 +43,8 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CommentWriteActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
     final String TAG = getClass().getSimpleName();
@@ -224,7 +226,11 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
 
         String contents = contentsInput.getText().toString();
         String title = commentTitle.getText().toString();
-
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String board_reg_date = simpleDate.format(mDate);
+        System.out.println("review_reg_date = "+ board_reg_date);
         //서버로 보내기
         // URL 설정.
         //String url = "192.168.1.238:8080/select_board_title";
@@ -235,6 +241,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             board_data.put("board_ctnt", contents);
             board_data.put("board_reg_user_no", user_id);
             board_data.put("board_area_no", 1);
+            board_data.put("board_reg_date",board_reg_date);
         } catch (JSONException e) {
             e.printStackTrace();
         }
