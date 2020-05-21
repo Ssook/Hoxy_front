@@ -1,9 +1,15 @@
 package org.techtown.hoxy.waste;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,10 +21,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 
@@ -38,6 +46,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -50,20 +59,40 @@ public class WasteApplyActivity extends AppCompatActivity {
 
 
     private ApplyInfo applyInfo;
-    private EditText editText_user_name, editText_phone_num, editText_address, editText_address_detail, editText_date;
-    private TextView textView_count, textView_all_fee;
+    private EditText editText_user_name, editText_phone_num, editText_address, editText_address_detail;
+    private TextView textView_count, textView_all_fee, editText_date, editText_time;;
     private ListView listView_applied_waste;
     private Button button_cancle, button_next;
     private String receiveMsg;
     private WebView mWebView;
     EditText editText;
 
-    private String user_name, phone_num, address, address_detail, date;
+    private String user_name, phone_num, address, address_detail;
     //추가 05 14
     private ArrayList<String> LIST_MENU = new ArrayList<>();
     private ArrayList<WasteInfoItem> waste_basket;
     private WasteInfoItem wasteInfoItem;
     private int position;
+    //추가 05 21
+    private String date;//날짜 받아온 결과
+    private String time;//시간 받아온 결과
+
+    private int inputHour = -1;//사용자가 지정한 시간
+    private int inputYear = -1;//사용자가 지정한 년도
+    private int inputMonth = -1;//사용자가 지정한 월
+    private int inputDay = -1;//사용자가 지정한 일
+
+    Calendar calendar = Calendar.getInstance();
+    private final int year = calendar.get(Calendar.YEAR);//안드로이드 에뮬레이터의 현재 시간
+    private final int month = calendar.get(Calendar.MONTH);
+    private final int day = calendar.get(Calendar.DAY_OF_MONTH);
+    private final int hour = calendar.get(Calendar.HOUR_OF_DAY);//시간을 24시간으로
+    private final int minute = calendar.get(Calendar.MINUTE);
+
+    Calendar minDate = Calendar.getInstance();
+
+    DatePickerDialog.OnDateSetListener setDateListener;
+    TimePickerDialog.OnTimeSetListener setTimeListner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +105,7 @@ public class WasteApplyActivity extends AppCompatActivity {
         editText_user_name = findViewById(R.id.edit_user_name);
         editText_phone_num = findViewById(R.id.edit_phone_num);
         editText_date = findViewById(R.id.edit_date);
+        editText_time = findViewById(R.id.edit_time);
         button_cancle = findViewById(R.id.button_cancle);
         button_next = findViewById(R.id.button_next);
         listView_applied_waste = findViewById(R.id.waste_list_view);
@@ -128,6 +158,9 @@ public class WasteApplyActivity extends AppCompatActivity {
                 payThread t1 = new payThread();
                 t1.start();
 
+                //날짜 선택
+
+
 //                user_name = editText_user_name.getText().toString();
 //                phone_num = editText_phone_num.getText().toString();
 //                address = editText_address.getText().toString();
@@ -163,6 +196,7 @@ public class WasteApplyActivity extends AppCompatActivity {
             } //onClick
         }); // SetOnclickListner
 
+
         button_cancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,6 +224,79 @@ public class WasteApplyActivity extends AppCompatActivity {
 
             }
         });
+
+        editText_date.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        WasteApplyActivity.this, setDateListener, year, month, day);
+                minDate.add(Calendar.DATE, 1); //최소 날짜가 하루 다음
+                datePickerDialog.getDatePicker().setMinDate(minDate.getTime().getTime()); // 최소 날짜 설정
+                datePickerDialog.show();
+            }
+        });
+
+        setDateListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month = month + 1;
+                if (month < 10 && dayOfMonth < 10) //파싱하기 위한 조건과 맞게 변경한 날짜 (ex)2019-11-10
+                    date = year + "-0" + month + "-0" + dayOfMonth;
+                else if (dayOfMonth < 10)
+                    date = year + "-" + month + "-0" + dayOfMonth;
+                else if (month < 10)
+                    date = year + "-0" + month + "-" + dayOfMonth;
+                else
+                    date = year + "-" + month + "-" + dayOfMonth;
+
+                inputYear = year;//사용자가 지정한 년,월,일 삽입
+                inputMonth = month;
+                inputDay = dayOfMonth;
+                editText_date.setText(date);
+
+            }
+        };
+
+        //시간 선택
+        editText_time.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(
+                        WasteApplyActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth
+                        , setTimeListner, hour, minute, false);//true로 하면 24시간 //false로 하면 오전/오후 선택
+                timePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                timePickerDialog.show();
+            }
+        });
+
+        setTimeListner = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                if(hourOfDay <=9) {
+                    hourOfDay = 9;
+                    minute = 0;
+                    toastMessage("9시 이후에 배출 가능합니다.");
+                }
+
+                if (hourOfDay < 10 && minute < 10) //파싱하기 위한 조건과 맞게 변경한 시간 (ex)22:10:00
+                    time = "0" + hourOfDay + ":0" + minute + ":" + "00";
+                 else if (hourOfDay < 10)
+                    time = "0" + hourOfDay + ":" + minute + ":" + "00";
+                 else if (minute < 10)
+                    time = hourOfDay + ":0" + minute + ":" + "00";
+                    else
+                    time = hourOfDay + ":" + minute + ":" + "00";
+
+                editText_time.setText(time);
+                inputHour = hourOfDay;//사용자가 지정한 시간 삽입
+
+            }
+        };
+
+
     }
 /*
 
@@ -340,6 +447,9 @@ public class WasteApplyActivity extends AppCompatActivity {
 
         listView.requestLayout();
     }
+
+
+
 
 
 }

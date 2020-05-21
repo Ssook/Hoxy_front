@@ -186,14 +186,24 @@
                 android:layout_marginBottom="20dp"
                 android:text="폐기물 배출 일시" />
 
-            <EditText
+            <TextView
                 android:id="@+id/edit_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:hint="0000년 00월 00일 00시"
+                android:hint="0000년 00월 00일"
                 android:maxLines="1"
                 android:nextFocusUp="@+id/edit_address_detail"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/edit_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:hint="00시 00분"
+                android:maxLines="1"
+                android:nextFocusUp="@+id/edit_date"
                 android:singleLine="true" />
 
 
