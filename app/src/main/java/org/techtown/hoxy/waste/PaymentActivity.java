@@ -34,12 +34,19 @@ import java.net.URL;
 
 public class PaymentActivity extends AppCompatActivity {
     private WebView webView; // 웹뷰 선언
-
+    private String total_fee;
+    private String size;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
         webView = findViewById(R.id.webView);
+
+        Intent intent_get = getIntent();
+        total_fee = intent_get.getExtras().getString("intent_text");
+        size =intent_get.getExtras().getString("size");
+        System.out.println(total_fee+size+"testest");
+
         http_task http_task = new http_task("KakaoPay");
         http_task.execute();
 

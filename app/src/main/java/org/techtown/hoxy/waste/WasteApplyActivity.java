@@ -61,7 +61,7 @@ public class WasteApplyActivity extends AppCompatActivity {
     private WebView mWebView; // 웹뷰 선언
     private WebSettings mWebSettings; //웹뷰세팅
     EditText editText;
-
+    private int total_fee;
     private String user_name, phone_num, address, address_detail, date;
     //추가 05 14
     private ArrayList<String> LIST_MENU = new ArrayList<>();
@@ -115,14 +115,14 @@ public class WasteApplyActivity extends AppCompatActivity {
        adapter = new WasteListAdapter(waste_basket);
 
        listView_applied_waste.setAdapter(adapter);
-       int num = 0;
+       total_fee = 0;
 
        for(int i = 0 ; i<waste_basket.size(); i++)
        {
-           num += waste_basket.get(i).getWaste_fee();
+           total_fee += waste_basket.get(i).getWaste_fee();
        }
-       textView_all_fee.setText(String.valueOf(num));
-       textView_count. setText(String.valueOf(waste_basket.size()));
+       textView_all_fee.setText(String.valueOf(total_fee));
+       textView_count.setText(String.valueOf(waste_basket.size()));
 
        setListViewHeightBasedOnChildren(listView_applied_waste);
         //// 신청 버튼 클릭시
@@ -130,6 +130,8 @@ public class WasteApplyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
+                intent.putExtra("total_fee",total_fee);
+                intent.putExtra("size",waste_basket.size());
                 startActivity(intent);
 
 //                user_name = editText_user_name.getText().toString();
