@@ -405,7 +405,7 @@ public class WasteApplyActivity extends AppCompatActivity {
 
         listView.requestLayout();
     }
-    
+
 }
 
 
