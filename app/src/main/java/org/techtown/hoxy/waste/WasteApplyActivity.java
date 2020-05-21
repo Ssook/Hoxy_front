@@ -8,18 +8,15 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Build;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -30,29 +27,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.techtown.hoxy.CodeActivity;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 
 public class WasteApplyActivity extends AppCompatActivity {
@@ -60,19 +40,23 @@ public class WasteApplyActivity extends AppCompatActivity {
 
     private ApplyInfo applyInfo;
     private EditText editText_user_name, editText_phone_num, editText_address, editText_address_detail;
-    private TextView textView_count, textView_all_fee, editText_date, editText_time;;
+    private TextView textView_count, textView_all_fee, textView_date, textView_time;;
     private ListView listView_applied_waste;
     private Button button_cancle, button_next;
     private String receiveMsg;
-    private WebView mWebView;
+    private WebView mWebView; // 웹뷰 선언
+    private WebSettings mWebSettings; //웹뷰세팅
     EditText editText;
 
     private String user_name, phone_num, address, address_detail;
+    private int total_fee;
+
     //추가 05 14
     private ArrayList<String> LIST_MENU = new ArrayList<>();
     private ArrayList<WasteInfoItem> waste_basket;
     private WasteInfoItem wasteInfoItem;
     private int position;
+
     //추가 05 21
     private String date;//날짜 받아온 결과
     private String time;//시간 받아온 결과
@@ -94,6 +78,8 @@ public class WasteApplyActivity extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener setDateListener;
     TimePickerDialog.OnTimeSetListener setTimeListner;
 
+    private SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -104,8 +90,8 @@ public class WasteApplyActivity extends AppCompatActivity {
         editText_address_detail = findViewById(R.id.edit_address_detail);
         editText_user_name = findViewById(R.id.edit_user_name);
         editText_phone_num = findViewById(R.id.edit_phone_num);
-        editText_date = findViewById(R.id.edit_date);
-        editText_time = findViewById(R.id.edit_time);
+        textView_date = findViewById(R.id.edit_date);
+        textView_time = findViewById(R.id.edit_time);
         button_cancle = findViewById(R.id.button_cancle);
         button_next = findViewById(R.id.button_next);
         listView_applied_waste = findViewById(R.id.waste_list_view);
@@ -135,28 +121,33 @@ public class WasteApplyActivity extends AppCompatActivity {
         listView_applied_waste.setAdapter(adapter);
         //*/
 
-       //리스트 뷰 만들기
-       WasteListAdapter adapter;
+        //리스트 뷰 만들기
+        WasteListAdapter adapter;
 
-       adapter = new WasteListAdapter(waste_basket);
+        adapter = new WasteListAdapter(waste_basket);
 
-       listView_applied_waste.setAdapter(adapter);
-       int num = 0;
+        listView_applied_waste.setAdapter(adapter);
+        total_fee = 0;
 
-       for(int i = 0 ; i<waste_basket.size(); i++)
-       {
-           num += waste_basket.get(i).getWaste_fee();
-       }
-       textView_all_fee.setText(String.valueOf(num));
-       textView_count. setText(String.valueOf(waste_basket.size()));
+        for (int i = 0; i < waste_basket.size(); i++) {
+            total_fee += waste_basket.get(i).getWaste_fee();
+        }
+        textView_all_fee.setText(String.valueOf(total_fee));
+        textView_count.setText(String.valueOf(waste_basket.size()));
 
-       setListViewHeightBasedOnChildren(listView_applied_waste);
+        setListViewHeightBasedOnChildren(listView_applied_waste);
         //// 신청 버튼 클릭시
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                payThread t1 = new payThread();
-                t1.start();
+                Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
+                sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+                System.out.println("rudfhr" + total_fee + waste_basket.size() + waste_basket.get(0).getWaste_name());
+                intent.putExtra("user",sp.getString("token",""));
+                intent.putExtra("total_fee", String.valueOf(total_fee));
+                intent.putExtra("size", String.valueOf(waste_basket.size()));
+                intent.putExtra("name", waste_basket.get(0).getWaste_name());
+                startActivity(intent);
 
                 //날짜 선택
 
@@ -206,26 +197,7 @@ public class WasteApplyActivity extends AppCompatActivity {
             }//onClick
         });//setOnClickListener
 
-
-        button_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                Intent intent = new Intent(WasteApplyActivity.this, CodeActivity.class);
-                startActivity(intent);
-                //  payThread t1 = new payThread();
-                // t1.start();
-                //Intent intent=new Intent();
-//                intent.setAction(Intent.ACTION_VIEW);
-//                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-//                intent.addCategory(Intent.CATEGORY_DEFAULT);
-//                intent.setData(Uri.parse("https://mockup-pg-web.kakao.com/v1/b49fde0597270442a94aeafee0244e934455c82eccf26582d7570440572ca98a/aInfo"));
-//                startActivity(intent);
-
-            }
-        });
-
-        editText_date.setOnClickListener(new View.OnClickListener() {
+        textView_date.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
@@ -253,13 +225,13 @@ public class WasteApplyActivity extends AppCompatActivity {
                 inputYear = year;//사용자가 지정한 년,월,일 삽입
                 inputMonth = month;
                 inputDay = dayOfMonth;
-                editText_date.setText(date);
+                textView_date.setText(date);
 
             }
         };
 
         //시간 선택
-        editText_time.setOnClickListener(new View.OnClickListener() {
+        textView_time.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
@@ -290,24 +262,12 @@ public class WasteApplyActivity extends AppCompatActivity {
                     else
                     time = hourOfDay + ":" + minute + ":" + "00";
 
-                editText_time.setText(time);
+                textView_time.setText(time);
                 inputHour = hourOfDay;//사용자가 지정한 시간 삽입
 
             }
         };
-
-
     }
-/*
-
-        mWebView = (WebView) findViewById(R.id.webView); //레이아웃에서 웹뷰를 가져온다
-        mWebView.setWebViewClient(new WebClient()); //액티비티 내부에서 웹브라우저가 띄워지도록 설정
-        WebSettings webSettings = mWebView.getSettings(); //getSettings를 사용하면 웹에대헤 다양한 설정을 할 수 있는 WebSettings타입을 가져올 수 있다.
-        webSettings.setJavaScriptEnabled(true); //자바스크립트가 사용가능 하도록 설정
-*/
-
-
-
 
 
 
@@ -334,7 +294,7 @@ public class WasteApplyActivity extends AppCompatActivity {
     public class payThread extends Thread {
         @Override
         public void run() {
-            try {
+//            try {
 //            OkHttpClient client = new OkHttpClient();
 //            Request request = new Request.Builder()
 //                    .addHeader("x-api-key", RestTestCommon.API_KEY)
@@ -342,42 +302,38 @@ public class WasteApplyActivity extends AppCompatActivity {
 //                    .post(RequestBody.create(MediaType.parse("application/json"), jsonMessage)) //POST로 전달할 내용 설정
 //                    .build();
 
-                //
-                OkHttpClient client = new OkHttpClient().newBuilder()
-                        .build();
-                MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded,application/x-www-form-urlencoded");
-                RequestBody body = RequestBody.create(mediaType, "cid=TC0ONETIME&partner_order_id=1001&partner_user_id=gorany&item_name=test&quantity=1&total_amount=1500&tax_free_amount=0&approval_url=http://172.16.46.22:8000/test/&cancel_url=http://172.16.46.22:8000/test/&fail_url=http://172.16.46.22:8000/test/");
 
-                Request request = new Request.Builder()
-                        .url("https://kapi.kakao.com/v1/payment/ready")
-                        .method("POST", body)
-                        .addHeader("Authorization", "KakaoAK 07bd56b63267b53895005b8792088d79")
-                        .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                        .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                        .build();
-
-
-                ///
-                //동기 처리시 execute함수 사용
-                Response response = client.newCall(request).execute();
-
-                //출력
-                String message = response.body().string();
-                JSONObject jo1 = new JSONObject(message);
-                jo1.getString("tms_result");
-                System.out.println(jo1.getString("android_app_scheme") + "111ssook");
-                System.out.println(message + "ssook");
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.setData(Uri.parse(jo1.getString("android_app_scheme")));
-                startActivity(intent);
-
-
-            } catch (Exception e) {
-                System.err.println(e.toString());
-            }
+            //
+//                String url= "http://"+RequestHttpURLConnection.server_ip+":"+RequestHttpURLConnection.server_port+"/KakaoPay/";
+//                OkHttpClient client = new OkHttpClient().newBuilder()
+//                        .build();
+//                MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded,application/x-www-form-urlencoded");
+//                RequestBody body = RequestBody.create(mediaType, "cid=TC0ONETIME&partner_order_id=1001&partner_user_id=gorany&item_name=test&quantity=1&total_amount=22230&tax_free_amount=0&approval_url=http://localhost:8000&cancel_url=http://localhost:8000&fail_url=http://localhost:8000");
+//                Request request = new Request.Builder()
+//                        .url(url)
+//                        .method("POST", body)
+//                        .addHeader("Authorization", "KakaoAK 07bd56b63267b53895005b8792088d79")
+//                        .addHeader("Content-Type", "application/x-www-form-urlencoded")
+//                        .build();
+//                ///
+//                System.out.println("err1");
+//                //동기 처리시 execute함수 사용
+//                Response response = client.newCall(request).execute();
+//                //출력
+//                String message = response.body().toString();
+//                System.out.println("ssook"+message);
+//                //JSONObject jo1 = new JSONObject(message);
+//                System.out.println("err2");
+//                //System.out.println(jo1.getString("android_app_scheme") + "111ssook");
+//                System.out.println(message + "ssook");
+//                Intent intent = new Intent();
+//                intent.setAction(Intent.ACTION_VIEW);
+//                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+//                intent.addCategory(Intent.CATEGORY_DEFAULT);
+//                //intent.setData(Uri.parse(jo1.getString("android_app_scheme")));
+//                startActivity(intent);
+//            } catch (Exception e) {
+//                System.out.println(e+"여기서에러");
         }
     }
 
@@ -386,7 +342,7 @@ public class WasteApplyActivity extends AppCompatActivity {
         phone_num = editText_phone_num.getText().toString();
         address = editText_address.getText().toString();
         address_detail = editText_address_detail.getText().toString();
-        date = editText_date.getText().toString();
+        date = textView_date.getText().toString();
 
         if (user_name.equals("") || phone_num.equals("") || address.equals("") || address_detail.equals("") || date.equals("")) {
             if (user_name.equals("")) {
@@ -402,7 +358,7 @@ public class WasteApplyActivity extends AppCompatActivity {
                 editText_address_detail.requestFocus();
                 toastMessage("상세 주소를 작성해주세요.");
             } else {
-                editText_date.requestFocus();
+                textView_date.requestFocus();
                 toastMessage("배출 날짜를 작성해주세요.");
             }
         } //입력이 하나라도 비었을때
@@ -412,6 +368,8 @@ public class WasteApplyActivity extends AppCompatActivity {
             Intent intent = new Intent(WasteApplyActivity.this, MainActivity.class);
             startActivity(intent);
         }
+
+
     }
 
 
@@ -447,9 +405,7 @@ public class WasteApplyActivity extends AppCompatActivity {
 
         listView.requestLayout();
     }
-
-
-
-
-
+    
 }
+
+
