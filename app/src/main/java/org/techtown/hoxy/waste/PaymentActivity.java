@@ -3,6 +3,7 @@ package org.techtown.hoxy.waste;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.webkit.WebViewClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
 
@@ -41,7 +43,7 @@ public class PaymentActivity extends AppCompatActivity {
     private String size;
     private String name;
     private String user_name;
-
+    public Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +56,7 @@ public class PaymentActivity extends AppCompatActivity {
         size = intent_get.getExtras().getString("size");
         name = intent_get.getExtras().getString("name");
         System.out.println(total_fee + size + "testest" + name);
+        mContext=this.getApplicationContext();
 
         http_task http_task = new http_task("KakaoPay");
         http_task.execute();
@@ -284,7 +287,13 @@ public class PaymentActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else {
+            } else if (url.startsWith("app://")){
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
+                return true;
+            }
+
+            else {
                 view.loadUrl(url);
             }
 
