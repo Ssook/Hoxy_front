@@ -12,14 +12,18 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.techtown.hoxy.CodeActivity;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
@@ -44,13 +48,18 @@ public class PaymentActivity extends AppCompatActivity {
     private String name;
     private String user_name;
     public Context mContext;
+    private ApplyInfo info_apply;
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
         webView = findViewById(R.id.webView);
+        progressBar = findViewById(R.id.progressBar);
 
         Intent intent_get = getIntent();
+        info_apply=(ApplyInfo)intent_get.getSerializableExtra("apply_info");
         user_name=intent_get.getExtras().getString("user");
         total_fee = intent_get.getExtras().getString("total_fee");
         size = intent_get.getExtras().getString("size");
@@ -96,6 +105,20 @@ public class PaymentActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "";
             try {
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // runOnUiThread를 추가하고 그 안에 UI작업을 한다.
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    }
+                }).start();
+
                 String str = "";
                 String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/KakaoPay/";
                 System.out.println("str_URL : " + str_URL);
@@ -190,6 +213,8 @@ public class PaymentActivity extends AppCompatActivity {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+            progressBar.setVisibility(View.VISIBLE);
+
         }
 
         // 리소스를 로드하는 중 여러번 호출
@@ -208,6 +233,7 @@ public class PaymentActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            progressBar.setVisibility(View.GONE);
         }
 
         // 오류가 났을 경우, 오류는 복수할 수 없음
@@ -288,7 +314,13 @@ public class PaymentActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             } else if (url.startsWith("app://")){
-                Intent intent = new Intent(mContext, MainActivity.class);
+                Intent intent = new Intent(mContext, CodeActivity.class);
+
+                String code=url.substring(6,url.length());
+                intent.putExtra("code",code);
+
+
+                System.out.println(code+"은석");
                 startActivity(intent);
                 return true;
             }

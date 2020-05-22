@@ -47,6 +47,7 @@ public class WasteApplyActivity extends AppCompatActivity {
     private WebView mWebView; // 웹뷰 선언
     private WebSettings mWebSettings; //웹뷰세팅
     EditText editText;
+    ApplyInfo info_apply=new ApplyInfo();
 
     private String user_name, phone_num, address, address_detail;
     private int total_fee;
@@ -140,9 +141,12 @@ public class WasteApplyActivity extends AppCompatActivity {
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //여기서 널체크 해줘야댐
+                createApplyInfo();
                 Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
                 sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
                 System.out.println("rudfhr" + total_fee + waste_basket.size() + waste_basket.get(0).getWaste_name());
+                intent.putExtra("apply_info",info_apply);
                 intent.putExtra("user",sp.getString("token",""));
                 intent.putExtra("total_fee", String.valueOf(total_fee));
                 intent.putExtra("size", String.valueOf(waste_basket.size()));
@@ -290,7 +294,15 @@ public class WasteApplyActivity extends AppCompatActivity {
 //            mWebView.goBack();
 //        }
 //    }
+    public void createApplyInfo(){
+        info_apply.setAddress(editText_address.getText()+" "+editText_address_detail.getText());
+        info_apply.setApply_fee(total_fee);
+        info_apply.setApply_date(textView_date.getText().toString());
+        info_apply.setUser_No(sp.getString("token",""));
+        info_apply.setPhone_No(editText_phone_num.getText().toString());
+        info_apply.setUser_name(editText_user_name.getText().toString());
 
+    }
     public class payThread extends Thread {
         @Override
         public void run() {
@@ -405,7 +417,7 @@ public class WasteApplyActivity extends AppCompatActivity {
 
         listView.requestLayout();
     }
-    
+
 }
 
 
