@@ -91,11 +91,8 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
 
         set_inflate();
 
-        intent = getIntent();
-        flag = intent.getIntExtra("flag",0);
-        if( flag == 1 ){
 
-        }
+
 
 
         call_the_camera();
@@ -103,11 +100,15 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                intent = new Intent("this.getIntent()");
+                flag = intent.getIntExtra("flag",0);
                 if(flag == 1 ){
-                    updatePost();
-                    post_no = intent.getIntExtra("post_no",11);
+
+                    post_no = intent.getIntExtra("post_no",0);
+                    System.out.println("post_no in detail"+post_no);
                     //updatePost();
                     System.out.println("업데이트 포스트함수 시작");
+                    updatePost();
                 }
                 else insertPostData();
             }
@@ -449,7 +450,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
     public void updatePost(){
         input_data();
 
-        JSONObject board_data = new JSONObject();
+        /*JSONObject board_data = new JSONObject();
         try {
             board_data.put("board_no", post_no);
             //board_data.put("files", 인코딩 값);
@@ -462,16 +463,33 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             board_data.put("file_name",file_name);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
+        /*board_data = "{\"board_title\":\""+ title + "\"," +
+                "\"board_ctnt\":\""+ contents + "\"," +
+                "\"board_reg_user_no\":\""+ user_id + "\"," +
+                "\"board_area_no\":"+ "1" + "," +
+                "\"board_reg_date\":\""+ board_reg_date + "\"," +
+                "\"files\":\""+ files + "\"," +
+                "\"file_name\":\""+ file_name + "\"}";*/
+        String board_data = "";
+        board_data = "{\"board_title\":\""+ title + "\"," +
+                "\"board_no\":\""+ post_no + "\"," +
+                "\"board_ctnt\":\""+ contents + "\"," +
+                /*"\"board_reg_user_no\":\""+ user_id + "\"," +*/
+                "\"board_area_no\":"+ "1" + "," +
+                //"\"board_reg_date\":\""+ board_reg_date + "\"," +
+                "\"files\":\""+ files + "\"," +
+                "\"file_name\":\""+ file_name + "\"}";
+        System.out.println("update_board_data : " + board_data);
 
         network_update_post_task update_post_task = new network_update_post_task(board_data.toString());
         update_post_task.execute();
 
         Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
         //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
-
+        finish();
     }
     public class network_update_post_task extends AsyncTask<Void, Void, String> {
         String values;
