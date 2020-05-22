@@ -1,18 +1,43 @@
 package org.techtown.hoxy.waste;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
+import com.kakao.util.helper.log.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,25 +45,42 @@ import org.json.JSONObject;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.TrashName;
+import org.techtown.hoxy.community.CommentAllViewActivity;
+import org.techtown.hoxy.login.LoginActivity;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
-public class WasteInfoActivity extends AppCompatActivity{
+public class WasteInfoActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private String wasteName = TrashName.getTrash();
     String select_name, select_size, select_fee;
     int select_no;
     ArrayList<String> spinnerArray = new ArrayList<String>();
     private Button next_button, cancle_button, again_button;
     private TextView waste_code_textView, waste_fee_textView;
-  //  private String waste_code, waste_fee;
+    //  private String waste_code, waste_fee;
     private Spinner waste_size_spinner;
     private String intent_text;
     //추가
     private JSONArray wasteInfoItems;
     private int position;
     private ArrayList<Integer> waste_type_no = new ArrayList<>();
-    private ArrayList<String> waste_name = new ArrayList<>(), waste_fee = new ArrayList<>(), waste_size= new ArrayList<>();
+    private ArrayList<String> waste_name = new ArrayList<>(), waste_fee = new ArrayList<>(), waste_size = new ArrayList<>();
 
     private ArrayList<WasteInfoItem> waste_basket;
+    //추가
+
+    private AppBarConfiguration mAppBarConfiguration;
+    private NavigationView navigationView;
+    private SharedPreferences sp;
+    private View nav_header_view;
+    private TextView nav_header_id_text;
+    private ImageView profile;
+    private DrawerLayout drawer;
+    ActionBarDrawerToggle toggle;
 
 
     @Override
@@ -46,13 +88,39 @@ public class WasteInfoActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wasteinfo);
 
-        waste_size_spinner = (Spinner)findViewById(R.id.spinner);
-        waste_code_textView =findViewById(R.id.textView2);
+        waste_size_spinner = (Spinner) findViewById(R.id.spinner);
+        waste_code_textView = findViewById(R.id.textView2);
         waste_fee_textView = findViewById(R.id.textView4);
         cancle_button = findViewById(R.id.button3);
         again_button = findViewById(R.id.button6);
         next_button = findViewById(R.id.button5);
 
+        Toolbar toolbar = findViewById(R.id.toolbar4);
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        setSupportActionBar(toolbar);
+        setView_NavHeader();
+        setView_Profile();
+
+
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+// Passing each menu ID as a set of Ids because each
+// menu should be considered as top level destinations.
+
+        setView_Drawer(toolbar);
+
+
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
+                .setDrawerLayout(drawer)
+                .build();
+//NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+//NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+//NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+//
 
 
         //전 화면에서 받아오기
@@ -69,8 +137,7 @@ public class WasteInfoActivity extends AppCompatActivity{
         //System.out.println(wasteInfoItem.getWaste_name());
         System.out.println(position);
 
-        for(int i = 0 ; i < wasteInfoItems.length();i++)
-        {
+        for (int i = 0; i < wasteInfoItems.length(); i++) {
             try {
                 JSONObject jo_data = wasteInfoItems.getJSONObject(i);
                 waste_name.add(jo_data.getString("waste_type_kor_name"));
@@ -86,7 +153,7 @@ public class WasteInfoActivity extends AppCompatActivity{
 
 
         //스피너 아이템 추가
-       // spinnerArray.add(wasteInfoItem.getWaste_size());
+        // spinnerArray.add(wasteInfoItem.getWaste_size());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, waste_size);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -111,7 +178,7 @@ public class WasteInfoActivity extends AppCompatActivity{
 
 
         //// 취소
-        cancle_button.setOnClickListener(new View.OnClickListener(){
+        cancle_button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -122,65 +189,203 @@ public class WasteInfoActivity extends AppCompatActivity{
             }
         });
         //// 다음
-        next_button.setOnClickListener(new View.OnClickListener(){
+        next_button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 finish();
                 Intent intent = new Intent(WasteInfoActivity.this, WasteApplyActivity.class);
                 intent.putExtra("position", position);
-                addBasket(select_name,select_fee,select_size,select_no);
+                addBasket(select_name, select_fee, select_size, select_no);
                 intent.putExtra("wastebasket", waste_basket);
                 startActivity(intent);
             }
         });
 
 
-
     }
+
     //한번 더
-        public void OnClickHandler(View view) {
-                final CharSequence[] items = {"카메라", "갤러리", "취소"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("방법 선택")        // 제목 설정
+    public void OnClickHandler(View view) {
+        final CharSequence[] items = {"카메라", "갤러리", "취소"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("방법 선택")        // 제목 설정
 
-                        .setItems(items, new DialogInterface.OnClickListener(){    // 목록 클릭시 설정
+                .setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
 
-                            public void onClick(DialogInterface dialog, int index){
-                                if(index == 0){
-                                    finish();
-                                    Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
-                                    intent.putExtra("intent_text","camera");
-                                    intent.putExtra("position", ++position);
-                                    intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
-                                    addBasket(select_name,select_fee,select_size,select_no);
-                                    intent.putExtra("wastebasket", waste_basket);
-                                    startActivity(intent);
-                                }
-                                else if(index == 1){
-                                    finish();
-                                    Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
-                                    intent.putExtra("intent_text","image");
-                                    intent.putExtra("position", ++position);
-                                    intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
-                                    addBasket(select_name,select_fee,select_size,select_no);
-                                    intent.putExtra("wastebasket", waste_basket);
-                                    startActivity(intent);
-                                }
-                                else
-                                {
-                                    dialog.cancel();
-                                }
-                            }
-                        });
+                    public void onClick(DialogInterface dialog, int index) {
+                        if (index == 0) {
+                            finish();
+                            Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
+                            intent.putExtra("intent_text", "camera");
+                            intent.putExtra("position", ++position);
+                            intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
+                            addBasket(select_name, select_fee, select_size, select_no);
+                            intent.putExtra("wastebasket", waste_basket);
+                            startActivity(intent);
+                        } else if (index == 1) {
+                            finish();
+                            Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
+                            intent.putExtra("intent_text", "image");
+                            intent.putExtra("position", ++position);
+                            intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
+                            addBasket(select_name, select_fee, select_size, select_no);
+                            intent.putExtra("wastebasket", waste_basket);
+                            startActivity(intent);
+                        } else {
+                            dialog.cancel();
+                        }
+                    }
+                });
 
-                AlertDialog dialog = builder.create();    // 알림창 객체 생성
-                dialog.show();    // 알림창 띄우기
+        AlertDialog dialog = builder.create();    // 알림창 객체 생성
+        dialog.show();    // 알림창 띄우기
     }
 
-    private  void addBasket(String name, String fee, String size, int no){
+    private void addBasket(String name, String fee, String size, int no) {
         WasteInfoItem wasteInfoItem = new WasteInfoItem(name, size, Integer.parseInt(fee), no, "");
         waste_basket.add(wasteInfoItem);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+
+        if (id == R.id.action_settings) {
+            onClickLogout();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void onClickLogout() {
+        UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
+                System.out.println(errorResult + "????");
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
+            }
+
+            @Override
+            public void onSuccess(Long result) {
+                Log.e("session success", "카카오 로그아웃 onSuccess");
+
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+    private void setView_NavHeader() {//은석
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        nav_header_view = navigationView.getHeaderView(0);
+        nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
+        nav_header_id_text.setText(sp.getString("name", ""));
+
+
+    }
+
+    private void setView_Profile() {//은석
+        profile = nav_header_view.findViewById(R.id.profileimage);
+
+        String urlStr;
+        urlStr = sp.getString("image_url", "");
+        new Thread() {
+            public void run() {
+                try {
+                    System.out.println("test!" + sp);
+                    String urlStr = sp.getString("image_url", "");
+                    URL url = new URL(urlStr);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+                    final Bitmap bm = BitmapFactory.decodeStream(bis);
+                    bis.close();
+                    if (bm == null) {
+                    }
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 사용하고자 하는 코드
+                            if (bm != null) {
+                                profile.setImageBitmap(bm);
+                            } else return;
+                        }
+                    }, 0);
+
+
+                } catch (IOException e) {
+                    Logger.e("Androes", " " + e);
+                }
+
+            }
+        }.start();
+
+
+    }
+
+
+    private void setView_Drawer(Toolbar toolbar) {
+        drawer = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+
+        if (id == R.id.nav_home) {
+            // Handle the camera action
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            // intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_community) {
+            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            //intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_slideshow) {
+
+        }
+        drawer = findViewById(R.id.drawer_layout);//??
+        drawer.closeDrawer(GravityCompat.START);
+        return false;
+
     }
 }
 

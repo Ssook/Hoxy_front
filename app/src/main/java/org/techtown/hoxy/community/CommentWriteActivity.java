@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,8 @@ import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -43,21 +46,42 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static android.util.Base64.NO_WRAP;
+import static android.util.Base64.encodeToString;
+
+//import static org.techtown.hoxy.waste.ResultActivity.encodeTobase64;
 
 public class CommentWriteActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
+    private final int REQUEST_WIDTH = 120;
+    private final int REQUEST_HEIGHT = 160;
     final String TAG = getClass().getSimpleName();
     final static int TAKE_PICTURE = 1;
     private ImageView picture;
     private EditText contentsInput;
     private EditText commentTitle;
     private Intent intent;
-    Button saveButton;
-    DrawerLayout drawer;
-    NavigationView navigationView;
-    ActionBarDrawerToggle toggle;
-    Toolbar toolbar;
-    View nav_header_view;
-    Button cancelButton;
+    private Bitmap waste_bitmap;
+
+    private Button saveButton;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private ActionBarDrawerToggle toggle;
+    private Toolbar toolbar;
+    private View nav_header_view;
+    private Button cancelButton;
+    private String files;
+    private String file_name;
+    private int post_no;
+    private String contents;
+    private String title;
+    private String user_id;
+    private String board_reg_date;
+    private int flag;
+    private SharedPreferences sp;
+
     JSONArray ja_title_data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +90,25 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
 
         set_inflate();
 
+        intent = getIntent();
+        flag = intent.getIntExtra("flag",0);
+        if( flag == 1 ){
+
+        }
+
+
+        call_the_camera();
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertPostData();
+                if(flag == 1 ){
+                    updatePost();
+                    post_no = intent.getIntExtra("post_no",11);
+                    //updatePost();
+                    System.out.println("업데이트 포스트함수 시작");
+                }
+                else insertPostData();
             }
         });
 
@@ -80,7 +118,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
                 clicked_CancelButton();
             }
         });
-        call_the_camera();
+
     }
     public void initLayoutPostWriteActivity() {           //레이아웃 정의
         setContentView(R.layout.activity_comment_write);
@@ -170,8 +208,9 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
                 switch(v.getId()){
                     case R.id.pictureView:
                         // 카메라 앱을 여는 소스
-                        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(cameraIntent, TAKE_PICTURE);
+                        System.out.println("사진창띄우기 성공");
                         break;
                 }
             }
@@ -192,18 +231,31 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
-        switch (requestCode) {
-            case TAKE_PICTURE:
+        if(requestCode == TAKE_PICTURE){
+            System.out.println("코드확인");
                 if (resultCode == RESULT_OK && intent.hasExtra("data")) {
-                    Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
-                    if (bitmap != null) {
-                        picture.setImageBitmap(bitmap);
-                    }
+                    waste_bitmap = (Bitmap) intent.getExtras().get("data");
 
+                    System.out.println("사진데이터 갖고 오기 성공");
+                    if (waste_bitmap != null) {
+                        picture.setImageBitmap(waste_bitmap);
+                        System.out.println("사진등록완료");
+                    }
                 }
-                break;
         }
+
+
+        files = encodeTobase64(waste_bitmap);
+
+    }
+    public static String encodeTobase64(Bitmap image)
+    {
+        Bitmap immagex=image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = encodeToString(b, NO_WRAP);
+        return imageEncoded;
     }
     public void set_inflate(){
         contentsInput = (EditText) findViewById(R.id.contentsInput);
@@ -214,17 +266,28 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         cancelButton = (Button) findViewById(R.id.cancelButton);
     }
 
+    public void input_data(){
+        sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        user_id = sp.getString("token","");
+
+        contents = contentsInput.getText().toString();
+        title = commentTitle.getText().toString();
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        board_reg_date = simpleDate.format(mDate);
+
+        file_name = board_reg_date + user_id+".jpg";
+    }
     /*
     입력된 게시글의 정보를 서버에 보냄
     * */
     public void insertPostData(){
         System.out.println("insert");
-        SharedPreferences sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
-        String user_id = sp.getString("token","");
 
-        String contents = contentsInput.getText().toString();
-        String title = commentTitle.getText().toString();
+        input_data();
 
+        System.out.println("review_reg_date = "+ board_reg_date);
         //서버로 보내기
         // URL 설정.
         //String url = "192.168.1.238:8080/select_board_title";
@@ -235,6 +298,9 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             board_data.put("board_ctnt", contents);
             board_data.put("board_reg_user_no", user_id);
             board_data.put("board_area_no", 1);
+            board_data.put("board_reg_date",board_reg_date);
+            board_data.put("files",files);
+            board_data.put("file_name",file_name);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -346,4 +412,118 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         System.out.println(result);
         return result;
     } // HttpPostDat
+
+    public void updatePost(){
+        input_data();
+
+        JSONObject board_data = new JSONObject();
+        try {
+            board_data.put("board_no", post_no);
+            //board_data.put("files", 인코딩 값);
+            board_data.put("board_title", title);
+            board_data.put("board_ctnt", contents);
+            //board_data.put("board_reg_user_no", user_id);
+            board_data.put("board_area_no", 1);
+            //board_data.put("board_reg_date",board_reg_date);
+            board_data.put("files",files);
+            board_data.put("file_name",file_name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        network_update_post_task update_post_task = new network_update_post_task(board_data.toString());
+        update_post_task.execute();
+
+        Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+        //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+
+    }
+    public class network_update_post_task extends AsyncTask<Void, Void, String> {
+        String values;
+
+        network_update_post_task(String values) {
+            this.values = values;
+        }//생성자
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //progress bar를 보여주는 등등의 행위
+        }//실행 이전에 작업되는 것들을 정의하는 함수
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String result = "";
+
+            try {
+                //서버로 게시글 번호를 주고 게시글 댓글 데이타를 받아옴.
+                result = sendUpdateMessage(values);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result; // 결과가 여기에 담깁니다. 아래 onPostExecute()의 파라미터로 전달됩니다.
+        }// 백그라운드 작업 함수
+        //---------------------------------------------
+        /* 서버로 부터 받아온 게시글 댓글로 댓글 UI 작업  */
+        //---------------------------------------------
+        @Override
+        protected void onPostExecute(String result) {
+            // 통신이 완료되면 호출됩니다.
+            // 결과에 따른 UI 수정 등은 여기서 합니다.
+           // finish();
+        }//onPostExecute func()
+    }//NetWorkTask Class
+
+    public String sendUpdateMessage(String values) throws JSONException {
+        String result = "";
+        try {
+            //--------------------------
+            //   URL 설정하고 접속하기
+            //--------------------------
+            String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/update_board/";
+            System.out.println("str_delete_URL : " + str_URL);
+            URL url = new URL(str_URL);
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
+            //--------------------------
+            //   전송 모드 설정 - 기본적인 설정이다
+            //--------------------------
+            http.setDefaultUseCaches(false);
+            http.setDoInput(true);                         // 서버에서 읽기 모드 지정
+            http.setDoOutput(true);                       // 서버로 쓰기 모드 지정
+            http.setRequestMethod("POST");         // 전송 방식은 POST
+
+            // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
+            http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+            //   서버로 값 전송
+            //--------------------------
+            StringBuffer buffer = new StringBuffer();
+            String regdata = "data=" + values;
+            buffer.append(regdata);                // php 변수에 값 대입
+
+            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+            PrintWriter writer = new PrintWriter(outStream);
+            writer.write(buffer.toString());
+            writer.flush();
+            //--------------------------
+            //   서버에서 전송받기
+            //--------------------------
+            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "UTF-8");
+            BufferedReader reader = new BufferedReader(tmp);
+            StringBuilder builder = new StringBuilder();
+            String str;
+            System.out.println("comment_Builder ; "+builder);
+
+            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
+            }
+            result = builder.toString();
+            System.out.println("result in commentWriteActivity : " + result);
+        } catch (MalformedURLException e) {
+        } catch (IOException e) {
+        }
+        System.out.println(result);
+        return result;
+    } // sendDeleteMessage
 }

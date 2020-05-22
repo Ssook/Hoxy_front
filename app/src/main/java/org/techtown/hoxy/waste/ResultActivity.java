@@ -1,7 +1,15 @@
 package org.techtown.hoxy.waste;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -12,17 +20,29 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.navigation.NavigationView;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
+import com.kakao.util.helper.log.Logger;
 
 
 import org.json.JSONArray;
@@ -33,11 +53,15 @@ import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
 import org.techtown.hoxy.TrashName;
+import org.techtown.hoxy.community.CommentAllViewActivity;
 import org.techtown.hoxy.community.PostItem;
+import org.techtown.hoxy.login.LoginActivity;
 import org.techtown.hoxy.waste.WasteInfoActivity;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -50,12 +74,13 @@ import static android.util.Base64.DEFAULT;
 import static android.util.Base64.NO_WRAP;
 import static android.util.Base64.encodeToString;
 
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class ResultActivity extends AppCompatActivity {
+public class ResultActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final static int TAKE_PICTURE = 1;
     private static final int REQUEST_CODE = 0;
 
@@ -78,11 +103,50 @@ public class ResultActivity extends AppCompatActivity {
     //추가
     private ProgressBar progressBar;
 
+    //추가
+    private AppBarConfiguration mAppBarConfiguration;
+    private NavigationView navigationView;
+    private SharedPreferences sp;
+    private View nav_header_view;
+    private TextView nav_header_id_text;
+    private ImageView profile;
+    private DrawerLayout drawer;
+    ActionBarDrawerToggle toggle;
+
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+
+        Toolbar toolbar = findViewById(R.id.toolbar3);
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        setSupportActionBar(toolbar);
+        setView_NavHeader();
+        setView_Profile();
+
+
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+// Passing each menu ID as a set of Ids because each
+// menu should be considered as top level destinations.
+
+        setView_Drawer(toolbar);
+
+
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
+                .setDrawerLayout(drawer)
+                .build();
+//NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+//NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+//NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+//
+
         //인텐트 받아오기
         Intent intent_get = getIntent();
         intent_text = Objects.requireNonNull(intent_get.getExtras()).getString("intent_text");
@@ -94,22 +158,21 @@ public class ResultActivity extends AppCompatActivity {
         waste_textView.setText("이미지 검색중..");
 
 
-
         again_button = findViewById(R.id.button);
         next_button = findViewById(R.id.button2);
         next_button.setVisibility(View.INVISIBLE);
 
         progressBar = findViewById(R.id.progressBar2);
         //갤러리로 이동
-        if(intent_text.equals("image")) {
+        if (intent_text.equals("image")) {
 
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, REQUEST_CODE);
         }
-    //카메라로 이동
-        else if(intent_text.equals("camera")) {
+        //카메라로 이동
+        else if (intent_text.equals("camera")) {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(cameraIntent, TAKE_PICTURE);
         }
@@ -119,42 +182,43 @@ public class ResultActivity extends AppCompatActivity {
 
 
         //// 다시
-        again_button.setOnClickListener(new View.OnClickListener(){
+        again_button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-            finish();
-            Intent intent = new Intent(ResultActivity.this, ResultActivity.class);
-            intent.putExtra("intent_text",intent_text);
-            intent.putExtra("position", position);
-            intent.putExtra("wasteInfoItems", deep_learning_answer);
+                finish();
+                Intent intent = new Intent(ResultActivity.this, ResultActivity.class);
+                intent.putExtra("intent_text", intent_text);
+                intent.putExtra("position", position);
+                intent.putExtra("wasteInfoItems", deep_learning_answer);
 
-            startActivity(intent);
-        }
-    });
+                startActivity(intent);
+            }
+        });
 
-    //// 다음
-        next_button.setOnClickListener(new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            if(waste_basket == null)
-               waste_basket = new ArrayList<WasteInfoItem>();
+        //// 다음
+        next_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (waste_basket == null)
+                    waste_basket = new ArrayList<WasteInfoItem>();
 
-            finish();
-            Intent intent = new Intent(ResultActivity.this, WasteInfoActivity.class);
-            intent.putExtra("intent_text",intent_text);
-            intent.putExtra("wasteInfoItems", deep_learning_answer);
-            intent.putExtra("wastebasket", waste_basket);
-            intent.putExtra("position", position);
-            startActivity(intent);
-        }
-    });
+                finish();
+                Intent intent = new Intent(ResultActivity.this, WasteInfoActivity.class);
+                intent.putExtra("intent_text", intent_text);
+                intent.putExtra("wasteInfoItems", deep_learning_answer);
+                intent.putExtra("wastebasket", waste_basket);
+                intent.putExtra("position", position);
+                startActivity(intent);
+            }
+        });
+        //////////////////
+    }//onCreate
 
-    }
-    public static String encodeTobase64(Bitmap image)
-    {
-        Bitmap immagex=image;
+
+    public static String encodeTobase64(Bitmap image) {
+        Bitmap immagex = image;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] b = baos.toByteArray();
@@ -162,8 +226,7 @@ public class ResultActivity extends AppCompatActivity {
         return imageEncoded;
     }
 
-    public static Bitmap decodeBase64(String input)
-    {
+    public static Bitmap decodeBase64(String input) {
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
 
@@ -173,7 +236,7 @@ public class ResultActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(intent_text.equals("image")) {
+        if (intent_text.equals("image")) {
             // Check which request we're responding to
             if (requestCode == REQUEST_CODE) {
                 // Make sure the request was successful
@@ -192,9 +255,8 @@ public class ResultActivity extends AppCompatActivity {
             }// if requestcode
         }// if image
 
-        else if(intent_text.equals("camera"))
-        {
-            if(requestCode == TAKE_PICTURE)
+        else if (intent_text.equals("camera")) {
+            if (requestCode == TAKE_PICTURE)
                 if (resultCode == RESULT_OK && data.hasExtra("data")) {
                     waste_bitmap = (Bitmap) data.getExtras().get("data");
                     if (waste_bitmap != null) {
@@ -205,33 +267,41 @@ public class ResultActivity extends AppCompatActivity {
 
         }
     }
-    public void image_send(Bitmap waste_bitmap){
-        SharedPreferences sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
-        String user_id = sp.getString("token","");
 
-        SimpleDateFormat format1 = new SimpleDateFormat( "yyyyMMddHHmmss");
+    public void image_send(Bitmap waste_bitmap) {
+        SharedPreferences sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        String user_id = sp.getString("token", "");
+
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
         Calendar time = Calendar.getInstance();
         String format_time1 = format1.format(time.getTime());
 
-        String file_name = format_time1 + user_id+".jpg";
-        System.out.println("뭐나옴"+file_name);
+        String file_name = format_time1 + user_id + ".jpg";
+        System.out.println("뭐나옴" + file_name);
         files = encodeTobase64(waste_bitmap);
 
         int area_no = 1;
         JSONObject jo_data = new JSONObject();
-        send_data = "{\"area_no\":1, \"files\": \""+files+"\",\"file_name\":\""+file_name+"\"}";
+
+        send_data = "{\"area_no\":1, \"file_name\": \""+file_name+"\",\"files\":\""+files+"\"}";
+        System.out.println("send_data : "+send_data);
+        
         http_task http_task = new http_task("select_waste_type");
         http_task.execute();
 
         // 이미지 표시
+
         Glide.with(this).load(waste_bitmap).into(waste_ImageView);
     }
+    //////////////////
 
     public class http_task extends AsyncTask<String, String, String> {
         String sub_url = "";
-        http_task(String sub_url){
+
+        http_task(String sub_url) {
             this.sub_url = sub_url;
         }
+
         @Override
         protected String doInBackground(String... params) {
             String res = "";
@@ -289,7 +359,7 @@ public class ResultActivity extends AppCompatActivity {
 
                 res = builder.toString();
                 System.out.println("response : " + res);
-                res = res.replace("&#39;","\"");
+                res = res.replace("&#39;", "\"");
                 System.out.println("res : " + res);
                 deep_learning_answer = res;
 
@@ -300,6 +370,7 @@ public class ResultActivity extends AppCompatActivity {
             }
             return res;
         }
+
         @Override
         protected void onPostExecute(String result) {
             ///////////////
@@ -325,6 +396,147 @@ public class ResultActivity extends AppCompatActivity {
                     });
                 }
             }).start();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+
+        if (id == R.id.action_settings) {
+            onClickLogout();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void onClickLogout() {
+        UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
+                System.out.println(errorResult + "????");
             }
+
+            @Override
+            public void onNotSignedUp() {
+                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
+            }
+
+            @Override
+            public void onSuccess(Long result) {
+                Log.e("session success", "카카오 로그아웃 onSuccess");
+
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+    private void setView_NavHeader() {//은석
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        nav_header_view = navigationView.getHeaderView(0);
+        nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
+        nav_header_id_text.setText(sp.getString("name", ""));
+
+
+    }
+
+    private void setView_Profile() {//은석
+        profile = nav_header_view.findViewById(R.id.profileimage);
+
+        String urlStr;
+        urlStr = sp.getString("image_url", "");
+        new Thread() {
+            public void run() {
+                try {
+                    System.out.println("test!" + sp);
+                    String urlStr = sp.getString("image_url", "");
+                    URL url = new URL(urlStr);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+                    final Bitmap bm = BitmapFactory.decodeStream(bis);
+                    bis.close();
+                    if (bm == null) {
+                    }
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 사용하고자 하는 코드
+                            if (bm != null) {
+                                profile.setImageBitmap(bm);
+                            } else return;
+                        }
+                    }, 0);
+
+
+                } catch (IOException e) {
+                    Logger.e("Androes", " " + e);
+                }
+
+            }
+        }.start();
+
+
+    }
+
+
+    private void setView_Drawer(Toolbar toolbar) {
+        drawer = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+
+        if (id == R.id.nav_home) {
+            // Handle the camera action
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            // intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_community) {
+            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            //intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_slideshow) {
+
+        }
+        drawer = findViewById(R.id.drawer_layout);//??
+        drawer.closeDrawer(GravityCompat.START);
+        return false;
+
     }
 }
