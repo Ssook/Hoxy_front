@@ -196,7 +196,12 @@ public class ResultActivity extends AppCompatActivity {
 
         }
     }
+
+
     public void image_send(Bitmap waste_bitmap){
+
+        //리사이즈 하기
+
         SharedPreferences sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
         String user_id = sp.getString("token","");
 
@@ -210,7 +215,8 @@ public class ResultActivity extends AppCompatActivity {
 
         int area_no = 1;
         JSONObject jo_data = new JSONObject();
-        send_data = "{\"area_no\":1, \"files\": \""+files+"\",\"file_name\":\""+file_name+"\"}";
+        send_data = "{\"area_no\":1, \"file_name\": \""+file_name+"\",\"files\":\""+files+"\"}";
+        System.out.println("send_data : "+send_data);
         http_task http_task = new http_task("select_waste_type");
         http_task.execute();
 
