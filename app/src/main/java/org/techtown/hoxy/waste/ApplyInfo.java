@@ -3,22 +3,25 @@ package org.techtown.hoxy.waste;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ApplyInfo {
+public class ApplyInfo implements Serializable {
     private String user_No;
     private int apply_fee;
     private String address;
     private String phone_No;
-    private int waste_No;
-    private String img_Url;
+    private int waste_No=0;
+    private String img_Url="";
     private String apply_date;
-
+    private String user_name;
     private WasteInfoItem apply_waste_item;
 
     private ArrayList<WasteInfoItem> apply_waste_list;
+    public ApplyInfo(){
 
-    public ApplyInfo(String user_No, int apply_fee, String address, String phone_No, int waste_No, String img_Url,String apply_date) {
+    }
+    public ApplyInfo(String user_No, int apply_fee, String address, String phone_No, int waste_No, String img_Url,String apply_date,String user_name) {
         this.user_No = user_No;
         this.apply_fee = apply_fee;
         this.address = address;
@@ -26,6 +29,7 @@ public class ApplyInfo {
         this.waste_No = waste_No;
         this.img_Url = img_Url;
         this.apply_date=apply_date;
+        this.user_name= user_name;
     }
 
     public ArrayList<WasteInfoItem> getApply_waste_list() {return apply_waste_list;}
@@ -100,4 +104,11 @@ public class ApplyInfo {
     }
 
 
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
 }
