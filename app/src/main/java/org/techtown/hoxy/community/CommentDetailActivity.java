@@ -895,13 +895,13 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     public void updatePost(){
 
         Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
-        intent.putExtra("flag",1);
+        intent.putExtra("flag","update");
         intent.putExtra("board_no",post_List_post_no);
         //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
         //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         // intent.putExtra("태그","전체");
         startActivity(intent);
-        finish();
+       // finish();
 
 
 

@@ -12,12 +12,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,6 +39,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -68,6 +72,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class CommentAllViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Serializable {
     private PostAdapter adapter;
     private Bundle data;
@@ -76,6 +82,8 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
     private ArrayList<PostItem> items;
     private CommentItemView view;
 
+    private EditText search_text;
+    private Button search_button;
     //postItem의 객체정보 값을 갖는 array들
     ArrayList<String> arrayregDate = new ArrayList<String>();
     ArrayList<String> arrayregUser = new ArrayList<String>();
@@ -133,7 +141,8 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         navigationView.setNavigationItemSelectedListener(this);
 
 //////////////////////////////////////////////////////////////
-
+        search_text=(EditText)findViewById(R.id.search_edit);
+        search_button=(Button) findViewById(R.id.search_bt);
 
         listView = (ListView) findViewById(R.id.listView);
         data = new Bundle();
@@ -160,6 +169,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         http_task http_task = new http_task("select_board_title");
         http_task.execute();
 
+       // search();
         //connect_http();
         set_button_action();
 
@@ -170,7 +180,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        int check;
+
         if (requestCode == 101) {
             if (intent != null) {
 
@@ -290,7 +300,35 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             return view;
         }
     }
+    //public void search
+   /* // 검색을 수행하는 메소드
+    public void search(String charText) {
 
+        // 문자 입력시마다 리스트를 지우고 새로 뿌려준다.
+        Li.clear();
+
+        // 문자 입력이 없을때는 모든 데이터를 보여준다.
+        if (charText.length() == 0) {
+            list.addAll(arraylist);
+        }
+        // 문자 입력을 할때..
+        else
+        {
+            // 리스트의 모든 데이터를 검색한다.
+            for(int i = 0;i < arraylist.size(); i++)
+            {
+                // arraylist의 모든 데이터에 입력받은 단어(charText)가 포함되어 있으면 true를 반환한다.
+                if (arraylist.get(i).toLowerCase().contains(charText))
+                {
+                    // 검색된 데이터를 리스트에 추가한다.
+                    list.add(arraylist.get(i));
+                }
+            }
+        }
+        // 리스트 데이터가 변경되었으므로 아답터를 갱신하여 검색된 데이터를 화면에 보여준다.
+        adapter.notifyDataSetChanged();
+    }
+*/
     public void onCommand(String command,Bundle data){
         /*
          *postList 혹은 fab버튼을 click시 화면 전환을 위한 함수
@@ -300,18 +338,19 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             // 액티비티를 띄우는 경우
             Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.putExtra("flag",0);
+            intent.putExtra("flag","insert");
             startActivity(intent);
+            //finish();
 
         }
         if (command.equals("showDetail")){
             Intent intent = new Intent(getApplicationContext(), CommentDetailActivity.class);
             intent.putExtra("post_no",item.getPost_no());
             //intent.putExtra("")
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             //startActivityForResult(intent, 102);
-
+            //finish();
         }
     }
     /*public void removePost(String command){
