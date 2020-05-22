@@ -54,6 +54,7 @@ import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
 import org.techtown.hoxy.TrashName;
 import org.techtown.hoxy.community.CommentAllViewActivity;
+import org.techtown.hoxy.community.CommentWriteActivity;
 import org.techtown.hoxy.community.PostItem;
 import org.techtown.hoxy.login.LoginActivity;
 import org.techtown.hoxy.waste.WasteInfoActivity;
@@ -278,6 +279,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
 
         String file_name = format_time1 + user_id + ".jpg";
         System.out.println("뭐나옴" + file_name);
+        waste_bitmap = CommentWriteActivity.bitmap_resize(waste_bitmap);
         files = encodeTobase64(waste_bitmap);
 
         int area_no = 1;

@@ -250,7 +250,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         files = encodeTobase64(waste_bitmap);
 
     }
-    public Bitmap bitmap_resize(Bitmap bitmap){
+    public static Bitmap bitmap_resize(Bitmap bitmap){
         int width = 300; // 축소시킬 너비
         int height = 300; // 축소시킬 높이
 
