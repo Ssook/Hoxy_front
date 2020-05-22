@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -73,6 +75,9 @@ public class ResultActivity extends AppCompatActivity {
     private int position = 0;
     private ArrayList<WasteInfoItem> waste_basket;
 
+    //추가
+    private ProgressBar progressBar;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +93,13 @@ public class ResultActivity extends AppCompatActivity {
         waste_textView = findViewById(R.id.textView);
         waste_textView.setText("이미지 검색중..");
 
+
+
         again_button = findViewById(R.id.button);
         next_button = findViewById(R.id.button2);
         next_button.setVisibility(View.INVISIBLE);
+
+        progressBar = findViewById(R.id.progressBar2);
         //갤러리로 이동
         if(intent_text.equals("image")) {
 
@@ -232,7 +241,21 @@ public class ResultActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "";
+
             try {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // runOnUiThread를 추가하고 그 안에 UI작업을 한다.
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    }
+                }).start();
+
                 String str = "";
                 String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/" + sub_url + "/";
                 System.out.println("str_URL : " + str_URL);
@@ -275,6 +298,7 @@ public class ResultActivity extends AppCompatActivity {
                 res = res.replace("&#39;","\"");
                 System.out.println("res : " + res);
                 deep_learning_answer = res;
+
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             } catch (Exception ex) {
@@ -299,6 +323,7 @@ public class ResultActivity extends AppCompatActivity {
                                 System.out.println("waste_name : " + waste_name);
                                 waste_textView.setText(waste_name);
                                 next_button.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.GONE);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -306,11 +331,6 @@ public class ResultActivity extends AppCompatActivity {
                     });
                 }
             }).start();
-
-            ////////////////////////
-
-
-            ///////////////////
             }
     }
 }

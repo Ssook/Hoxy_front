@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -67,7 +69,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
     ArrayList<String> arrayContetnt = new ArrayList<String>();
     //PostItem 클래스 타입의 ArrayList
     ArrayList<PostItem> postList = new ArrayList<PostItem>();
-
+    ArrayList<Bitmap> files = new ArrayList<Bitmap>();
 
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -84,9 +86,26 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
         listView = (ListView) findViewById(R.id.listView);
         data = new Bundle();
+
+        //----------------------------
+        /*      게시글을 전부 가져옴  */
+        //----------------------------
+        Intent intent = getIntent();
+        System.out.println("allViewIntent");
+
+
+        /*try {
+            if(!(intent.getExtras().isEmpty()))
+            {
+               // tag=intent.getExtras().getString("태그");
+            }
+        } catch (NullPointerException e) {
+            //tag="전체";
+            e.printStackTrace();
+        }*/
         //adapter = new PostAdapter();
         //adapter.addItem(new PostItem(R.drawable.user1,"앙기모","kss1218",1,"dndnd"));
-        // listView.setAdapter(adapter);
+        //listView.setAdapter(adapter);
         http_task http_task = new http_task("select_board_title");
         http_task.execute();
 
@@ -138,45 +157,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
         return false;
     }
-    public void set_data(String data){
-        try {
-            String str_res = data;
-            JSONArray ja_res = new JSONArray(str_res);
-            System.out.println("data : " + ja_res);
-            System.out.println("ja_res.length(): " + ja_res.length());
-            System.out.println("ja_res.getJSONObject(0): " + ja_res.getJSONObject(0));
 
-
-
-            if(ja_res != null) {
-                for (int i = 0; i < ja_res.length(); i++) {
-                    try {
-                        JSONObject jo_data = ja_res.getJSONObject(i);
-                        arrayPostNo.add(jo_data.getInt("board_no"));
-                        arraytitle.add( jo_data.getString("board_title"));
-                        arrayregUser.add(jo_data.getString("board_user_name"));
-                        //int area_no = jo_data.getInt("board_waste_area_no"));
-                        arrayregDate.add(jo_data.getString("board_reg_date"));
-
-                        //adapter.addItem(new PostItem(R.drawable.user1, title, user_name, post_no/*, reg_date*/));
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            for (int i = 0; i < arraytitle.size(); i++) {
-                PostItem postItem = new PostItem(R.drawable.user1, arraytitle.get(i), arrayregUser.get(i), arrayPostNo.get(i),arrayregDate.get(i));
-                //bind all strings in an array
-                postList.add(postItem);
-                adapter = new PostAdapter(postList);
-            }
-            listView.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
     public void set_button_action(){
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -213,9 +194,9 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         }
 
         // ArrayList<PostItem>items = new ArrayList<PostItem>();
-        public class ViewHolder{
+        /*public class ViewHolder{
 
-        }
+        }*/
 
         @Override
         public int getCount() {
@@ -267,7 +248,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         if (command.equals("writeComment")) {
             // 액티비티를 띄우는 경우
             Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
-
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
 
         }
@@ -275,6 +256,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             Intent intent = new Intent(getApplicationContext(), CommentDetailActivity.class);
             intent.putExtra("post_no",item.getPost_no());
             //intent.putExtra("")
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivityForResult(intent, 102);
 
         }
@@ -345,12 +327,14 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
                 conn.setRequestMethod("POST");         // 전송 방식은 POST
 
                 // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+                System.out.println("setRequestProperty");
+                //--------------------------
                 //   서버로 값 전송
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
                 String data = "data=" + "";
-
+                //System.out.println("data = "+data);
                 buffer.append(data);
 
                 OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
@@ -384,4 +368,46 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         }
     }
 
+    public void set_data(String data){
+        try {
+            String str_res = data;
+            JSONArray ja_res = new JSONArray(str_res);
+            System.out.println("data : " + ja_res);
+            System.out.println("ja_res.length(): " + ja_res.length());
+            System.out.println("ja_res.getJSONObject(0): " + ja_res.getJSONObject(0));
+
+
+
+            if(ja_res != null) {
+                for (int i = 0; i < ja_res.length(); i++) {
+                    try {
+                        JSONObject jo_data = ja_res.getJSONObject(i);
+                        arrayPostNo.add(jo_data.getInt("board_no"));
+                        arraytitle.add( jo_data.getString("board_title"));
+                        arrayregUser.add(jo_data.getString("board_user_name"));
+                        //int area_no = jo_data.getInt("board_waste_area_no"));
+                        arrayregDate.add(jo_data.getString("board_reg_date"));
+
+                        //adapter.addItem(new PostItem(R.drawable.user1, title, user_name, post_no/*, reg_date*/));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            System.out.println("arraytitle.Size()"+arraytitle.size());
+            for (int i = 0; i < arraytitle.size(); i++) {
+                PostItem postItem = new PostItem(R.drawable.user1, arraytitle.get(i), arrayregUser.get(i), arrayPostNo.get(i),arrayregDate.get(i));
+                //bind all strings in an array
+                postList.add(postItem);
+                System.out.println("postList.Size(): "+i+" "+postList.size());
+
+            }
+            adapter = new PostAdapter(postList);
+            listView.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }

@@ -18,6 +18,7 @@
         <activity android:name=".waste.WasteApplyActivity" />
         <activity android:name=".waste.WasteInfoActivity" />
         <activity android:name=".waste.ResultActivity" />
+        <activity android:name=".waste.PaymentActivity"/>
         <activity android:name=".login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,6 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".CodeActivity" />
         <activity android:name=".community.CommentWriteActivity" />
         <activity android:name=".community.CommentDetailActivity" />
         <activity android:name=".community.CommentAllViewActivity" />
