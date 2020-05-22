@@ -85,6 +85,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     private ImageButton writeButton;
     private Button deleteButton;
     private Button updateButton;
+    private ImageView content_image;
     private JSONArray ja_array;
 
     ArrayList<Integer> arrayReviewNo = new ArrayList<Integer>();
@@ -221,6 +222,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         userId = (TextView) findViewById(R.id.useridView);
         title = (TextView) findViewById(R.id.title);
         content = (TextView) findViewById(R.id.title2);
+        content_image = (ImageView) findViewById(R.id.content_image);
         userImage = (ImageView) findViewById(R.id.userImage);
         backButton = (Button) findViewById(R.id.goToAllViewButton);
         writeButton = (ImageButton) findViewById(R.id.writeButton);
