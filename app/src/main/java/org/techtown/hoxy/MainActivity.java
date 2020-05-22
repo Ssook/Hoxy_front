@@ -107,11 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setView_Profile();
         // setView_Navigationview();
 
-        //
 
-      /*  FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.nav_host_fragment,HomeFragment.newinstance()).commit();*/
-        //
 
         //
 
@@ -298,15 +294,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //
 
-   /* public void replaceFragment(Fragment fragment){//경록
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentManager.popBackStack();
-        fragmentTransaction.replace(R.id.nav_host_fragment,fragment);
-        fragmentTransaction.addToBackStack(null).commit();
-
-    }*/
 
     private void setView_Drawer(Toolbar toolbar) {
         drawer = findViewById(R.id.drawer_layout);

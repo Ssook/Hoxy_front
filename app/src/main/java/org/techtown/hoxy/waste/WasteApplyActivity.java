@@ -1,11 +1,22 @@
 package org.techtown.hoxy.waste;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -13,6 +24,11 @@ import android.os.Build;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -20,6 +36,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,20 +44,33 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 
+import com.google.android.material.navigation.NavigationView;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
+import com.kakao.util.helper.log.Logger;
+
 import org.techtown.hoxy.CodeActivity;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
+import org.techtown.hoxy.community.CommentAllViewActivity;
+import org.techtown.hoxy.login.LoginActivity;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 
-public class WasteApplyActivity extends AppCompatActivity {
+public class WasteApplyActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private ApplyInfo applyInfo;
     private EditText editText_user_name, editText_phone_num, editText_address, editText_address_detail;
-    private TextView textView_count, textView_all_fee, textView_date, textView_time;;
+    private TextView textView_count, textView_all_fee, textView_date, textView_time;
+    ;
     private ListView listView_applied_waste;
     private Button button_cancle, button_next;
     private String receiveMsg;
@@ -78,7 +108,14 @@ public class WasteApplyActivity extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener setDateListener;
     TimePickerDialog.OnTimeSetListener setTimeListner;
 
+    private AppBarConfiguration mAppBarConfiguration;
+    private NavigationView navigationView;
     private SharedPreferences sp;
+    private View nav_header_view;
+    private TextView nav_header_id_text;
+    private ImageView profile;
+    private DrawerLayout drawer;
+    ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +136,33 @@ public class WasteApplyActivity extends AppCompatActivity {
         textView_all_fee = findViewById(R.id.tv_fee);
 
         //
+        Toolbar toolbar = findViewById(R.id.toolbar5);
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        setSupportActionBar(toolbar);
+        setView_NavHeader();
+        setView_Profile();
+
+
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+// Passing each menu ID as a set of Ids because each
+// menu should be considered as top level destinations.
+
+        setView_Drawer(toolbar);
+
+
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
+                .setDrawerLayout(drawer)
+                .build();
+//NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+//NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+//NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+//
+
 
         Intent intent_get = getIntent();
         waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
@@ -107,19 +171,6 @@ public class WasteApplyActivity extends AppCompatActivity {
         System.out.println(waste_basket.size());
         System.out.println(wasteInfoItem.getWaste_name());
         System.out.println(position);
-
-
-       /* for (int i = 0; i <= position; i++) {
-
-            LIST_MENU.add(waste_basket.get(i).getWaste_size());
-            System.out.println(waste_basket.get(i).getWaste_size());
-            System.out.println(i);
-            System.out.println(LIST_MENU.get(i));
-        }
-
-        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, LIST_MENU);
-        listView_applied_waste.setAdapter(adapter);
-        //*/
 
         //리스트 뷰 만들기
         WasteListAdapter adapter;
@@ -143,46 +194,12 @@ public class WasteApplyActivity extends AppCompatActivity {
                 Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
                 sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
                 System.out.println("rudfhr" + total_fee + waste_basket.size() + waste_basket.get(0).getWaste_name());
-                intent.putExtra("user",sp.getString("token",""));
+                intent.putExtra("user", sp.getString("token", ""));
                 intent.putExtra("total_fee", String.valueOf(total_fee));
                 intent.putExtra("size", String.valueOf(waste_basket.size()));
                 intent.putExtra("name", waste_basket.get(0).getWaste_name());
                 startActivity(intent);
 
-                //날짜 선택
-
-
-//                user_name = editText_user_name.getText().toString();
-//                phone_num = editText_phone_num.getText().toString();
-//                address = editText_address.getText().toString();
-//                address_detail = editText_address_detail.getText().toString();
-//                date = editText_date.getText().toString();
-//
-//                if (user_name.equals("") || phone_num.equals("") || address.equals("") || address_detail.equals("") || date.equals("")) {
-//                    if (user_name.equals("")) {
-//                        editText_user_name.requestFocus();
-//                        toastMessage("이름을 작성해주세요.");
-//                    } else if (phone_num.equals("")) {
-//                        editText_phone_num.requestFocus();
-//                        toastMessage("휴대폰 번호를 작성해주세요.");
-//                    } else if (address.equals("")) {
-//                        editText_address.requestFocus();
-//                        toastMessage("배출 주소를 작성해주세요.");
-//                    } else if (address_detail.equals("")) {
-//                        editText_address_detail.requestFocus();
-//                        toastMessage("상세 주소를 작성해주세요.");
-//                    } else {
-//                        editText_date.requestFocus();
-//                        toastMessage("배출 날짜를 작성해주세요.");
-//                    }
-//                } //입력이 하나라도 비었을때
-//                else {
-//                    System.out.println(user_name);
-//                    finish();
-//                    Intent intent = new Intent(WasteApplyActivity.this, MainActivity.class);
-//                    startActivity(intent);
-//                }
-//
 
             } //onClick
         }); // SetOnclickListner
@@ -197,6 +214,7 @@ public class WasteApplyActivity extends AppCompatActivity {
             }//onClick
         });//setOnClickListener
 
+        //날짜 선택
         textView_date.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -247,7 +265,7 @@ public class WasteApplyActivity extends AppCompatActivity {
         setTimeListner = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                if(hourOfDay <=9) {
+                if (hourOfDay <= 9) {
                     hourOfDay = 9;
                     minute = 0;
                     toastMessage("9시 이후에 배출 가능합니다.");
@@ -255,11 +273,11 @@ public class WasteApplyActivity extends AppCompatActivity {
 
                 if (hourOfDay < 10 && minute < 10) //파싱하기 위한 조건과 맞게 변경한 시간 (ex)22:10:00
                     time = "0" + hourOfDay + ":0" + minute + ":" + "00";
-                 else if (hourOfDay < 10)
+                else if (hourOfDay < 10)
                     time = "0" + hourOfDay + ":" + minute + ":" + "00";
-                 else if (minute < 10)
+                else if (minute < 10)
                     time = hourOfDay + ":0" + minute + ":" + "00";
-                    else
+                else
                     time = hourOfDay + ":" + minute + ":" + "00";
 
                 textView_time.setText(time);
@@ -405,6 +423,148 @@ public class WasteApplyActivity extends AppCompatActivity {
 
         listView.requestLayout();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+
+        if (id == R.id.action_settings) {
+            onClickLogout();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void onClickLogout() {
+        UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
+                System.out.println(errorResult + "????");
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
+            }
+
+            @Override
+            public void onSuccess(Long result) {
+                Log.e("session success", "카카오 로그아웃 onSuccess");
+
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+    private void setView_NavHeader() {//은석
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        nav_header_view = navigationView.getHeaderView(0);
+        nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
+        nav_header_id_text.setText(sp.getString("name", ""));
+
+
+    }
+
+    private void setView_Profile() {//은석
+        profile = nav_header_view.findViewById(R.id.profileimage);
+
+        String urlStr;
+        urlStr = sp.getString("image_url", "");
+        new Thread() {
+            public void run() {
+                try {
+                    System.out.println("test!" + sp);
+                    String urlStr = sp.getString("image_url", "");
+                    URL url = new URL(urlStr);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+                    final Bitmap bm = BitmapFactory.decodeStream(bis);
+                    bis.close();
+                    if (bm == null) {
+                    }
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 사용하고자 하는 코드
+                            if (bm != null) {
+                                profile.setImageBitmap(bm);
+                            } else return;
+                        }
+                    }, 0);
+
+
+                } catch (IOException e) {
+                    Logger.e("Androes", " " + e);
+                }
+
+            }
+        }.start();
+
+
+    }
+
+
+    private void setView_Drawer(Toolbar toolbar) {
+        drawer = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+
+        if (id == R.id.nav_home) {
+            // Handle the camera action
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            // intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_community) {
+            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            //intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_slideshow) {
+
+        }
+        drawer = findViewById(R.id.drawer_layout);//??
+        drawer.closeDrawer(GravityCompat.START);
+        return false;
+
+    }
+
 
 }
 
