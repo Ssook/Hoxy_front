@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -245,8 +246,42 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         }
 
 
+        waste_bitmap = bitmap_resize(waste_bitmap);
         files = encodeTobase64(waste_bitmap);
 
+    }
+    public Bitmap bitmap_resize(Bitmap bitmap){
+        int width = 300; // 축소시킬 너비
+        int height = 300; // 축소시킬 높이
+
+        if(bitmap.getWidth() > 1000 || bitmap.getHeight() > 1000) {
+            width = width / 10;
+            height = height / 10;
+        }
+        else return bitmap;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 4;
+        String filePath = null;
+
+        float bmpWidth = bitmap.getWidth();
+        float bmpHeight = bitmap.getHeight();
+
+        if (bmpWidth > width) {
+            // 원하는 너비보다 클 경우의 설정
+            float mWidth = bmpWidth / 100;
+            float scale = width/ mWidth;
+            bmpWidth *= (scale / 100);
+            bmpHeight *= (scale / 100);
+        } else if (bmpHeight > height) {
+            // 원하는 높이보다 클 경우의 설정
+            float mHeight = bmpHeight / 100;
+            float scale = height/ mHeight;
+            bmpWidth *= (scale / 100);
+            bmpHeight *= (scale / 100);
+        }
+
+        Bitmap resizedBmp = Bitmap.createScaledBitmap(bitmap, (int) bmpWidth, (int) bmpHeight, true);
+        return resizedBmp;
     }
     public static String encodeTobase64(Bitmap image)
     {
@@ -274,7 +309,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         title = commentTitle.getText().toString();
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
-        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMddhhmmss");
         board_reg_date = simpleDate.format(mDate);
 
         file_name = board_reg_date + user_id+".jpg";
@@ -292,23 +327,21 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         // URL 설정.
         //String url = "192.168.1.238:8080/select_board_title";
         //JSONObject에 서버로 보낼 게시글 정보를 담음
-        JSONObject board_data = new JSONObject();
-        try {
-            board_data.put("board_title", title);
-            board_data.put("board_ctnt", contents);
-            board_data.put("board_reg_user_no", user_id);
-            board_data.put("board_area_no", 1);
-            board_data.put("board_reg_date",board_reg_date);
-            board_data.put("files",files);
-            board_data.put("file_name",file_name);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        //JSONObject board_data = new JSONObject();
+        String board_data = "";
+        board_data = "{\"board_title\":\""+ title + "\"," +
+                "\"board_ctnt\":\""+ contents + "\"," +
+                "\"board_reg_user_no\":\""+ user_id + "\"," +
+                "\"board_area_no\":"+ "1" + "," +
+                "\"board_reg_date\":\""+ board_reg_date + "\"," +
+                "\"files\":\""+ files + "\"," +
+                "\"file_name\":\""+ file_name + "\"}";
+        System.out.println("board_data : " + board_data);
 
         //--------------------------------
         /* 게시글 정보를 서버에 보냄   Part*/
         //--------------------------------
-        NetworkTask networkTask = new NetworkTask(board_data.toString());
+        NetworkTask networkTask = new NetworkTask(board_data);
         networkTask.execute();
 
         intent = new Intent(getApplicationContext(),CommentAllViewActivity.class);
