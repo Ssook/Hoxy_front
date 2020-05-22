@@ -62,7 +62,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class CommentDetailActivity extends Activity implements Serializable, NavigationView.OnNavigationItemSelectedListener {
+public class CommentDetailActivity extends AppCompatActivity implements Serializable, NavigationView.OnNavigationItemSelectedListener {
    // private PostItem item;
     private int post_List_post_no;
     //private int post_detail_post_no;
@@ -83,6 +83,8 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
     private ListView listView;
     private Button backButton;
     private ImageButton writeButton;
+    private Button deleteButton;
+    private Button updateButton;
     private JSONArray ja_array;
 
     ArrayList<Integer> arrayReviewNo = new ArrayList<Integer>();
@@ -93,9 +95,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
     //ArrayList<String> arraytag = new ArrayList<String>();
     //ArrayList<String> arraytitle = new ArrayList<String>();
     //ArrayList<String> arrayctnt = new ArrayList<String>();
-
     //ArrayList<Integer> arrayimage = new ArrayList<Integer>();
-
     //PostItem 클래스 타입의 ArrayList
     ArrayList<CommentItem> commentList = new ArrayList<CommentItem>();
 
@@ -107,7 +107,10 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         findView();//View들과 연결
         Intent intent = getIntent();
         adapter = new CommentAdapter();
+
+        //select_post_detail
         //postListActivity로부터 선택된 게시판의 post-no을 받아 서버에서 추가 적인 정보들을 가져옴
+        //추후 함수화
         post_List_post_no = getIntent().getIntExtra("post_no", 0);
         JSONObject jsonObject = new JSONObject();
         //JSONObject jsonObject_comment = new JSONObject();
@@ -116,19 +119,12 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //System.out.println(post_List_post_no);
-       // item = (PostItem) getIntent().getSerializableExtra("item");
-
-        /*서버에서 게시글의 디테일을 가져옴
-        * */
-        //Toast.makeText(getApplicationContext(),"들어와쏭",Toast.LENGTH_LONG).show();
         NetworkTask networkTask = new NetworkTask(this, jsonObject.toString());
-        //System.out.println("network_task1");
         networkTask.execute();
-        //System.out.println("network_tast2");
 
-       // get_comment();
-
+        /*
+        * 버튼 함수 만들장button_action
+        *   */
         ///////listview
         listView = (ListView) findViewById(R.id.detailCommentList);
         //CommentList서버에서 받아오기
@@ -143,20 +139,19 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                 insertCommentData();
             }
         });
-
-        //adapter = new CommentAdapter();
-        //listView.setAdapter(adapter);
-
-       /* writeButton.setOnClickListener(new View.OnClickListener() {
+        deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comment = othersComment.getText().toString();
-                adapter.addItem(new CommentItem(R.drawable.user1,comment,"김성수",1));
-                adapter.notifyDataSetChanged();
-                othersComment.setText(null);
-
+                deletePost();
             }
-        });*/
+        });
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updatePost();
+            }
+        });
+
 
 
     }
@@ -174,6 +169,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                 this, drawer, toolbar, R.string.navigation_drawer_open , R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
     }
 
     private void setView_NavHeader() {
@@ -187,10 +183,14 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
     }
 
     private void setView_Toolbar() {
-        toolbar = findViewById(R.id.toolbar);
+       toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Community");
         toolbar.setTitleMargin(5, 0, 5, 0);
+      /* toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar.setTitle("안뇽");
+        setSupportActionBar(toolbar);*/
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -226,6 +226,8 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         writeButton = (ImageButton) findViewById(R.id.writeButton);
         othersComment = (EditText) findViewById(R.id.othersComment);
         post_reg_date = (TextView) findViewById(R.id.reg_date);
+        deleteButton = (Button) findViewById(R.id.delete_button);
+        updateButton = (Button) findViewById(R.id.update_button);
     }
 
     public String request_post_data(String value) throws JSONException {
@@ -238,10 +240,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-/*<<<<<<< HEAD
-            String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/select_board/";
-=======
->>>>>>> 53b08a86994f46963143d548be318abb1a358ed6*/
             URL url = new URL(str_URL);
             System.out.println("URL_connect");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
@@ -253,9 +251,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             http.setDoInput(true);                         // 서버에서 읽기 모드 지정
             http.setDoOutput(true);                       // 서버로 쓰기 모드 지정
 
-            //http.setConnectTimeout();
             http.setConnectTimeout(TIMEOUT_VALUE);
-
             http.setRequestMethod("POST");         // 전송 방식은 POST
 
             // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
@@ -275,7 +271,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             System.out.println("PrintWriter");
             writer.write(buffer.toString());
             writer.flush();
-
 
             //--------------------------
             //   서버에서 전송받기
@@ -306,26 +301,10 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         return result;
     }
 
-       /* public void set_component(int _area_no, String _title, String _user_name,String _content, String _reg_date){
-        userId.setText( _user_name);
-        title.setText( _title);
-        userImage.setImageResource(R.drawable.user1);
-
-        content.setText( _content);
-        reg_date.setText(_reg_date);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }*/
     /*
     * 안드로이드에서 Post형식으로 서버에 데이터를 보내는 코드
     *
     * */
-
-
 
     class CommentAdapter extends BaseAdapter {
 
@@ -338,7 +317,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         public CommentAdapter() {
 
         }
-
 
         @Override
         public int getCount() {
@@ -361,15 +339,12 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
             CommentItemView view = null;
             if(convertView == null){
                 view = new CommentItemView(getApplicationContext());
-
             }
             else{
                 view = (CommentItemView) convertView;
-
             }
             CommentItem item = commentItems.get(position);
             view.setUserId(item.getUserId());
@@ -401,7 +376,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             case R.id.menu_delete:
                 Toast.makeText(this,"게시글 삭제",Toast.LENGTH_LONG).show();
 
-
                 finish();
                 break;
 
@@ -416,7 +390,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
     //---------------------------------------
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     public class NetworkTask extends AsyncTask<Void, Void, String> {
-
         String values;
         Context mcontext;
 
@@ -460,7 +433,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                     //TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                //for (int i = 0; i < ja_array.length(); i++) {
+
                     try {
                         JSONObject jsonObject = ja_array.getJSONObject(0);
                         // array에 해당 값들을 넣어줌.
@@ -468,32 +441,12 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                         jsonObject.getString("board_no");
                         String time = jsonObject.getString("board_reg_date");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                        Date date = null;
-                        //try {
-                            date = simpleDateFormat.parse(time);
-                        /*} catch (ParseException e) {
-                            SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-                            try {
-                                date = simpleDateFormat1.parse(time);
-                            } catch (ParseException ex) {
-                                SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
-                                try {
-                                    date = simpleDateFormat2.parse(time);
-                                } catch (ParseException exc) {
-                                    exc.printStackTrace();
-                                }
-                                ex.printStackTrace();
-                            }
-                            e.printStackTrace();
-                        }*/
-                        /*Long longDate = date.getTime();
-                        arrayregDate.add(TimeString.formatTimeString(longDate));*/
                         userId.setText(jsonObject.getString("board_user_name"));
                         title.setText(jsonObject.getString("board_title"));
                         content.setText(jsonObject.getString("board_ctnt"));//content로 변경해야됨(주용이와 대화 필요)
                         userImage.setImageResource(R.drawable.user1);
                         post_reg_date.setText(jsonObject.getString("board_reg_date"));
-                    } catch (JSONException | ParseException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 //}
@@ -576,8 +529,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             System.out.println("ja_res.length(): " + ja_res.length());
             System.out.println("ja_res.getJSONObject(0): " + ja_res.getJSONObject(0));
 
-
-
             if(ja_res != null) {
                 for (int i = 0; i < ja_res.length(); i++) {
                     try {
@@ -585,7 +536,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
                         arrayReviewNo.add(jo_data.getInt("board_review_no"));
                         arrayReviewContent.add( jo_data.getString("board_review_ctnt"));
                         arrayReviewUser.add(jo_data.getString("board_review_user_name"));
-
                         arrayReviewDate.add(jo_data.getString("board_review_reg_date"));
                         /*int review_no = jo_data.getInt("board_review_no");
                         String review_ctnt =jo_data.getString("board_review_ctnt");
@@ -622,8 +572,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         String user_id = sp.getString("token","");
 
         comment = othersComment.getText().toString();
-        ///adapter.addItem(new CommentItem(R.drawable.user1,comment,user_id,p));
-        //adapter.notifyDataSetChanged();
         othersComment.setText(null);
 
         long now = System.currentTimeMillis();
@@ -633,10 +581,7 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         System.out.println("review_reg_date = "+ review_reg_date);
         //서버로 보내기
         // URL 설정.
-        //String url = "192.168.1.238:8080/select_board_title";
-        //JSONObject에 서버로 보낼 게시글 정보를 담음
-       /* files (이미지 디코딩)
-        file_name (현재시간+아이디 고유값)*/
+
         JSONObject board_data = new JSONObject();
         try {
             board_data.put("board_review_board_no", post_List_post_no);
@@ -654,22 +599,13 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         Network_comment_insert_task comment_insert_task = new Network_comment_insert_task(board_data.toString());
         comment_insert_task.execute();
 
-        //intent = new Intent(getApplicationContext(),CommentAllViewActivity.class);
-/*
-        intent.putExtra("title",title);
-        intent.putExtra("contents",contents);*/
-        //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        //startActivity(intent);
-
         Toast.makeText(CommentDetailActivity.this, "댓글 등록 성공", Toast.LENGTH_SHORT).show();
     }
     //--------------------------------
     /* 댓글 정보를 서버에 보내는 Class*/
     //--------------------------------
     public class Network_comment_insert_task extends AsyncTask<Void, Void, String> {
-
         String values;
-
         Network_comment_insert_task(String values) {
             this.values = values;
         }//생성자
@@ -697,8 +633,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
-            //Toast.makeText(getApplicationContext(),"댓글갱신",Toast.LENGTH_LONG).show();
-            //adapter.notifyDataSetChanged();
             /*
             * 댓글 추가 후 댓글리스트 갱신을 위한 작업
             * */
@@ -710,17 +644,14 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         }
     }
     public String sendCommentWrite(String values) throws JSONException {
-
         String result = "";
         try {
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
             String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/insert_board_review/";
-
             URL url = new URL(str_URL);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
-            //Log.d("eee", values);
 
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
@@ -736,7 +667,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             //--------------------------
             StringBuffer buffer = new StringBuffer();
             String regdata = "data=" + values;
-            //Log.d("board_data", regdata);
             System.out.println("comment_data : "+ regdata);
             buffer.append(regdata);                 // php 변수에 값 대입
 
@@ -744,7 +674,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             PrintWriter writer = new PrintWriter(outStream);
             writer.write(buffer.toString());
             writer.flush();
-
             //--------------------------
             //   서버에서 전송받기
             //--------------------------
@@ -753,7 +682,6 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
             StringBuilder builder = new StringBuilder();
             String str;
             System.out.println("comment_Builder ; "+builder);
-
 
             while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
                 builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
@@ -765,6 +693,121 @@ public class CommentDetailActivity extends Activity implements Serializable, Nav
         }
         System.out.println(result);
         return result;
-    } // HttpPostDat
+    } // sendCommentWrite
+
+    public void deletePost(){
+        JSONObject board_data = new JSONObject();
+        try {
+            board_data.put("board_no", post_List_post_no);
+            //board_data.put("files", 인코딩 값);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        network_delete_post_task delete_post_task = new network_delete_post_task(board_data.toString());
+        delete_post_task.execute();
+    }
+    public class network_delete_post_task extends AsyncTask<Void, Void, String> {
+        String values;
+
+        network_delete_post_task(String values) {
+            this.values = values;
+        }//생성자
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //progress bar를 보여주는 등등의 행위
+        }//실행 이전에 작업되는 것들을 정의하는 함수
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String result = "";
+
+            try {
+                //서버로 게시글 번호를 주고 게시글 댓글 데이타를 받아옴.
+                result = sendDeleteMessage(values);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result; // 결과가 여기에 담깁니다. 아래 onPostExecute()의 파라미터로 전달됩니다.
+        }// 백그라운드 작업 함수
+        //---------------------------------------------
+        /* 서버로 부터 받아온 게시글 댓글로 댓글 UI 작업  */
+        //---------------------------------------------
+        @Override
+        protected void onPostExecute(String result) {
+            // 통신이 완료되면 호출됩니다.
+            // 결과에 따른 UI 수정 등은 여기서 합니다.
+            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+            finish();
+        }//onPostExecute func()
+    }//NetWorkTask Class
+
+    public String sendDeleteMessage(String values) throws JSONException {
+        String result = "";
+        try {
+            //--------------------------
+            //   URL 설정하고 접속하기
+            //--------------------------
+            String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/delete_board/";
+            System.out.println("str_delete_URL : " + str_URL);
+            URL url = new URL(str_URL);
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
+            //--------------------------
+            //   전송 모드 설정 - 기본적인 설정이다
+            //--------------------------
+            http.setDefaultUseCaches(false);
+            http.setDoInput(true);                         // 서버에서 읽기 모드 지정
+            http.setDoOutput(true);                       // 서버로 쓰기 모드 지정
+            http.setRequestMethod("POST");         // 전송 방식은 POST
+
+            // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
+            http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+            //   서버로 값 전송
+            //--------------------------
+            StringBuffer buffer = new StringBuffer();
+            String regdata = "data=" + values;
+            buffer.append(regdata);                // php 변수에 값 대입
+
+            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+            PrintWriter writer = new PrintWriter(outStream);
+            writer.write(buffer.toString());
+            writer.flush();
+            //--------------------------
+            //   서버에서 전송받기
+            //--------------------------
+            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "UTF-8");
+            BufferedReader reader = new BufferedReader(tmp);
+            StringBuilder builder = new StringBuilder();
+            String str;
+            System.out.println("comment_Builder ; "+builder);
+
+            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
+            }
+            result = builder.toString();
+            System.out.println("result in commentWriteActivity : " + result);
+        } catch (MalformedURLException e) {
+        } catch (IOException e) {
+        }
+        System.out.println(result);
+        return result;
+    } // sendDeleteMessage
+    public void updatePost(){
+
+        Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
+        intent.putExtra("flag",1);
+        intent.putExtra("board_no",post_List_post_no);
+        //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        // intent.putExtra("태그","전체");
+        startActivity(intent);
+
+
+
+    }
 
 }

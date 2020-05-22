@@ -80,6 +80,20 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/update_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="수정">
+
+        </Button>
+        <Button
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="삭제">
+
+        </Button>
+        <Button
             android:id="@+id/goToAllViewButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

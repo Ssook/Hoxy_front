@@ -249,6 +249,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             // 액티비티를 띄우는 경우
             Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.putExtra("flag",0);
             startActivity(intent);
 
         }
@@ -257,7 +258,8 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             intent.putExtra("post_no",item.getPost_no());
             //intent.putExtra("")
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivityForResult(intent, 102);
+            startActivity(intent);
+            //startActivityForResult(intent, 102);
 
         }
     }
