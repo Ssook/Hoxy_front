@@ -24,7 +24,8 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"/>-->
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>-->
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_postdetail"/>

@@ -3,9 +3,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -87,6 +90,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     private Button updateButton;
     private ImageView content_image;
     private JSONArray ja_array;
+    private Bitmap bitmap_img;
 
     ArrayList<Integer> arrayReviewNo = new ArrayList<Integer>();
     ArrayList<String> arrayReviewContent = new ArrayList<String>();
@@ -187,7 +191,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Community");
         toolbar.setTitleMargin(5, 0, 5, 0);
-       /*toolbar = (Toolbar)findViewById(R.id.toolbar);
+      /* toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("안뇽");
         setSupportActionBar(toolbar);*/
     }
@@ -264,6 +268,76 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             StringBuffer buffer = new StringBuffer();
             Log.e("tlqkf","tlqkf");
             String currentlocationsend = "data=" + value;
+
+            buffer.append(currentlocationsend);                 // php 변수에 값 대입
+            System.out.println("buffer.append");
+            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+            System.out.println("outStream");
+            PrintWriter writer = new PrintWriter(outStream);
+            System.out.println("PrintWriter");
+            writer.write(buffer.toString());
+            writer.flush();
+
+            //--------------------------
+            //   서버에서 전송받기
+            //--------------------------
+            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "UTF-8");
+            BufferedReader reader = new BufferedReader(tmp);
+            StringBuilder builder = new StringBuilder();
+            String str;
+
+            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                System.out.println("str"+str.toString());
+                builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
+            }
+            result = builder.toString();
+            result = result.replace("&#39;","\"");
+            System.out.println("result"+result);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(result);
+        return result;
+    }
+
+    public String request_post_data_image(String value) throws JSONException {
+        //postAdapter = new PostAdapter();
+        System.out.println("request_post_Data");
+        int TIMEOUT_VALUE = 1000;
+        String result = "";
+        String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/get_image/";
+        try {
+            //--------------------------
+            //   URL 설정하고 접속하기
+            //--------------------------
+            URL url = new URL(str_URL);
+            System.out.println("URL_connect");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
+            //--------------------------
+            //   전송 모드 설정 - 기본적인 설정이다
+            //--------------------------
+
+            http.setDefaultUseCaches(false);
+            http.setDoInput(true);                         // 서버에서 읽기 모드 지정
+            http.setDoOutput(true);                       // 서버로 쓰기 모드 지정
+
+            http.setConnectTimeout(TIMEOUT_VALUE);
+            http.setRequestMethod("POST");         // 전송 방식은 POST
+
+            // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
+            http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+            System.out.println("set_Property");
+            //   서버로 값 전송
+            //--------------------------
+            StringBuffer buffer = new StringBuffer();
+            String currentlocationsend = "data={\"image_name\":\"" + value + "\"}";
 
             buffer.append(currentlocationsend);                 // php 변수에 값 대입
             System.out.println("buffer.append");
@@ -414,6 +488,13 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
                 //서버로 게시글 번호를 주고 게시글 댓글 데이타를 받아옴.
                 result = request_post_data(values);
 
+                //get_image
+                JSONArray temp_js = new JSONArray(result);
+                JSONObject jsonObject = temp_js.getJSONObject(0);
+                String file_name = jsonObject.getString("file_name");
+                String image_str = request_post_data_image(file_name);
+                bitmap_img = StringToBitmap(image_str);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -446,6 +527,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
                         userId.setText(jsonObject.getString("board_user_name"));
                         title.setText(jsonObject.getString("board_title"));
                         content.setText(jsonObject.getString("board_ctnt"));//content로 변경해야됨(주용이와 대화 필요)
+                        content_image.setImageBitmap(bitmap_img);
                         userImage.setImageResource(R.drawable.user1);
                         post_reg_date.setText(jsonObject.getString("board_reg_date"));
                     } catch (JSONException e) {
@@ -459,6 +541,18 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             }
         }//onPostExecute func()
     }//NetWorkTask Class
+
+    public static Bitmap StringToBitmap(String encodedString) {
+        try {
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch (Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
 
     public class Network_comment_select_task extends AsyncTask<String, String, String> {
         String sub_url = "";
@@ -807,6 +901,10 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         // intent.putExtra("태그","전체");
         startActivity(intent);
+        finish();
+
+
+
 
 
 
