@@ -24,14 +24,14 @@ public class PostItem  implements Serializable {
         this.title = title;
         this.reg_date = reg_date;
     }
-    public PostItem(int resId, String content, String userId, int post_no, String title,String reg_date) {
-        this.resId = resId;
-        this.content = content;
-        this.userId = userId;
+    public PostItem() {
+        this.resId = 1;
+        this.content = "";
+        this.userId = "";
        // this.image = image;
-        this.post_no = post_no;
-        this.title = title;
-        this.reg_date = reg_date;
+        this.post_no = 1;
+        this.title = "";
+        this.reg_date = "";
     }
 
     public String getTitle() {

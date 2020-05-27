@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +74,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -107,8 +110,9 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
     private ImageView profile;
     private DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
-
+    private EditText editTextFilter;
     JSONArray ja_title_data;
+
 
 
     @Override
@@ -136,18 +140,15 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        search_text=(EditText)findViewById(R.id.search_edit);
-        search_button=(Button) findViewById(R.id.search_bt);
+
 
         listView = (ListView) findViewById(R.id.listView);
         data = new Bundle();
 
+
         //----------------------------
         /*      게시글을 전부 가져옴  */
         //----------------------------
-        Intent intent = getIntent();
-        System.out.println("allViewIntent");
-
 
         http_task http_task = new http_task("select_board_title");
         http_task.execute();
@@ -227,9 +228,12 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         ArrayList<PostItem> postItems; // main으로부터 modellist들을 전달 받을 객체
         //ArrayList<PostItem> postList; // modellist로부터 받은 모델을 array형으로 받을 객체
         //postList = postItems;
+        ArrayList<PostItem> arrayList; // filter 작업시 필요한 arrarylist
         public PostAdapter(ArrayList<PostItem> postItems)
         {
             this.postItems = postItems;
+            this.arrayList = new ArrayList<PostItem>();
+            this.arrayList.addAll(postItems);
         }
 
         // ArrayList<PostItem>items = new ArrayList<PostItem>();
@@ -277,6 +281,37 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
             return view;
         }
+        //filter 기능
+        public void filter(String charText) {
+            PostItem tempPostItem =  new PostItem();
+            charText = charText.toLowerCase(Locale.getDefault()); //모두 소문자로 변환
+            postItems.clear();
+            if (charText.length() == 0) { //없을 경우
+                postItems.addAll(arrayList); //모두 보여줌
+            } else {
+                for (PostItem postItem : arrayList) {
+                    //내용과 일치하는 것이 있을 경우
+                    if (postItem.getTitle().toLowerCase(Locale.getDefault())
+                            .contains(charText)) {
+                        postItems.add(postItem);
+                        //동일내용 중복 표시 방지
+                        tempPostItem = postItem;
+                    }
+                    //모델의 내용과 일치하는 것이 있을 경우
+                    if (postItem.getTitle().toLowerCase(Locale.getDefault())
+                            .contains(charText)) {
+                        //중복검사
+                        if(tempPostItem != postItem)
+                        {
+                            postItems.add(postItem);
+                        }
+                    }
+
+                }
+            }
+            //listView 갱신
+            notifyDataSetChanged();
+        }//filter func
     }
     //public void search
    /* // 검색을 수행하는 메소드
@@ -322,8 +357,11 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
         }
         if (command.equals("showDetail")){
+           // sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
+            String userid = sp.getString("token","");
             Intent intent = new Intent(getApplicationContext(), CommentDetailActivity.class);
             intent.putExtra("post_no",item.getPost_no());
+            intent.putExtra("user_id",item.getUserId());
             //intent.putExtra("")
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
@@ -491,7 +529,34 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.postlist_menu, menu);
+        //----------------------------
+        /* 메뉴의 SearchView 설정  */
+        //----------------------------
+        MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setQueryHint(getString(R.string.search_hint_query));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            //검색어 완료시
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            //검색어 입력시(실질적인 검색 기능 구현 listview의 filter(s)함수를 통해서!)
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (TextUtils.isEmpty(s)) {
+                    adapter.filter("");
+                    listView.clearTextFilter();
+                } else {
+                    adapter.filter(s);
+                }
+                return true;
+            }
+        });//onQueryTextListener func()
         return true;
     }
 

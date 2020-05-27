@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -79,6 +81,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     private Toolbar toolbar;
     private View nav_header_view;
     private TextView userId;
+    private String assess_userId;
     private TextView title;
     private TextView content;
     private ImageView userImage;
@@ -91,7 +94,9 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     private ImageView content_image;
     private JSONArray ja_array;
     private Bitmap bitmap_img;
-
+    private SharedPreferences sp;
+    private String reg_user_id;
+    private String assess_reg_userId;
     ArrayList<Integer> arrayReviewNo = new ArrayList<Integer>();
     ArrayList<String> arrayReviewContent = new ArrayList<String>();
     ArrayList<String> arrayReviewUser = new ArrayList<String>();
@@ -110,15 +115,19 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         super.onCreate(savedInstanceState);
         initLayoutPostWriteActivity();//init
         findView();//View들과 연결
-        Intent intent = getIntent();
+        //Intent intent = getIntent();
         //adapter = new CommentAdapter();
 
         //select_post_detail
         //postListActivity로부터 선택된 게시판의 post-no을 받아 서버에서 추가 적인 정보들을 가져옴
         //추후 함수화
+
         post_List_post_no = getIntent().getIntExtra("post_no", 0);
+        assess_reg_userId = getIntent().getStringExtra("user_id");
+        System.out.println("이름 : "+assess_reg_userId);
         JSONObject jsonObject = new JSONObject();
         //JSONObject jsonObject_comment = new JSONObject();
+
         try {
             jsonObject.put("board_no",post_List_post_no);
         } catch (JSONException e) {
@@ -126,6 +135,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         }
         NetworkTask networkTask = new NetworkTask(this, jsonObject.toString());
         networkTask.execute();
+        userAssess();
 
         /*
         * 버튼 함수 만들장button_action
@@ -235,7 +245,19 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         deleteButton = (Button) findViewById(R.id.delete_button);
         updateButton = (Button) findViewById(R.id.update_button);
     }
+    public void userAssess(){
+        sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        assess_userId = sp.getString("name","");
 
+        System.out.println("assess : " + assess_userId);
+        System.out.println("reg_user_id : "+reg_user_id);
+        if(assess_reg_userId.equals(assess_userId)){
+
+            deleteButton.setVisibility(View.VISIBLE);
+            updateButton.setVisibility(View.VISIBLE);
+        }
+
+    }
     public String request_post_data(String value) throws JSONException {
         //postAdapter = new PostAdapter();
         System.out.println("request_post_Data");
@@ -430,7 +452,8 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             view.setReg_date(item.getReg_date());
             return view;
         }
-    }
+
+    }//
 
     //actionbar 관련 코드
     @Override
@@ -526,6 +549,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
                         String time = jsonObject.getString("board_reg_date");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         userId.setText(jsonObject.getString("board_user_name"));
+                        reg_user_id=jsonObject.getString("board_user_name");
                         title.setText(jsonObject.getString("board_title"));
                         content.setText(jsonObject.getString("board_ctnt"));//content로 변경해야됨(주용이와 대화 필요)
                         content_image.setImageBitmap(bitmap_img);
@@ -668,6 +692,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         SharedPreferences sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
         String user_id = sp.getString("token","");
 
+        //System.out.println("ss : " + user_id);
         comment = othersComment.getText().toString();
         othersComment.setText(null);
 
