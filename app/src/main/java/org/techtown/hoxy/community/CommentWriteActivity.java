@@ -252,8 +252,8 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
 
     }
     public static Bitmap bitmap_resize(Bitmap bitmap){
-        int width = 300; // 축소시킬 너비
-        int height = 300; // 축소시킬 높이
+        int width = bitmap.getWidth(); // 축소시킬 너비
+        int height = bitmap.getHeight(); // 축소시킬 높이
 
         if(bitmap.getWidth() > 1000 || bitmap.getHeight() > 1000) {
             width = width / 10;

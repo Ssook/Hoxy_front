@@ -111,7 +111,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         initLayoutPostWriteActivity();//init
         findView();//View들과 연결
         Intent intent = getIntent();
-        adapter = new CommentAdapter();
+        //adapter = new CommentAdapter();
 
         //select_post_detail
         //postListActivity로부터 선택된 게시판의 post-no을 받아 서버에서 추가 적인 정보들을 가져옴
@@ -266,7 +266,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             //   서버로 값 전송
             //--------------------------
             StringBuffer buffer = new StringBuffer();
-            Log.e("tlqkf","tlqkf");
+            System.out.println("test2 =" + value);
             String currentlocationsend = "data=" + value;
 
             buffer.append(currentlocationsend);                 // php 변수에 값 대입
@@ -518,6 +518,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
                 }
 
                     try {
+                        System.out.println("test : " + ja_array);
                         JSONObject jsonObject = ja_array.getJSONObject(0);
                         // array에 해당 값들을 넣어줌.
                         //Time Setting
@@ -604,7 +605,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
 
                 res = builder.toString();
                 res = res.replace("&#39;","\"");
-                System.out.println("Detail Review res : " + res);
+                //System.out.println("Detail Review res : " + res);
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             } catch (Exception ex) {
@@ -732,11 +733,22 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             /*
             * 댓글 추가 후 댓글리스트 갱신을 위한 작업
             * */
-            commentList.clear();
-            adapter = new CommentAdapter(commentList);
-            listView.setAdapter(adapter);
+         /*   commentList.clear();
+            Log.e("clear","clear");
+            listView.clearChoices();
+            //adapter.init();
+            Log.e("clear","clear");
+            adapter.notifyDataSetChanged();
+            //adapter = new CommentAdapter(commentList);
+            //listView.setAdapter(adapter);
+            //adapter.clear();
+            System.out.println("commentListclear commentList : "+listView);
             Network_comment_select_task comment_select_task = new Network_comment_select_task("select_board_review");
-            comment_select_task.execute();
+            comment_select_task.execute();*/
+            Intent intent = new Intent(CommentDetailActivity.this, CommentDetailActivity.class);
+            intent.putExtra("post_no",post_List_post_no);
+            startActivity(intent);
+            finish();
         }
     }
     public String sendCommentWrite(String values) throws JSONException {

@@ -61,6 +61,7 @@ import org.techtown.hoxy.waste.ResultActivity;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -124,8 +125,6 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-// Passing each menu ID as a set of Ids because each
-// menu should be considered as top level destinations.
 
         setView_Drawer(toolbar);
 
@@ -134,13 +133,9 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
                 R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-//NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//NavigationUI.setupWithNavController(navigationView, navController);
 
         navigationView.setNavigationItemSelectedListener(this);
 
-//////////////////////////////////////////////////////////////
         search_text=(EditText)findViewById(R.id.search_edit);
         search_button=(Button) findViewById(R.id.search_bt);
 
@@ -154,27 +149,10 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         System.out.println("allViewIntent");
 
 
-        /*try {
-            if(!(intent.getExtras().isEmpty()))
-            {
-               // tag=intent.getExtras().getString("태그");
-            }
-        } catch (NullPointerException e) {
-            //tag="전체";
-            e.printStackTrace();
-        }*/
-        //adapter = new PostAdapter();
-        //adapter.addItem(new PostItem(R.drawable.user1,"앙기모","kss1218",1,"dndnd"));
-        //listView.setAdapter(adapter);
         http_task http_task = new http_task("select_board_title");
         http_task.execute();
-
-       // search();
-        //connect_http();
         set_button_action();
 
-        //  NetworkTask networkTask = new NetworkTask( this, "");
-        //  networkTask.execute();
     }
 
     @Override
@@ -403,11 +381,12 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         }
         @Override
         protected String doInBackground(String... params) {
+
+            System.out.println("check_point_1");
             String res = "";
             try {
                 String str = "";
                 String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/" + sub_url + "/";
-                System.out.println("str_URL : " + str_URL);
                 URL url = new URL(str_URL);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 //--------------------------
@@ -420,29 +399,34 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
                 // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-                System.out.println("setRequestProperty");
                 //--------------------------
                 //   서버로 값 전송
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
-                String data = "data=" + "";
-                //System.out.println("data = "+data);
                 buffer.append(data);
+
+                System.out.println("check_point_2");
 
                 OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
                 PrintWriter writer = new PrintWriter(outStream);
                 writer.write(buffer.toString());
                 writer.flush();
 
+                System.out.println("check_point_3");
                 //--------------------------
                 //   서버에서 전송받기
                 //--------------------------
+                System.out.println("check_point_3_0");
                 InputStreamReader tmp = new InputStreamReader(conn.getInputStream(), "UTF-8");
+                System.out.println("check_point_3_1");
                 BufferedReader reader = new BufferedReader(tmp);
+                System.out.println("check_point_3_2");
                 StringBuilder builder = new StringBuilder();
+                System.out.println("check_point_3_3");
                 while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
                     builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
                 }
+                System.out.println("check_point_4");
 
                 res = builder.toString();
                 res = res.replace("&#39;","\"");
