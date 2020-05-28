@@ -67,6 +67,7 @@ import java.net.MalformedURLException;
 
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 import static java.lang.Integer.parseInt;
 
@@ -89,6 +90,7 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
     private ImageView profile;
     private DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
+    private ArrayList<WasteInfoItem> waste_basket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
         total_fee = intent_get.getExtras().getString("total_fee");
         size = intent_get.getExtras().getString("size");
         name = intent_get.getExtras().getString("name");
+        waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
         System.out.println(total_fee + size + "testest" + name);
         mContext=this.getApplicationContext();
 
@@ -385,6 +388,8 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
 
                 String code=url.substring(6,url.length());
                 intent.putExtra("code",code);
+                intent.putExtra("wastebasket", waste_basket);
+                intent.putExtra("info_apply", info_apply);
 
 
                 System.out.println(code+"은석");

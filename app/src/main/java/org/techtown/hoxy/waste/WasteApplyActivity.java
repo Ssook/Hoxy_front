@@ -167,6 +167,8 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
 
         Intent intent_get = getIntent();
         waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
+
+        System.out.println("jy_test : " + waste_basket.get(0).getWaste_No());
         position = intent_get.getExtras().getInt("position");
         wasteInfoItem = waste_basket.get(position);
         System.out.println(waste_basket.size());
@@ -196,13 +198,15 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
                 createApplyInfo();
                 Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
                 sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
-                System.out.println("rudfhr" + total_fee + waste_basket.size() + waste_basket.get(0).getWaste_name());
+                System.out.println("rudfhr" + total_fee + waste_basket.size() + waste_basket.get(0).getWaste_name() + "Waste_No : "+waste_basket.get(0).getWaste_No());
 
                 intent.putExtra("apply_info",info_apply);
                 intent.putExtra("user",sp.getString("token",""));
                 intent.putExtra("total_fee", String.valueOf(total_fee));
                 intent.putExtra("size", String.valueOf(waste_basket.size()));
                 intent.putExtra("name", waste_basket.get(0).getWaste_name());
+                intent.putExtra("wastebasket", waste_basket);
+
                 startActivity(intent);
 
 

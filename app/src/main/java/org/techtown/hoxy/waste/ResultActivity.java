@@ -323,7 +323,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 }).start();
 
                 String str = "";
-                String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/" + sub_url + "/";
+                String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/" + sub_url + "/"; //select_waste_type
                 System.out.println("str_URL : " + str_URL);
                 URL url = new URL(str_URL);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
