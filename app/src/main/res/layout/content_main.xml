@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
@@ -18,32 +19,32 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ImageButton
         android:id="@+id/cameraButton"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="15dp"
         android:background="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_home"
-        app:srcCompat="@drawable/camera_color" />
+        app:srcCompat="@drawable/ic_camera_alt_black_24dp"
+        tools:ignore="VectorDrawableCompat" />
 
     <ImageButton
         android:id="@+id/galleryButton"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginRight="30dp"
         android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_home"
-        app:srcCompat="@drawable/photo" />
+        app:srcCompat="@drawable/ic_image_black_24dp"
+        tools:ignore="VectorDrawableCompat" />
 
     <TextView
         android:id="@+id/text_home"
@@ -51,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:gravity="center_horizontal"
+        android:text="main"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,89 +63,67 @@
         android:id="@+id/hoxyImage"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/hoxy_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <View
-        android:id="@+id/div_line"
-        android:layout_width="411dp"
-        android:layout_height="2dp"
-        android:layout_marginTop="30dp"
-        android:background="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cameraButton" />
-
     <TextView
         android:id="@+id/text_community"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:text="커뮤니티"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="30dp"
+        android:text="공지사항"
         android:textSize="16sp"
         android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/cameraButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/div_line" />
+        />
 
     <View
-        android:id="@+id/div_line2"
-        android:layout_width="411dp"
+        android:id="@+id/div_line4"
+        android:layout_width="0dp"
         android:layout_height="2dp"
-        android:layout_marginTop="15dp"
-        android:background="#000000"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/background_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_community" />
+        app:layout_constraintTop_toBottomOf="@id/text_community" />
+
 
     <TextView
         android:id="@+id/text_content1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="15dp"
-        android:text="TextView"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="20dp"
+        android:text="공지사항 1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/div_line2" />
+        app:layout_constraintTop_toBottomOf="@id/div_line4" />
 
-    <TextView
+<!--    <TextView
         android:id="@+id/text_content1_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginRight="25dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/div_line2" />
-
-    <View
-        android:id="@+id/div_line3"
-        android:layout_width="411dp"
-        android:layout_height="2dp"
-        android:layout_marginTop="15dp"
-        android:background="#80000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_content1" />
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="60dp"
+        android:text="시간 1"
+        app:layout_constraintTop_toBottomOf="@id/text_community"
+        app:layout_constraintEnd_toEndOf="parent"/>-->
 
     <TextView
         android:id="@+id/text_content2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="15dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/div_line3" />
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="60dp"
+        android:text="공지사항 2"
+        app:layout_constraintTop_toBottomOf="@id/text_content1"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+   <!-- <TextView
         android:id="@+id/text_content2_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -153,37 +133,24 @@
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/div_line3" />
-
-    <View
-        android:id="@+id/div_line4"
-        android:layout_width="411dp"
-        android:layout_height="2dp"
-        android:layout_marginTop="15dp"
-        android:background="#80000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_content2" />
-
+-->
     <TextView
         android:id="@+id/text_content3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="15dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/div_line4" />
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="60dp"
+        android:text="공지사항 3"
+        app:layout_constraintTop_toBottomOf="@id/text_content2"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+   <!-- <TextView
         android:id="@+id/text_content3_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginEnd="15dp"
         android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/div_line4" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
