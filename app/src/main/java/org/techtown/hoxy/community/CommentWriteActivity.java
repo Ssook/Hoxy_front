@@ -80,7 +80,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
     private String title;
     private String user_id;
     private String board_reg_date;
-    private int flag;
+    private String flag;
     private SharedPreferences sp;
 
     JSONArray ja_title_data;
@@ -88,10 +88,8 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initLayoutPostWriteActivity();
-
+        intent = new Intent(this.getIntent());
         set_inflate();
-
-
 
 
 
@@ -100,12 +98,14 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent("this.getIntent()");
-                flag = intent.getIntExtra("flag",0);
-                if(flag == 1 ){
 
-                    post_no = intent.getIntExtra("post_no",0);
-                    System.out.println("post_no in detail"+post_no);
+                flag = intent.getStringExtra("flag");
+                System.out.println("update_flag : "+flag);
+
+                if(flag.equals("update") ){
+
+                    post_no = intent.getIntExtra("board_no",0);
+                    System.out.println("post_no in detail: "+post_no);
                     //updatePost();
                     System.out.println("업데이트 포스트함수 시작");
                     updatePost();
@@ -170,7 +170,12 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             finish();
 
         } else if (id == R.id.nav_community) {
-
+            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            // intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
         }else if (id == R.id.nav_slideshow) {
 
         }
@@ -200,6 +205,12 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         finish();
         Toast.makeText(CommentWriteActivity.this, "게시글 등록 취소", Toast.LENGTH_SHORT).show();
     }
+    @Override
+    public void onBackPressed() {
+        clicked_CancelButton();
+        super.onBackPressed();
+    }
+
 
     public void call_the_camera(){
 
@@ -472,8 +483,8 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
                 "\"files\":\""+ files + "\"," +
                 "\"file_name\":\""+ file_name + "\"}";*/
         String board_data = "";
-        board_data = "{\"board_title\":\""+ title + "\"," +
-                "\"board_no\":\""+ post_no + "\"," +
+        board_data = "{" +"\"board_no\":\""+ post_no + "\"," +
+                "\"board_title\":\""+ title + "\"," +
                 "\"board_ctnt\":\""+ contents + "\"," +
                 /*"\"board_reg_user_no\":\""+ user_id + "\"," +*/
                 "\"board_area_no\":"+ "1" + "," +
@@ -534,7 +545,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             //   URL 설정하고 접속하기
             //--------------------------
             String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/update_board/";
-            System.out.println("str_delete_URL : " + str_URL);
+            System.out.println("str_update_URL : " + str_URL);
             URL url = new URL(str_URL);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
@@ -551,6 +562,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             //--------------------------
             StringBuffer buffer = new StringBuffer();
             String regdata = "data=" + values;
+            System.out.println("update_data : " + regdata);
             buffer.append(regdata);                // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");

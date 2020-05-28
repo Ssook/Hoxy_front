@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:orientation="vertical"
-    tools:context=".community.CommentWriteActivity"
- >
+    tools:context=".community.CommentWriteActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,53 +21,78 @@
         android:orientation="horizontal">
 
 
-        <ImageView
+      <!--  <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
+<<<<<<< HEAD
             android:background="@drawable/write"
-            android:layout_margin="6dp"/>
+            android:layout_margin="6dp"/>-->
+=======
+            android:layout_margin="6dp"
+            android:background="@drawable/write" />
+>>>>>>> 1b835eee464e30dab9db08e49343f9e696344999
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:text="글 작성하기"
             android:textSize="25dp"
+
             android:textStyle="bold"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_horizontal"
+            />
+
 
 
 
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_centerInParent="true"
-        android:background="@color/colorPrimaryDark"/>
+
+        android:background="#bdbdbd" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=" 제목 : "
-            android:textSize="20dp"/>
+            android:textSize="20dp"
+            android:layout_marginLeft="5dp"/>
+
         <EditText
             android:id="@+id/commentTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:textSize="20dp"
-            android:hint="제목을 입력해주세요"
+            android:hint="제목을 입력해주세요 (20자 내)"
+            android:maxLength="30"
             android:background="@null"
+
             />
+
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_centerInParent="true"
-        android:background="@color/colorPrimaryDark"/>
+
+        android:background="#bdbdbd"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -79,8 +103,8 @@
             android:id="@+id/pictureView"
             android:layout_width="match_parent"
             android:layout_height="202dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/camera_color" />
@@ -92,7 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_margin="5dp"
-        android:background="@drawable/border"
+        android:background="@drawable/title_border"
         android:gravity="top"
         android:hint="100자 이내로 작성해주세요"
         android:maxLength="100"
@@ -104,13 +128,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="20dp"
+        >
+
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/saveButton"
@@ -118,22 +143,31 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_margin="7dp"
-            android:background="@drawable/linear_border_pupple"
+            android:background="#8BC34A"
             android:text="저장"
-            android:translationY="7dp" />
-
+            android:textColor="#FFFFFF"
+            android:translationY="7dp"
+            android:layout_marginLeft="50dp"
+            />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
         <Button
             android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_margin="7dp"
-            android:background="@drawable/linear_border_pupple"
+
+            android:background="#B3FF6464"
             android:text="취소"
-            android:translationY="7dp" />
+            android:translationY="7dp"
+            android:textColor="#FFFFFF"/>4
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
     </LinearLayout>
-
-
 
 
 </LinearLayout>

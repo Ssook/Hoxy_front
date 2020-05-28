@@ -113,28 +113,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         content_textView = findViewById(R.id.text_content1); // 첫번째 게시글
         content2_textView = findViewById(R.id.text_content2); // 두번째 게시글
         content3_textView = findViewById(R.id.text_content3); // 세번째 게시글
-        content1_time_textView = findViewById(R.id.text_content1_time); // 첫번째 게시글 작성일
-        content2_time_textView = findViewById(R.id.text_content2_time); // 첫번째 게시글 작성일
-        content3_time_textView = findViewById(R.id.text_content3_time); // 첫번째 게시글 작성일
+//        content1_time_textView = findViewById(R.id.text_content1_time); // 첫번째 게시글 작성일
+//        content2_time_textView = findViewById(R.id.text_content2_time); // 첫번째 게시글 작성일
+//        content3_time_textView = findViewById(R.id.text_content3_time); // 첫번째 게시글 작성일*/
 
         text_title = "혹시 어떻게 버리지..?";
-
+        home_main_textView.setText(text_title);
+/*
         text_content1 = "1번 게시글";
         text_content2 = "2번 게시글";
         text_content3 = "3번 게시글";
+
+        content_textView.setText(text_content1);
+        content2_textView.setText(text_content2);
+        content3_textView.setText(text_content3);
 
         text_content1_time = "2020-04-08";
         text_content2_time = "2020-04-09";
         text_content3_time = "2020-04-10";
 
 
-        home_main_textView.setText(text_title);
-        content_textView.setText(text_content1);
-        content2_textView.setText(text_content2);
-        content3_textView.setText(text_content3);
+
         content1_time_textView.setText(text_content1_time);
         content2_time_textView.setText(text_content2_time);
-        content3_time_textView.setText(text_content3_time);
+        content3_time_textView.setText(text_content3_time);*/
 
 
         ////////////////갤러리로 넘어가기
