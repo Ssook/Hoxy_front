@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -106,7 +107,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     private ImageView userImage;
     private TextView post_reg_date;
     private ListView listView;
-    private Button backButton;
+
     private ImageButton writeButton;
 
     private ImageView content_image;
@@ -122,13 +123,10 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     ArrayList<String> arrayReviewContent = new ArrayList<String>();
     ArrayList<String> arrayReviewUser = new ArrayList<String>();
     ArrayList<String> arrayReviewDate = new ArrayList<String>();
-
-    //ArrayList<String> arraytag = new ArrayList<String>();
-    //ArrayList<String> arraytitle = new ArrayList<String>();
-    //ArrayList<String> arrayctnt = new ArrayList<String>();
-    //ArrayList<Integer> arrayimage = new ArrayList<Integer>();
-    //PostItem 클래스 타입의 ArrayList
     ArrayList<CommentItem> commentList = new ArrayList<CommentItem>();
+
+    private MenuItem deleteItem;
+    private MenuItem updateItem;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -198,6 +196,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         writeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 insertCommentData();
             }
         });
@@ -323,6 +322,20 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         else flag="NEW";
 
     }
+
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(),CommentAllViewActivity.class);
+        finish();
+        startActivity(intent);
+
+
+        super.onBackPressed();
+    }
+
+
+
+
+
     public String request_post_data(String value) throws JSONException {
         //postAdapter = new PostAdapter();
         System.out.println("request_post_Data");
@@ -527,56 +540,35 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         //해당 게시물을 등록한 사용자일 경우의 액션바 세팅
         if(flag.equals("REG")) {
             getMenuInflater().inflate(R.menu.detail_main, menu);
-
+           /* deleteItem = menu.findItem(R.id.menu_delete);
+            updateItem = menu.findItem(R.id.menu_update);*/
         }
         if (flag.equals("NEW")){
             getMenuInflater().inflate(R.menu.detail_main2, menu);
         }
+
         return true;
     }
     //actionbar 관련 코드
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+
         if(flag.equals("REG")) {
             int curId = item.getItemId();
             System.out.println("curid 작동 : "+curId);
-           /* switch (curId) {
-                case R.id.update_button:
-                    Toast.makeText(this, "게시글 수정", Toast.LENGTH_LONG).show();
-                    updatePost();
-                    return true;
-
-                case R.id.delete_button:
-                    Toast.makeText(this, "게시글 삭제", Toast.LENGTH_LONG).show();
-                    deletePost();
-                    return true;
-
-
-                default:
-                    break;
-            }*/
-           //System.out.println("curId == R.id.update_button"+curId == R.id.update_button);
-           if(curId == 2131361947){
+           if(curId == R.id.menu_update){
               Toast.makeText(this, "게시글 수정", Toast.LENGTH_LONG).show();
-               updatePost();
+                updatePost();
                return true;
            }
-           if(curId == 2131361946){
+           if(curId == R.id.menu_delete){
                Toast.makeText(this, "게시글 삭제", Toast.LENGTH_LONG).show();
                deletePost();
                return true;
            }
         }
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        /*int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
 
-        if (id == R.id.action_settings) {
-            onClickLogout();
-            return true;
-        }*/
 
         return super.onOptionsItemSelected(item);
     }

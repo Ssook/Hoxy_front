@@ -192,8 +192,9 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             // intent.putExtra("태그","전체");
-            startActivity(intent);
             finish();
+            startActivity(intent);
+
         }else if (id == R.id.nav_slideshow) {
 
         }
@@ -208,7 +209,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 item = (PostItem) adapter.getItem(position);
-                Toast.makeText(getApplicationContext(),item.getUserId()+"선택",Toast.LENGTH_LONG).show();
+
 
                 onCommand("showDetail",data);
 
