@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -41,15 +43,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.kakao.network.ErrorResult;
 import com.kakao.network.NetworkTask;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
+import com.kakao.util.helper.log.Logger;
 
 import org.techtown.hoxy.RequestHttpURLConnection;
 import org.techtown.hoxy.community.CommentItem;
+import org.techtown.hoxy.login.LoginActivity;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Text;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -61,6 +73,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -77,9 +90,15 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     private ArrayList<CommentItem> items = new ArrayList<CommentItem>();
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private AppBarConfiguration mAppBarConfiguration;
     private ActionBarDrawerToggle toggle;
     private Toolbar toolbar;
     private View nav_header_view;
+
+    private TextView nav_header_id_text;
+    private ImageView profile;
+
+
     private TextView userId;
     private String assess_userId;
     private TextView title;
@@ -89,14 +108,16 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     private ListView listView;
     private Button backButton;
     private ImageButton writeButton;
-    private Button deleteButton;
-    private Button updateButton;
+
     private ImageView content_image;
     private JSONArray ja_array;
     private Bitmap bitmap_img;
     private SharedPreferences sp;
     private String reg_user_id;
     private String assess_reg_userId;
+
+    private String flag;
+
     ArrayList<Integer> arrayReviewNo = new ArrayList<Integer>();
     ArrayList<String> arrayReviewContent = new ArrayList<String>();
     ArrayList<String> arrayReviewUser = new ArrayList<String>();
@@ -114,7 +135,31 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initLayoutPostWriteActivity();//init
+
+        /////////////////////////////////////////////
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        setSupportActionBar(toolbar);
+        setView_NavHeader();
+        setView_Profile();
+
+
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+
+        setView_Drawer(toolbar);
+
+
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
+                .setDrawerLayout(drawer)
+                .build();
+
+        navigationView.setNavigationItemSelectedListener(this);
+/////////////////////////////////////////////////////
         findView();//View들과 연결
+
+
         //Intent intent = getIntent();
         //adapter = new CommentAdapter();
 
@@ -125,6 +170,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         post_List_post_no = getIntent().getIntExtra("post_no", 0);
         assess_reg_userId = getIntent().getStringExtra("user_id");
         System.out.println("이름 : "+assess_reg_userId);
+        userAssess();
         JSONObject jsonObject = new JSONObject();
         //JSONObject jsonObject_comment = new JSONObject();
 
@@ -135,7 +181,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         }
         NetworkTask networkTask = new NetworkTask(this, jsonObject.toString());
         networkTask.execute();
-        userAssess();
+
 
         /*
         * 버튼 함수 만들장button_action
@@ -145,6 +191,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         //CommentList서버에서 받아오기
         Network_comment_select_task comment_select_task = new Network_comment_select_task("select_board_review");
         comment_select_task.execute();
+
         /*
         텍스트 입력 후 버튼 선택시 서버에 댓글을 보냄
         * */
@@ -154,56 +201,76 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
                 insertCommentData();
             }
         });
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deletePost();
-            }
-        });
-        updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updatePost();
-            }
-        });
+
 
 
 
     }
     public void initLayoutPostWriteActivity() {           //레이아웃 정의
         setContentView(R.layout.activity_comment_detail);
-        setView_Toolbar();
+        /*setView_Toolbar();
         setView_NavHeader();
-        setView_Drawer();
+        setView_Drawer();*/
 
     }
-    private void setView_Drawer() {
+    private void setView_Drawer(Toolbar toolbar) {
         drawer = findViewById(R.id.drawer_layout);
-
         toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open , R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
     }
+
 
     private void setView_NavHeader() {
+
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         nav_header_view = navigationView.getHeaderView(0);
-        //  nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
-
-        //nav_header_id_text.setText(sp.getString("name", ""));
+        nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
+        nav_header_id_text.setText(sp.getString("name", ""));
     }
 
-    private void setView_Toolbar() {
-       toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Community");
-        toolbar.setTitleMargin(5, 0, 5, 0);
-      /* toolbar = (Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle("안뇽");
-        setSupportActionBar(toolbar);*/
+
+
+    private void setView_Profile() {//은석
+        profile = nav_header_view.findViewById(R.id.profileimage);
+
+        String urlStr;
+        urlStr = sp.getString("image_url", "");
+        new Thread() {
+            public void run() {
+                try {
+                    System.out.println("test!" + sp);
+                    String urlStr = sp.getString("image_url", "");
+                    URL url = new URL(urlStr);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+                    final Bitmap bm = BitmapFactory.decodeStream(bis);
+                    bis.close();
+                    if (bm == null) {
+                    }
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 사용하고자 하는 코드
+                            if (bm != null) {
+                                profile.setImageBitmap(bm);
+                            } else return;
+                        }
+                    }, 0);
+
+
+                } catch (IOException e) {
+                    Logger.e("Androes", " " + e);
+                }
+
+            }
+        }.start();
+
+
     }
 
 
@@ -238,24 +305,22 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         content = (TextView) findViewById(R.id.title2);
         content_image = (ImageView) findViewById(R.id.content_image);
         userImage = (ImageView) findViewById(R.id.userImage);
-        backButton = (Button) findViewById(R.id.goToAllViewButton);
+
         writeButton = (ImageButton) findViewById(R.id.writeButton);
         othersComment = (EditText) findViewById(R.id.othersComment);
         post_reg_date = (TextView) findViewById(R.id.reg_date);
-        deleteButton = (Button) findViewById(R.id.delete_button);
-        updateButton = (Button) findViewById(R.id.update_button);
+
     }
     public void userAssess(){
         sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
         assess_userId = sp.getString("name","");
-
+        System.out.println("assess_reg : "+ assess_reg_userId);
         System.out.println("assess : " + assess_userId);
-        System.out.println("reg_user_id : "+reg_user_id);
+       // System.out.println("reg_user_id : "+reg_user_id);
         if(assess_reg_userId.equals(assess_userId)){
-
-            deleteButton.setVisibility(View.VISIBLE);
-            updateButton.setVisibility(View.VISIBLE);
+            flag ="REG";
         }
+        else flag="NEW";
 
     }
     public String request_post_data(String value) throws JSONException {
@@ -458,31 +523,93 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     //actionbar 관련 코드
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.detail_main,menu);
 
+        //해당 게시물을 등록한 사용자일 경우의 액션바 세팅
+        if(flag.equals("REG")) {
+            getMenuInflater().inflate(R.menu.detail_main, menu);
+
+        }
+        if (flag.equals("NEW")){
+            getMenuInflater().inflate(R.menu.detail_main2, menu);
+        }
         return true;
     }
     //actionbar 관련 코드
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int curId = item.getItemId();
+        if(flag.equals("REG")) {
+            int curId = item.getItemId();
+            System.out.println("curid 작동 : "+curId);
+           /* switch (curId) {
+                case R.id.update_button:
+                    Toast.makeText(this, "게시글 수정", Toast.LENGTH_LONG).show();
+                    updatePost();
+                    return true;
 
-        switch(curId){
-            case R.id.menu_modify:
-                Toast.makeText(this,"게시글 수정",Toast.LENGTH_LONG).show();
+                case R.id.delete_button:
+                    Toast.makeText(this, "게시글 삭제", Toast.LENGTH_LONG).show();
+                    deletePost();
+                    return true;
 
-                break;
-            case R.id.menu_delete:
-                Toast.makeText(this,"게시글 삭제",Toast.LENGTH_LONG).show();
 
-                finish();
-                break;
-
-            default:
-                break;
+                default:
+                    break;
+            }*/
+           //System.out.println("curId == R.id.update_button"+curId == R.id.update_button);
+           if(curId == 2131361947){
+              Toast.makeText(this, "게시글 수정", Toast.LENGTH_LONG).show();
+               updatePost();
+               return true;
+           }
+           if(curId == 2131361946){
+               Toast.makeText(this, "게시글 삭제", Toast.LENGTH_LONG).show();
+               deletePost();
+               return true;
+           }
         }
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        /*int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+
+        if (id == R.id.action_settings) {
+            onClickLogout();
+            return true;
+        }*/
+
         return super.onOptionsItemSelected(item);
     }
+
+    public void onClickLogout() {
+        UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
+                System.out.println(errorResult + "????");
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
+            }
+
+            @Override
+            public void onSuccess(Long result) {
+                Log.e("session success", "카카오 로그아웃 onSuccess");
+
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
 
     //---------------------------------------
     /* 해당 게시글의 모든 정보를 받아오는 클래스*/
@@ -549,7 +676,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
                         String time = jsonObject.getString("board_reg_date");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         userId.setText(jsonObject.getString("board_user_name"));
-                        reg_user_id=jsonObject.getString("board_user_name");
+                        //reg_user_id=jsonObject.getString("board_user_name");
                         title.setText(jsonObject.getString("board_title"));
                         content.setText(jsonObject.getString("board_ctnt"));//content로 변경해야됨(주용이와 대화 필요)
                         content_image.setImageBitmap(bitmap_img);
@@ -758,20 +885,9 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             /*
             * 댓글 추가 후 댓글리스트 갱신을 위한 작업
             * */
-         /*   commentList.clear();
-            Log.e("clear","clear");
-            listView.clearChoices();
-            //adapter.init();
-            Log.e("clear","clear");
-            adapter.notifyDataSetChanged();
-            //adapter = new CommentAdapter(commentList);
-            //listView.setAdapter(adapter);
-            //adapter.clear();
-            System.out.println("commentListclear commentList : "+listView);
-            Network_comment_select_task comment_select_task = new Network_comment_select_task("select_board_review");
-            comment_select_task.execute();*/
             Intent intent = new Intent(CommentDetailActivity.this, CommentDetailActivity.class);
             intent.putExtra("post_no",post_List_post_no);
+            intent.putExtra("user_id",assess_reg_userId);
             startActivity(intent);
             finish();
         }

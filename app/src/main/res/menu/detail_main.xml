@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_modify"
+        android:id="@+id/menu_update"
         android:title="수정"
         app:showAsAction="never" />
     <item

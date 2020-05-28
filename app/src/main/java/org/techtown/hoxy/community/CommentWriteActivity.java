@@ -170,7 +170,12 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             finish();
 
         } else if (id == R.id.nav_community) {
-
+            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            // intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
         }else if (id == R.id.nav_slideshow) {
 
         }
@@ -200,6 +205,12 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         finish();
         Toast.makeText(CommentWriteActivity.this, "게시글 등록 취소", Toast.LENGTH_SHORT).show();
     }
+    @Override
+    public void onBackPressed() {
+        clicked_CancelButton();
+        super.onBackPressed();
+    }
+
 
     public void call_the_camera(){
 

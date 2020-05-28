@@ -188,7 +188,12 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             finish();
 
         } else if (id == R.id.nav_community) {
-
+            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            // intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
         }else if (id == R.id.nav_slideshow) {
 
         }
@@ -366,7 +371,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             //startActivityForResult(intent, 102);
-            //finish();
+            finish();
         }
     }
     /*public void removePost(String command){
