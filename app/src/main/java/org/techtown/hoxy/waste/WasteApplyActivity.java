@@ -187,7 +187,7 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         textView_all_fee.setText(String.valueOf(total_fee));
         textView_count.setText(String.valueOf(waste_basket.size()));
 
-        setListViewHeightBasedOnChildren(listView_applied_waste);
+//        setListViewHeightBasedOnChildren(listView_applied_waste);
         //// 신청 버튼 클릭시
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -413,7 +413,7 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
 
 
     //리스트뷰 사이즈 조정
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
+  /*  public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
             // pre-condition
@@ -425,17 +425,17 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
         for (int i = 0; i < listAdapter.getCount(); i++) {
             View listItem = listAdapter.getView(i, null, listView);
-            //listItem.measure(0, 0);
+            listItem.measure(0, 0);
             listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
             totalHeight += listItem.getMeasuredHeight();
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
 
-        params.height = totalHeight;
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
 
         listView.requestLayout();
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
