@@ -31,7 +31,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.kakao.network.ErrorResult;
@@ -81,7 +80,7 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
     private ImageView profile;
     private DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
-
+    private byte[] waste_bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +127,8 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
         intent_text = intent_get.getExtras().getString("intent_text");
         String temp_wasteInfoItems = (String) intent_get.getSerializableExtra("wasteInfoItems");
         waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
+        waste_bitmap = getIntent().getByteArrayExtra("image");
+
         try {
             wasteInfoItems = new JSONArray(temp_wasteInfoItems);
         } catch (JSONException e) {
@@ -196,7 +197,7 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
                 finish();
                 Intent intent = new Intent(WasteInfoActivity.this, WasteApplyActivity.class);
                 intent.putExtra("position", position);
-                addBasket(select_name, select_fee, select_size, select_no);
+                addBasket(select_name, select_fee, select_size, select_no, waste_bitmap);
                 intent.putExtra("wastebasket", waste_basket);
                 startActivity(intent);
             }
@@ -215,23 +216,25 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
 
                     public void onClick(DialogInterface dialog, int index) {
                         if (index == 0) {
-                            finish();
+
                             Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
                             intent.putExtra("intent_text", "camera");
                             intent.putExtra("position", ++position);
                             intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
-                            addBasket(select_name, select_fee, select_size, select_no);
+                            addBasket(select_name, select_fee, select_size, select_no, waste_bitmap);
                             intent.putExtra("wastebasket", waste_basket);
                             startActivity(intent);
-                        } else if (index == 1) {
                             finish();
+                        } else if (index == 1) {
+
                             Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
                             intent.putExtra("intent_text", "image");
                             intent.putExtra("position", ++position);
                             intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
-                            addBasket(select_name, select_fee, select_size, select_no);
+                            addBasket(select_name, select_fee, select_size, select_no, waste_bitmap);
                             intent.putExtra("wastebasket", waste_basket);
                             startActivity(intent);
+                            finish();
                         } else {
                             dialog.cancel();
                         }
@@ -242,8 +245,8 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
         dialog.show();    // 알림창 띄우기
     }
 
-    private void addBasket(String name, String fee, String size, int no) {
-        WasteInfoItem wasteInfoItem = new WasteInfoItem(name, size, Integer.parseInt(fee), no, "");
+    private void addBasket(String name, String fee, String size, int no, byte[] bitmap) {
+        WasteInfoItem wasteInfoItem = new WasteInfoItem(name, size, Integer.parseInt(fee), no, bitmap);
         waste_basket.add(wasteInfoItem);
     }
 

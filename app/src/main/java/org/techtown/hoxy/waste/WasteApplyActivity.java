@@ -11,6 +11,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -62,6 +65,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 public class WasteApplyActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -70,12 +74,12 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
     private ApplyInfo applyInfo;
     private EditText editText_user_name, editText_phone_num, editText_address, editText_address_detail;
     private TextView textView_count, textView_all_fee, textView_date, textView_time;
-    ;
     private ListView listView_applied_waste;
     private Button button_cancle, button_next;
     private String receiveMsg;
     private WebView mWebView; // 웹뷰 선언
     private WebSettings mWebSettings; //웹뷰세팅
+
     EditText editText;
     ApplyInfo info_apply=new ApplyInfo();
 
@@ -132,7 +136,7 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         textView_time = findViewById(R.id.edit_time);
         button_cancle = findViewById(R.id.button_cancle);
         button_next = findViewById(R.id.button_next);
-        listView_applied_waste = findViewById(R.id.waste_list_view);
+//        listView_applied_waste = findViewById(R.id.waste_list_view);
         textView_count = findViewById(R.id.tv_count);
         textView_all_fee = findViewById(R.id.tv_fee);
 
@@ -175,12 +179,35 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         System.out.println(wasteInfoItem.getWaste_name());
         System.out.println(position);
 
+
+        //////////// RecyclerView ////////////////
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+        int ITEM_SIZE = waste_basket.size();
+
+        List<Item> items = new ArrayList<>();
+        Item[] item = new Item[ITEM_SIZE];
+        for(int i = 0; i < ITEM_SIZE; i++) {
+            Bitmap waste_bitmap = BitmapFactory.decodeByteArray(waste_basket.get(i).getWaste_bitmap(), 0, waste_basket.get(i).getWaste_bitmap().length);
+            item[i] = new Item(waste_bitmap, waste_basket.get(i).getWaste_name(),waste_basket.get(i).getWaste_fee());
+        }
+        
+        for (int i = 0; i < ITEM_SIZE; i++) {
+            items.add(item[i]);
+        }
+
+        recyclerView.setAdapter(new RecyclerAdapter(getApplicationContext(), items, R.layout.activity_waste_apply));
+        ////////////////////////////////////////////
         //리스트 뷰 만들기
-        WasteListAdapter adapter;
+        /*WasteListAdapter adapter;
 
         adapter = new WasteListAdapter(waste_basket);
 
         listView_applied_waste.setAdapter(adapter);
+        */
+
         total_fee = 0;
 
         for (int i = 0; i < waste_basket.size(); i++) {
