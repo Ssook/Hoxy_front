@@ -139,7 +139,6 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
         NetworkTask networkTask = new NetworkTask(jo.toString());
         networkTask.execute();
 
-        code = "asdasd";
 
         codeView.setText(code);
 

@@ -12,8 +12,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -195,21 +198,27 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
             @Override
             public void onClick(View v) {
                 //여기서 널체크 해줘야댐
-                createApplyInfo();
-                Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
-                sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
-                System.out.println("rudfhr" + total_fee + waste_basket.size() + waste_basket.get(0).getWaste_name() + "Waste_No : "+waste_basket.get(0).getWaste_No());
+                if(total_fee!=0) {
+                    createApplyInfo();
+                    Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
+                    sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+                    System.out.println("rudfhr" + total_fee + waste_basket.size() + waste_basket.get(0).getWaste_name() + "Waste_No : " + waste_basket.get(0).getWaste_No());
 
-                intent.putExtra("apply_info",info_apply);
-                intent.putExtra("user",sp.getString("token",""));
-                intent.putExtra("total_fee", String.valueOf(total_fee));
-                intent.putExtra("size", String.valueOf(waste_basket.size()));
-                intent.putExtra("name", waste_basket.get(0).getWaste_name());
-                intent.putExtra("wastebasket", waste_basket);
+                    intent.putExtra("apply_info", info_apply);
+                    intent.putExtra("user", sp.getString("token", ""));
+                    intent.putExtra("total_fee", String.valueOf(total_fee));
+                    intent.putExtra("size", String.valueOf(waste_basket.size()));
+                    intent.putExtra("name", waste_basket.get(0).getWaste_name());
+                    intent.putExtra("wastebasket", waste_basket);
 
-                startActivity(intent);
-
-
+                    startActivity(intent);
+                }
+                else if (total_fee==0){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(WasteApplyActivity.this);
+                    builder.setTitle("알림").setMessage("수수료가 0원인 신청은 불가능합니다.");
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
             } //onClick
         }); // SetOnclickListner
 

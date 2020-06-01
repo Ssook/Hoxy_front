@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
         android:text="Code"
-        android:textSize="60dp"
+        android:textSize="40dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
