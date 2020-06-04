@@ -12,7 +12,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -33,6 +35,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -156,7 +159,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
         position = intent_get.getExtras().getInt("position");
         System.out.println(intent_text);
         waste_textView = findViewById(R.id.textView);
-        waste_textView.setText("이미지 검색중..");
+        waste_textView.setText("사진이 없습니다.");
 
 
         again_button = findViewById(R.id.button);
@@ -344,6 +347,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                             @Override
                             public void run() {
                                 progressBar.setVisibility(View.VISIBLE);
+                                waste_textView.setText("이미지 검색중...");
                             }
                         });
                     }
@@ -568,4 +572,36 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
         return false;
 
     }
+
+    @Override
+    public void onBackPressed() {
+       //Toast.makeText(this, "Back button pressed.", Toast.LENGTH_SHORT).show();
+        //super.onBackPressed();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+        builder.setTitle("메인화면으로 돌아가시겠습니까?")        // 제목 설정
+                .setMessage("현재 신청리스트가 없어집니다.")        // 메세지 설정
+                .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정
+                .setPositiveButton("확인", new DialogInterface.OnClickListener(){
+                    // 확인 버튼 클릭시 설정, 오른쪽 버튼입니다.
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        finish();
+                        Intent intent = new Intent(ResultActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        //원하는 클릭 이벤트를 넣으시면 됩니다.
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                    // 취소 버튼 클릭시 설정, 왼쪽 버튼입니다.
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        //원하는 클릭 이벤트를 넣으시면 됩니다.
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();    // 알림창 객체 생성
+        dialog.show();    // 알림창 띄우기
+
+    }
+
 }
