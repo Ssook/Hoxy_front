@@ -229,8 +229,7 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
             public void onClick(View v) {
                 //여기서 널체크 해줘야댐
 
-                if (check_validate()){
-
+                if (!check_validate()){
                     createApplyInfo();
                 saveShared(user_name, phone_num, address, address_detail);
                 if(total_fee!=0) {
