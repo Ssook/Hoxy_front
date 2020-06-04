@@ -228,8 +228,10 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
             @Override
             public void onClick(View v) {
                 //여기서 널체크 해줘야댐
-                check_validate();
-                createApplyInfo();
+
+                if (check_validate()){
+
+                    createApplyInfo();
                 saveShared(user_name, phone_num, address, address_detail);
                 if(total_fee!=0) {
                     createApplyInfo();
@@ -254,6 +256,9 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
+
+            }
+
 
 
             } //onClick
@@ -419,12 +424,13 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         }
     }
 
-    public void check_validate() {
+    public boolean check_validate() {
         user_name = editText_user_name.getText().toString();
         phone_num = editText_phone_num.getText().toString();
         address = editText_address.getText().toString();
         address_detail = editText_address_detail.getText().toString();
         date = textView_date.getText().toString();
+        time = textView_time.getText().toString();
 
         if (user_name.equals("") || phone_num.equals("") || address.equals("") || address_detail.equals("") || date.equals("")) {
             if (user_name.equals("")) {
@@ -439,19 +445,20 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
             } else if (address_detail.equals("")) {
                 editText_address_detail.requestFocus();
                 toastMessage("상세 주소를 작성해주세요.");
-            } else {
+            } else if(textView_date.equals("")){
                 textView_date.requestFocus();
                 toastMessage("배출 날짜를 작성해주세요.");
             }
+            else{
+                textView_time.requestFocus();
+                toastMessage("배출 시각을 작성해주세요");
+            }
         } //입력이 하나라도 비었을때
         else {
-            System.out.println(user_name);
-            finish();
-            Intent intent = new Intent(WasteApplyActivity.this, MainActivity.class);
-            startActivity(intent);
+            return false;
         }
 
-
+        return true;
     }
 
 
