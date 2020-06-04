@@ -44,7 +44,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         final Item item = items.get(position);
         /*Drawable drawable = ContextCompat.getDrawable(context, item.getImage());
         holder.image.setBackground(drawable);*/
-        holder.image.setImageBitmap(item.getImage());
+//        holder.image.setImageBitmap(item.getImage());
         holder.title.setText(item.getTitle());
         holder.fee.setText(String.valueOf(item.getFee()));
         holder.cardview.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +53,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 Toast.makeText(context, item.getTitle(), Toast.LENGTH_SHORT).show();
             }
         });
-        setAnimation(holder.image, position);
+//        setAnimation(holder.image, position);
     }
 
     @Override
@@ -62,14 +62,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView image;
+//        ImageView image;
         TextView title;
         CardView cardview;
         TextView fee;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.image);
+//            image = (ImageView) itemView.findViewById(R.id.image);
             title = (TextView) itemView.findViewById(R.id.title);
             cardview = (CardView) itemView.findViewById(R.id.cardview);
             fee = itemView.findViewById(R.id.fee);

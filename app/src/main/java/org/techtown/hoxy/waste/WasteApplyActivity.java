@@ -190,8 +190,8 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         List<Item> items = new ArrayList<>();
         Item[] item = new Item[ITEM_SIZE];
         for(int i = 0; i < ITEM_SIZE; i++) {
-            Bitmap waste_bitmap = BitmapFactory.decodeByteArray(waste_basket.get(i).getWaste_bitmap(), 0, waste_basket.get(i).getWaste_bitmap().length);
-            item[i] = new Item(waste_bitmap, waste_basket.get(i).getWaste_name(),waste_basket.get(i).getWaste_fee());
+//            Bitmap waste_bitmap = BitmapFactory.decodeByteArray(waste_basket.get(i).getWaste_bitmap(), 0, waste_basket.get(i).getWaste_bitmap().length);
+            item[i] = new Item( waste_basket.get(i).getWaste_name(),waste_basket.get(i).getWaste_fee());
         }
         
         for (int i = 0; i < ITEM_SIZE; i++) {
