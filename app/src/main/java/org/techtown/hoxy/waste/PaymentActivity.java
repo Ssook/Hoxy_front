@@ -389,6 +389,8 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
                 String code=url.substring(6,url.length());
                 intent.putExtra("code",code);
                 intent.putExtra("wastebasket", waste_basket);
+                intent.putExtra("total_fee",total_fee);
+                intent.putExtra("size",size);
                 intent.putExtra("info_apply", info_apply);
 
 
