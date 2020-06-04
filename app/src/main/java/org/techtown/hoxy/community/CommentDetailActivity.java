@@ -16,12 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+
 import android.widget.BaseAdapter;
-import android.widget.Button;
+
 import android.widget.EditText;
-import android.widget.Filter;
-import android.widget.Filterable;
+
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,8 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +36,6 @@ import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -51,16 +48,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.kakao.network.ErrorResult;
-import com.kakao.network.NetworkTask;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.UnLinkResponseCallback;
 import com.kakao.util.helper.log.Logger;
 
 import org.techtown.hoxy.RequestHttpURLConnection;
-import org.techtown.hoxy.community.CommentItem;
+
 import org.techtown.hoxy.login.LoginActivity;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Text;
+
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -75,11 +70,11 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.ParseException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
 
 public class CommentDetailActivity extends AppCompatActivity implements Serializable, NavigationView.OnNavigationItemSelectedListener {
    // private PostItem item;
@@ -134,7 +129,34 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         super.onCreate(savedInstanceState);
         initLayoutPostWriteActivity();//init
 
-        /////////////////////////////////////////////
+
+        findView();//View들과 연결
+
+
+        //Intent intent = getIntent();
+        //adapter = new CommentAdapter();
+
+        //select_post_detail
+        //postListActivity로부터 선택된 게시판의 post-no을 받아 서버에서 추가 적인 정보들을 가져옴
+        //추후 함수화
+
+        post_List_post_no = getIntent().getIntExtra("post_no", 0);
+        assess_reg_userId = getIntent().getStringExtra("user_id");
+       // System.out.println("이름 : "+assess_reg_userId);
+        userAssess();
+        connect_server();
+        writeComment();
+
+
+
+
+
+    }
+    public void initLayoutPostWriteActivity() {           //레이아웃 정의
+        setContentView(R.layout.activity_comment_detail);
+        /*setView_Toolbar();
+        setView_NavHeader();
+        setView_Drawer();*/
         Toolbar toolbar = findViewById(R.id.toolbar);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         setSupportActionBar(toolbar);
@@ -154,62 +176,6 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
                 .build();
 
         navigationView.setNavigationItemSelectedListener(this);
-/////////////////////////////////////////////////////
-        findView();//View들과 연결
-
-
-        //Intent intent = getIntent();
-        //adapter = new CommentAdapter();
-
-        //select_post_detail
-        //postListActivity로부터 선택된 게시판의 post-no을 받아 서버에서 추가 적인 정보들을 가져옴
-        //추후 함수화
-
-        post_List_post_no = getIntent().getIntExtra("post_no", 0);
-        assess_reg_userId = getIntent().getStringExtra("user_id");
-        System.out.println("이름 : "+assess_reg_userId);
-        userAssess();
-        JSONObject jsonObject = new JSONObject();
-        //JSONObject jsonObject_comment = new JSONObject();
-
-        try {
-            jsonObject.put("board_no",post_List_post_no);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        NetworkTask networkTask = new NetworkTask(this, jsonObject.toString());
-        networkTask.execute();
-
-
-        /*
-        * 버튼 함수 만들장button_action
-        *   */
-        ///////listview
-        listView = (ListView) findViewById(R.id.detailCommentList);
-        //CommentList서버에서 받아오기
-        Network_comment_select_task comment_select_task = new Network_comment_select_task("select_board_review");
-        comment_select_task.execute();
-
-        /*
-        텍스트 입력 후 버튼 선택시 서버에 댓글을 보냄
-        * */
-        writeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                insertCommentData();
-            }
-        });
-
-
-
-
-    }
-    public void initLayoutPostWriteActivity() {           //레이아웃 정의
-        setContentView(R.layout.activity_comment_detail);
-        /*setView_Toolbar();
-        setView_NavHeader();
-        setView_Drawer();*/
 
     }
     private void setView_Drawer(Toolbar toolbar) {
@@ -304,7 +270,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         content = (TextView) findViewById(R.id.title2);
         content_image = (ImageView) findViewById(R.id.content_image);
         userImage = (ImageView) findViewById(R.id.userImage);
-
+        listView = (ListView) findViewById(R.id.detailCommentList);
         writeButton = (ImageButton) findViewById(R.id.writeButton);
         othersComment = (EditText) findViewById(R.id.othersComment);
         post_reg_date = (TextView) findViewById(R.id.reg_date);
@@ -323,6 +289,43 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
 
     }
 
+    public void connect_server(){
+        JSONObject jsonObject = new JSONObject();
+        //JSONObject jsonObject_comment = new JSONObject();
+
+        try {
+            jsonObject.put("board_no",post_List_post_no);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        NetworkTask networkTask = new NetworkTask(this, jsonObject.toString());
+        networkTask.execute();
+
+
+        /*
+         * 버튼 함수 만들장button_action
+         *   */
+        ///////listview
+
+        //CommentList서버에서 받아오기
+        Network_comment_select_task comment_select_task = new Network_comment_select_task("select_board_review");
+        comment_select_task.execute();
+
+
+    }
+    public void writeComment(){
+         /*
+        텍스트 입력 후 버튼 선택시 서버에 댓글을 보냄
+        * */
+        writeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                insertCommentData();
+            }
+        });
+
+    }
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(),CommentAllViewActivity.class);
         finish();

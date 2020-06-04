@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:background="#FFFFFF"
     tools:context=".CodeActivity"
-    tools:showIn="@layout/app_bar_code">
+    tools:showIn="@layout/app_bar_mypage">
 
     <fragment
         android:id="@+id/nav_host_fragment"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
         android:text="Code"
-        android:textSize="60dp"
+        android:textSize="40dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
