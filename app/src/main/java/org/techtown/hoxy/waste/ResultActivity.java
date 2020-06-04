@@ -212,6 +212,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
             public void onClick(View v) {
                 if (waste_basket == null) {
                     waste_basket = new ArrayList<WasteInfoItem>();
+                    WasteImage.initBitmaps();
                 }
 
 
