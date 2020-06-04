@@ -91,7 +91,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
     private Button again_button, next_button;
 
     private Bitmap waste_bitmap = null;        //사진이 저장되는 변수
-//    private Bitmap bitmap2 =null;
+   private Bitmap bitmap2 =null;
     private String trashName;
     private String send_data;
     private String files;
@@ -207,8 +207,11 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (waste_basket == null)
+                if (waste_basket == null) {
                     waste_basket = new ArrayList<WasteInfoItem>();
+                }
+
+
 
 
                 Intent intent2 = new Intent(ResultActivity.this, WasteInfoActivity.class);
@@ -220,6 +223,8 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 System.out.print("rudfhr3");
                 intent2.putExtra("position", position);
                 System.out.print("rudfhr4");
+                WasteImage.setBitmaps(bitmap2);
+
             /*    ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 System.out.print("rudfhr5");
                 bitmap2.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -264,7 +269,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                         // 선택한 이미지에서 비트맵 생성
                         InputStream in = getContentResolver().openInputStream(Objects.requireNonNull(data.getData()));
                         waste_bitmap = BitmapFactory.decodeStream(in);
-//                        bitmap2 = waste_bitmap;
+                       bitmap2 = waste_bitmap;
                         image_send(waste_bitmap);
 
                         assert in != null;
@@ -281,7 +286,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 if (resultCode == RESULT_OK && data.hasExtra("data")) {
                     waste_bitmap = (Bitmap) data.getExtras().get("data");
                     if (waste_bitmap != null) {
-//                        bitmap2 = waste_bitmap;
+                           bitmap2 = waste_bitmap;
                         image_send(waste_bitmap);
                     }
 
