@@ -3,16 +3,16 @@ package org.techtown.hoxy.waste;
 import android.graphics.Bitmap;
 
 public class Item  {
-//    Bitmap image;
+    Bitmap image;
     String title;
 
 
 
     int fee;
 
-//    Bitmap getImage() {
-//        return this.image;
-//    }
+   Bitmap getImage() {
+       return this.image;
+   }
     String getTitle() {
         return this.title;
     }
@@ -20,8 +20,8 @@ public class Item  {
         return fee;
     }
 
-    public Item( String title, int fee) {
-//        this.image = image;
+    public Item( String title, int fee, Bitmap image) {
+        this.image = image;
         this.title = title;
         this.fee = fee;
     }

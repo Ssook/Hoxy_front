@@ -42,18 +42,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Item item = items.get(position);
+        String feeString;
         /*Drawable drawable = ContextCompat.getDrawable(context, item.getImage());
         holder.image.setBackground(drawable);*/
-//        holder.image.setImageBitmap(item.getImage());
+        holder.image.setImageBitmap(item.getImage());
         holder.title.setText(item.getTitle());
-        holder.fee.setText(String.valueOf(item.getFee()));
+        feeString = item.getFee() + "원";
+        holder.fee.setText(feeString);
         holder.cardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, item.getTitle(), Toast.LENGTH_SHORT).show();
             }
         });
-//        setAnimation(holder.image, position);
+        setAnimation(holder.image, position);
     }
 
     @Override
@@ -62,14 +64,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-//        ImageView image;
+        ImageView image;
         TextView title;
         CardView cardview;
         TextView fee;
 
         public ViewHolder(View itemView) {
             super(itemView);
-//            image = (ImageView) itemView.findViewById(R.id.image);
+           image = (ImageView) itemView.findViewById(R.id.image);
             title = (TextView) itemView.findViewById(R.id.title);
             cardview = (CardView) itemView.findViewById(R.id.cardview);
             fee = itemView.findViewById(R.id.fee);
