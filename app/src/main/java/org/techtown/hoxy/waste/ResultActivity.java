@@ -90,15 +90,13 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
     private TextView waste_textView;
     private Button again_button, next_button;
 
-    private Bitmap waste_bitmap;        //사진이 저장되는 변수
-    private Bitmap bitmap2;
+    private Bitmap waste_bitmap = null;        //사진이 저장되는 변수
+//    private Bitmap bitmap2 =null;
     private String trashName;
     private String send_data;
     private String files;
     private String deep_learning_answer;
 
-    ////추가
-    private String wasteInfoItems;
     private int position = 0;
     private ArrayList<WasteInfoItem> waste_basket;
 
@@ -152,7 +150,8 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
         //인텐트 받아오기
         Intent intent_get = getIntent();
         intent_text = Objects.requireNonNull(intent_get.getExtras()).getString("intent_text");
-        wasteInfoItems = (String) intent_get.getSerializableExtra("wasteInfoItems");
+        ////추가
+        String wasteInfoItems = (String) intent_get.getSerializableExtra("wasteInfoItems");
         waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
         position = intent_get.getExtras().getInt("position");
         System.out.println(intent_text);
@@ -211,17 +210,25 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 if (waste_basket == null)
                     waste_basket = new ArrayList<WasteInfoItem>();
 
-                finish();
-                Intent intent = new Intent(ResultActivity.this, WasteInfoActivity.class);
-                intent.putExtra("intent_text", intent_text);
-                intent.putExtra("wasteInfoItems", deep_learning_answer);
-                intent.putExtra("wastebasket", waste_basket);
-                intent.putExtra("position", position);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+                Intent intent2 = new Intent(ResultActivity.this, WasteInfoActivity.class);
+                intent2.putExtra("intent_text", intent_text);
+                System.out.print("rudfhr1");
+                intent2.putExtra("wasteInfoItems", deep_learning_answer);
+                System.out.print("rudfhr2");
+                intent2.putExtra("wastebasket", waste_basket);
+                System.out.print("rudfhr3");
+                intent2.putExtra("position", position);
+                System.out.print("rudfhr4");
+            /*    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                System.out.print("rudfhr5");
                 bitmap2.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                System.out.print("rudfhr6");
                 byte[] byteArray = stream.toByteArray();
-                intent.putExtra("image",byteArray);
-                startActivity(intent);
+                System.out.print("rudfhr7");
+                intent2.putExtra("image",byteArray);
+                System.out.print("rudfhr8");*/
+                startActivity(intent2);
             }
         });
         //////////////////
@@ -243,6 +250,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -254,11 +262,12 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 if (resultCode == RESULT_OK) {
                     try {
                         // 선택한 이미지에서 비트맵 생성
-                        InputStream in = getContentResolver().openInputStream(data.getData());
+                        InputStream in = getContentResolver().openInputStream(Objects.requireNonNull(data.getData()));
                         waste_bitmap = BitmapFactory.decodeStream(in);
-                        bitmap2 = waste_bitmap;
+//                        bitmap2 = waste_bitmap;
                         image_send(waste_bitmap);
 
+                        assert in != null;
                         in.close();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -272,7 +281,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 if (resultCode == RESULT_OK && data.hasExtra("data")) {
                     waste_bitmap = (Bitmap) data.getExtras().get("data");
                     if (waste_bitmap != null) {
-                        bitmap2 = waste_bitmap;
+//                        bitmap2 = waste_bitmap;
                         image_send(waste_bitmap);
                     }
 

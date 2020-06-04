@@ -111,14 +111,15 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
     private final int hour = calendar.get(Calendar.HOUR_OF_DAY);//시간을 24시간으로
     private final int minute = calendar.get(Calendar.MINUTE);
 
-    Calendar minDate = Calendar.getInstance();
+
+
 
     DatePickerDialog.OnDateSetListener setDateListener;
     TimePickerDialog.OnTimeSetListener setTimeListner;
 
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
-    private SharedPreferences sp;
+    private SharedPreferences sp, sp2;
     private View nav_header_view;
     private TextView nav_header_id_text;
     private ImageView profile;
@@ -146,9 +147,11 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         //
         Toolbar toolbar = findViewById(R.id.toolbar5);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        sp2 = getSharedPreferences("apply", Activity.MODE_PRIVATE);
         setSupportActionBar(toolbar);
         setView_NavHeader();
         setView_Profile();
+        setApplyInfo();
 
 
         drawer = findViewById(R.id.drawer_layout);
@@ -193,8 +196,8 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         List<Item> items = new ArrayList<>();
         Item[] item = new Item[ITEM_SIZE];
         for(int i = 0; i < ITEM_SIZE; i++) {
-            Bitmap waste_bitmap = BitmapFactory.decodeByteArray(waste_basket.get(i).getWaste_bitmap(), 0, waste_basket.get(i).getWaste_bitmap().length);
-            item[i] = new Item(waste_bitmap, waste_basket.get(i).getWaste_name(),waste_basket.get(i).getWaste_fee());
+//            Bitmap waste_bitmap = BitmapFactory.decodeByteArray(waste_basket.get(i).getWaste_bitmap(), 0, waste_basket.get(i).getWaste_bitmap().length);
+            item[i] = new Item( waste_basket.get(i).getWaste_name(),waste_basket.get(i).getWaste_fee());
         }
         
         for (int i = 0; i < ITEM_SIZE; i++) {
@@ -225,10 +228,15 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
             @Override
             public void onClick(View v) {
                 //여기서 널체크 해줘야댐
+                check_validate();
+                createApplyInfo();
+                saveShared(user_name, phone_num, address, address_detail);
                 if(total_fee!=0) {
                     createApplyInfo();
                     Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
                     sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+                    sp2 = getSharedPreferences("apply", Activity.MODE_PRIVATE);
+
                     System.out.println("rudfhr" + total_fee + waste_basket.size() + waste_basket.get(0).getWaste_name() + "Waste_No : " + waste_basket.get(0).getWaste_No());
 
                     intent.putExtra("apply_info", info_apply);
@@ -246,6 +254,8 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
+
+
             } //onClick
         }); // SetOnclickListner
 
@@ -266,6 +276,7 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
             public void onClick(View v) {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(
                         WasteApplyActivity.this, setDateListener, year, month, day);
+                Calendar minDate = Calendar.getInstance();
                 minDate.add(Calendar.DATE, 1); //최소 날짜가 하루 다음
                 datePickerDialog.getDatePicker().setMinDate(minDate.getTime().getTime()); // 최소 날짜 설정
                 datePickerDialog.show();
@@ -540,6 +551,39 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
 
 
     }
+    private  void setApplyInfo(){
+        editText_user_name = findViewById(R.id.edit_user_name);
+        editText_phone_num = findViewById(R.id.edit_phone_num);
+        editText_address = findViewById(R.id.edit_address);
+        editText_address_detail = findViewById(R.id.edit_address_detail);
+
+
+
+        new Thread() {
+            public void run() {
+                System.out.println("!!!!test!!!!" + sp2);
+                user_name = sp2.getString("name", "");
+                phone_num = sp2.getString( "phone_num" , "");
+                address = sp2.getString("address", "");
+                address_detail = sp2.getString("address2", "");
+
+                Handler mHandler = new Handler(Looper.getMainLooper());
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 사용하고자 하는 코드
+                           editText_user_name.setText(user_name);
+                           editText_phone_num.setText(phone_num);
+                           editText_address.setText(address);
+                           editText_address_detail.setText(address_detail);
+                    }
+                }, 0);
+
+
+            }
+        }.start();
+
+    }
 
     private void setView_Profile() {//은석
         profile = nav_header_view.findViewById(R.id.profileimage);
@@ -618,6 +662,18 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
 
     }
 
+    private void saveShared(String name, String phone_num, String address, String address_detail) {
+        SharedPreferences pref = getSharedPreferences("apply", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("name", name);
+        editor.putString("phone_num", phone_num);
+        editor.putString("address", address);
+        editor.putString("address2", address_detail);
+
+        System.out.println( name + phone_num + address + address_detail);
+
+        editor.apply();
+    }
 
 }
 

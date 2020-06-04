@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -70,7 +72,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+
 import android.content.SharedPreferences;
+
 import static java.lang.Integer.parseInt;
 
 
@@ -94,27 +98,14 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
     ActionBarDrawerToggle toggle;
     private ArrayList<WasteInfoItem> waste_basket;
     String user_no;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mypage);
 //////////////////////////////////////////
-        ListView listview ;
-        MypageListAdapter adapter;
 
-        // Adapter 생성
-        adapter = new MypageListAdapter() ;
-
-        // 리스트뷰 참조 및 Adapter달기
-        listview = (ListView) findViewById(R.id.listview1);
-        listview.setAdapter(adapter);
-
-        // 첫 번째 아이템 추가.
-        adapter.addItem("1","2","3","4","5");
-        adapter.addItem("10","20","30","40","50");
-        adapter.addItem("100","200","300","400","500");
-
-    ///////////////////////////////////
+        ///////////////////////////////////
         http_task http_task = new http_task("select_waste_apply_info");
         http_task.execute();
 
@@ -129,7 +120,7 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
 
         Toolbar toolbar = findViewById(R.id.toolbar6);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
-        user_no=sp.getString("token","");
+        user_no = sp.getString("token", "");
 
         setSupportActionBar(toolbar);
         setView_NavHeader();
@@ -158,7 +149,6 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
 
 
     }
-
 
 
     public class http_task extends AsyncTask<String, String, String> {
@@ -204,7 +194,7 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
                 //   서버로 값 전송
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
-                String data = "data={\"user_no\":"+"\""+user_no+"\""+"}";
+                String data = "data={\"user_no\":" + "\"" + user_no + "\"" + "}";
                 System.out.println("ssssss" + data);
                 buffer.append(data);
 
@@ -237,22 +227,17 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected void onPostExecute(String result) {
-            JSONObject jo1 = new JSONObject();
-            System.out.println("ssook" + result);
+            JSONArray ja = null;
             try {
-                jo1 = new JSONObject(result);
+                ja = new JSONArray(result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            System.out.println("err2");
-            System.out.println(result + "ssook");
+            setMypageList(ja);
 
             ////
 
             ////
-
-
-
         }
     }
 
@@ -311,6 +296,31 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
                 || super.onSupportNavigateUp();
     }
 
+    private void setMypageList(JSONArray ja){
+        ListView listview;
+        MypageListAdapter adapter;
+
+        // Adapter 생성
+        adapter = new MypageListAdapter();
+
+        // 리스트뷰 참조 및 Adapter달기
+        listview = (ListView) findViewById(R.id.listview1);
+        listview.setAdapter(adapter);
+
+        // 첫 번째 아이템 추가.
+
+
+        for (int i = 0; i < ja.length(); i++) {
+            try {
+                JSONObject jo=new JSONObject(ja.get(i).toString());
+                adapter.addItem(jo.getString("apply_info_code"), jo.getString("apply_info_waste_type_name"), jo.getString("apply_info_reg_date"), jo.getString("apply_info_fee"), jo.getString("apply_info_address"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
     private void setView_NavHeader() {//은석
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
@@ -382,8 +392,7 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
             // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
-        }
-        else if (id == R.id.nav_community) {
+        } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
