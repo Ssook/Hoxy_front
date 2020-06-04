@@ -193,14 +193,14 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             // intent.putExtra("태그","전체");
-            finish();
+
             startActivity(intent);
+            finish();
 
         }else if (id == R.id.nav_slideshow) {
             Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
             startActivity(intent);
             finish();
-
         }
         drawer = findViewById(R.id.drawer_layout);//??
         drawer.closeDrawer(GravityCompat.START);

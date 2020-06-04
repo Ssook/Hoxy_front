@@ -175,7 +175,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
                 R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-
+        //navigationView.
         navigationView.setNavigationItemSelectedListener(this);
 
     }
@@ -260,12 +260,10 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
-
         }else if (id == R.id.nav_slideshow) {
             Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
             startActivity(intent);
             finish();
-
         }
         drawer = findViewById(R.id.drawer_layout);//??
         drawer.closeDrawer(GravityCompat.START);
@@ -560,6 +558,8 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             getMenuInflater().inflate(R.menu.detail_main2, menu);
         }
 
+
+
         return true;
     }
     //actionbar 관련 코드
@@ -694,7 +694,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
 
             }//result not null
             else {
-               Toast.makeText(getApplicationContext(), "댓글 없음.", Toast.LENGTH_SHORT).show();
+               //Toast.makeText(getApplicationContext(), "댓글 없음.", Toast.LENGTH_SHORT).show();
             }
         }//onPostExecute func()
     }//NetWorkTask Class
