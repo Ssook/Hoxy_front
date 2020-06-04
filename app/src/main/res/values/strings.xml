@@ -10,7 +10,7 @@
 
     <string name="menu_home">메인화면</string>
     <string name="menu_gallery">커뮤니티</string>
-    <string name="menu_slideshow">이용가이드</string>
+    <string name="menu_slideshow">배출 신청 조회</string>
 
     <string name="home_second">Home Second</string>
     <string name="title_activity_payment">PaymentActivity</string>

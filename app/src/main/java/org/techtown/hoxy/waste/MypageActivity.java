@@ -1,9 +1,12 @@
 package org.techtown.hoxy.waste;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.Context;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -12,24 +15,29 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.net.http.SslError;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
@@ -41,36 +49,40 @@ import com.kakao.util.helper.log.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import org.techtown.hoxy.CodeActivity;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
-import org.techtown.hoxy.TrashName;
+import org.techtown.hoxy.RequestHttpURLConnection;
 import org.techtown.hoxy.community.CommentAllViewActivity;
 import org.techtown.hoxy.login.LoginActivity;
 
+
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import android.content.SharedPreferences;
+import static java.lang.Integer.parseInt;
 
-public class WasteInfoActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private String wasteName = TrashName.getTrash();
-    String select_name, select_size, select_fee;
-    int select_no;
-    ArrayList<String> spinnerArray = new ArrayList<String>();
-    private Button next_button, cancle_button, again_button;
-    private TextView waste_code_textView, waste_fee_textView;
-    //  private String waste_code, waste_fee;
-    private Spinner waste_size_spinner;
-    private String intent_text;
-    //추가
-    private JSONArray wasteInfoItems;
-    private int position;
-    private ArrayList<Integer> waste_type_no = new ArrayList<>();
-    private ArrayList<String> waste_name = new ArrayList<>(), waste_fee = new ArrayList<>(), waste_size = new ArrayList<>();
 
-    private ArrayList<WasteInfoItem> waste_basket;
-    //추가
+public class MypageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private WebView webView; // 웹뷰 선언
+    private String total_fee;
+    private String size;
+    private String name;
+    private String user_name;
+    public Context mContext;
+    private ApplyInfo info_apply;
+    private ProgressBar progressBar;
 
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
@@ -80,22 +92,45 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
     private ImageView profile;
     private DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
-    private byte[] waste_bitmap;
-
+    private ArrayList<WasteInfoItem> waste_basket;
+    String user_no;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wasteinfo);
+        setContentView(R.layout.activity_mypage);
+//////////////////////////////////////////
+        ListView listview ;
+        MypageListAdapter adapter;
 
-        waste_size_spinner = (Spinner) findViewById(R.id.spinner);
-        waste_code_textView = findViewById(R.id.textView2);
-        waste_fee_textView = findViewById(R.id.textView4);
-        cancle_button = findViewById(R.id.button3);
-        again_button = findViewById(R.id.button6);
-        next_button = findViewById(R.id.button5);
+        // Adapter 생성
+        adapter = new MypageListAdapter() ;
 
-        Toolbar toolbar = findViewById(R.id.toolbar4);
+        // 리스트뷰 참조 및 Adapter달기
+        listview = (ListView) findViewById(R.id.listview1);
+        listview.setAdapter(adapter);
+
+        // 첫 번째 아이템 추가.
+        adapter.addItem("1","2","3","4","5");
+        adapter.addItem("10","20","30","40","50");
+        adapter.addItem("100","200","300","400","500");
+
+    ///////////////////////////////////
+        http_task http_task = new http_task("select_waste_apply_info");
+        http_task.execute();
+
+//        Button but=findViewById(R.id.button_asd);
+//        but.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                http_task http_task = new http_task("KakaoPay");
+//                http_task.execute();
+//            }
+//        });
+
+        Toolbar toolbar = findViewById(R.id.toolbar6);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        user_no=sp.getString("token","");
+
         setSupportActionBar(toolbar);
         setView_NavHeader();
         setView_Profile();
@@ -122,133 +157,105 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
 //
 
 
-        //전 화면에서 받아오기
-        Intent intent_get = getIntent();
-        intent_text = intent_get.getExtras().getString("intent_text");
-        String temp_wasteInfoItems = (String) intent_get.getSerializableExtra("wasteInfoItems");
-        waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
-        waste_bitmap = getIntent().getByteArrayExtra("image");
+    }
 
-        try {
-            wasteInfoItems = new JSONArray(temp_wasteInfoItems);
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+
+    public class http_task extends AsyncTask<String, String, String> {
+        String sub_url = "";
+
+        http_task(String sub_url) {
+            this.sub_url = sub_url;
         }
-        position = intent_get.getExtras().getInt("position");
-        //System.out.println(wasteInfoItem.getWaste_name());
-        System.out.println(position);
 
-        for (int i = 0; i < wasteInfoItems.length(); i++) {
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "";
             try {
-                JSONObject jo_data = wasteInfoItems.getJSONObject(i);
-                waste_name.add(jo_data.getString("waste_type_kor_name"));
-                waste_type_no.add(jo_data.getInt("waste_type_no"));
-                waste_size.add(jo_data.getString("waste_type_size"));
-                waste_fee.add(jo_data.getString("waste_type_fee"));
+
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        // runOnUiThread를 추가하고 그 안에 UI작업을 한다.
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                progressBar.setVisibility(View.VISIBLE);
+//                            }
+//                        });
+//                    }
+//                }).start();
+
+                String str = "";
+                String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/select_waste_apply_info/";
+                System.out.println("str_URL : " + str_URL);
+                URL url = new URL(str_URL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                //--------------------------
+                //   전송 모드 설정 - 기본적인 설정이다
+                //--------------------------
+                conn.setDefaultUseCaches(false);
+                conn.setDoInput(true);                         // 서버에서 읽기 모드 지정
+                conn.setDoOutput(true);                       // 서버로 쓰기 모드 지정
+                conn.setRequestMethod("POST");         // 전송 방식은 POST
+
+                // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+                //   서버로 값 전송
+                //--------------------------
+                StringBuffer buffer = new StringBuffer();
+                String data = "data={\"user_no\":"+"\""+user_no+"\""+"}";
+                System.out.println("ssssss" + data);
+                buffer.append(data);
+
+                OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+                PrintWriter writer = new PrintWriter(outStream);
+                writer.write(buffer.toString());
+                writer.flush();
+
+                //--------------------------
+                //   서버에서 전송받기
+                //--------------------------
+                InputStreamReader tmp = new InputStreamReader(conn.getInputStream(), "UTF-8");
+                BufferedReader reader = new BufferedReader(tmp);
+                StringBuilder builder = new StringBuilder();
+                while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                    builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
+                }
+
+                res = builder.toString();
+                res = res.replace("&#39;", "\"");
+                System.out.println("ssook!!res : " + res);
+            } catch (MalformedURLException ex) {
+                ex.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return res;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(String result) {
+            JSONObject jo1 = new JSONObject();
+            System.out.println("ssook" + result);
+            try {
+                jo1 = new JSONObject(result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            System.out.println("err2");
+            System.out.println(result + "ssook");
+
+            ////
+
+            ////
+
 
 
         }
-
-
-        //스피너 아이템 추가
-        // spinnerArray.add(wasteInfoItem.getWaste_size());
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, waste_size);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        waste_size_spinner.setAdapter(adapter);
-        waste_size_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                waste_code_textView.setText(waste_name.get(position));
-                waste_fee_textView.setText(waste_fee.get(position));
-                select_fee = waste_fee.get(position);
-                select_size = waste_size.get(position);
-                select_name = waste_name.get(position);
-                select_no = waste_type_no.get(position);
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //textView.setText(trashName);
-            }
-        });
-
-
-        //// 취소
-        cancle_button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                finish();
-                Intent intent = new Intent(WasteInfoActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-        //// 다음
-        next_button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                finish();
-                Intent intent = new Intent(WasteInfoActivity.this, WasteApplyActivity.class);
-                intent.putExtra("position", position);
-                addBasket(select_name, select_fee, select_size, select_no, waste_bitmap);
-                intent.putExtra("wastebasket", waste_basket);
-                startActivity(intent);
-            }
-        });
-
-
     }
 
-    //한번 더
-    public void OnClickHandler(View view) {
-        final CharSequence[] items = {"카메라", "갤러리", "취소"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("방법 선택")        // 제목 설정
-
-                .setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
-
-                    public void onClick(DialogInterface dialog, int index) {
-                        if (index == 0) {
-
-                            Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
-                            intent.putExtra("intent_text", "camera");
-                            intent.putExtra("position", ++position);
-                            intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
-                            addBasket(select_name, select_fee, select_size, select_no, waste_bitmap);
-                            intent.putExtra("wastebasket", waste_basket);
-                            startActivity(intent);
-                            finish();
-                        } else if (index == 1) {
-
-                            Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
-                            intent.putExtra("intent_text", "image");
-                            intent.putExtra("position", ++position);
-                            intent.putExtra("wasteInfoItems", wasteInfoItems.toString());
-                            addBasket(select_name, select_fee, select_size, select_no, waste_bitmap);
-                            intent.putExtra("wastebasket", waste_basket);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            dialog.cancel();
-                        }
-                    }
-                });
-
-        AlertDialog dialog = builder.create();    // 알림창 객체 생성
-        dialog.show();    // 알림창 띄우기
-    }
-
-    private void addBasket(String name, String fee, String size, int no, byte[] bitmap) {
-        WasteInfoItem wasteInfoItem = new WasteInfoItem(name, size, Integer.parseInt(fee), no, bitmap);
-        waste_basket.add(wasteInfoItem);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -375,7 +382,8 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
             // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
-        } else if (id == R.id.nav_community) {
+        }
+        else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -390,5 +398,5 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
         return false;
 
     }
-}
 
+}

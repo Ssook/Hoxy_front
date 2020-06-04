@@ -130,7 +130,7 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
             jo.put("apply_info_waste_type_no",waste_basket.get(0).getWaste_No());
             jo.put("apply_info_fee",Integer.toString(waste_basket.get(0).getWaste_fee()));
             jo.put("apply_info_code",code);
-            jo.put("apply_info_user_no",user_id);
+            jo.put("apply_info_user_no",user_id.toString());
             jo.put("apply_info_reg_date",info_apply.getApply_date());
             System.out.println("info_apply : " + jo.toString());
         } catch (JSONException e) {

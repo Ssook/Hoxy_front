@@ -37,6 +37,7 @@ import com.kakao.util.helper.log.Logger;
 
 import org.techtown.hoxy.community.CommentAllViewActivity;
 import org.techtown.hoxy.login.LoginActivity;
+import org.techtown.hoxy.waste.MypageActivity;
 import org.techtown.hoxy.waste.ResultActivity;
 
 import java.io.BufferedInputStream;
@@ -316,7 +317,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_slideshow) {
-
+            Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
+            startActivity(intent);
+            finish();
         }
         drawer = findViewById(R.id.drawer_layout);//??
         drawer.closeDrawer(GravityCompat.START);

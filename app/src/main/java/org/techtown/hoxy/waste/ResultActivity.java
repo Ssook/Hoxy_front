@@ -91,6 +91,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
     private Button again_button, next_button;
 
     private Bitmap waste_bitmap;        //사진이 저장되는 변수
+    private Bitmap bitmap2;
     private String trashName;
     private String send_data;
     private String files;
@@ -193,6 +194,11 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 intent.putExtra("intent_text", intent_text);
                 intent.putExtra("position", position);
                 intent.putExtra("wasteInfoItems", deep_learning_answer);
+                if(waste_basket == null) {
+                    waste_basket = new ArrayList<WasteInfoItem>();
+                }
+
+                intent.putExtra("wastebasket", waste_basket);
 
                 startActivity(intent);
             }
@@ -211,6 +217,10 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 intent.putExtra("wasteInfoItems", deep_learning_answer);
                 intent.putExtra("wastebasket", waste_basket);
                 intent.putExtra("position", position);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap2.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                intent.putExtra("image",byteArray);
                 startActivity(intent);
             }
         });
@@ -246,6 +256,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                         // 선택한 이미지에서 비트맵 생성
                         InputStream in = getContentResolver().openInputStream(data.getData());
                         waste_bitmap = BitmapFactory.decodeStream(in);
+                        bitmap2 = waste_bitmap;
                         image_send(waste_bitmap);
 
                         in.close();
@@ -261,12 +272,14 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 if (resultCode == RESULT_OK && data.hasExtra("data")) {
                     waste_bitmap = (Bitmap) data.getExtras().get("data");
                     if (waste_bitmap != null) {
+                        bitmap2 = waste_bitmap;
                         image_send(waste_bitmap);
                     }
 
                 }// if result code
 
         }
+
     }
 
     public void image_send(Bitmap waste_bitmap) {
