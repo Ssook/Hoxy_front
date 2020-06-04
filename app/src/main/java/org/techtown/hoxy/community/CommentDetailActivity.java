@@ -55,6 +55,7 @@ import com.kakao.util.helper.log.Logger;
 import org.techtown.hoxy.RequestHttpURLConnection;
 
 import org.techtown.hoxy.login.LoginActivity;
+import org.techtown.hoxy.waste.MypageActivity;
 
 
 import java.io.BufferedInputStream;
@@ -253,8 +254,17 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             finish();
 
         } else if (id == R.id.nav_community) {
+            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            // intent.putExtra("태그","전체");
+            startActivity(intent);
+            finish();
 
         }else if (id == R.id.nav_slideshow) {
+            Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
+            startActivity(intent);
+            finish();
 
         }
         drawer = findViewById(R.id.drawer_layout);//??

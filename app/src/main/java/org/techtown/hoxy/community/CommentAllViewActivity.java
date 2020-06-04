@@ -58,6 +58,7 @@ import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
 import org.techtown.hoxy.TrashName;
 import org.techtown.hoxy.login.LoginActivity;
+import org.techtown.hoxy.waste.MypageActivity;
 import org.techtown.hoxy.waste.ResultActivity;
 
 import java.io.BufferedInputStream;
@@ -196,6 +197,9 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             startActivity(intent);
 
         }else if (id == R.id.nav_slideshow) {
+            Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
+            startActivity(intent);
+            finish();
 
         }
         drawer = findViewById(R.id.drawer_layout);//??

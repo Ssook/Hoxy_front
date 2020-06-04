@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
+import org.techtown.hoxy.waste.MypageActivity;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -177,6 +178,9 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             startActivity(intent);
             finish();
         }else if (id == R.id.nav_slideshow) {
+            Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
+            startActivity(intent);
+            finish();
 
         }
         drawer = findViewById(R.id.drawer_layout);//??

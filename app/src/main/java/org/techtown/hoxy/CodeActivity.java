@@ -23,6 +23,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static java.lang.Integer.parseInt;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,10 +68,11 @@ import java.util.ArrayList;
 
 public class CodeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private String code;
+    private String size;
     private TextView codeView;
     private Button btn_clip;
     private Button btn_finish;
-
+    private String total_fee;
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
     private SharedPreferences sp;
@@ -80,6 +83,7 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
     ActionBarDrawerToggle toggle;
     private ArrayList<WasteInfoItem> waste_basket;
     private ApplyInfo info_apply;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +94,9 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
         btn_finish = findViewById(R.id.bt_finish);
         Intent intent = getIntent();
         code = intent.getExtras().getString("code");
-        info_apply=(ApplyInfo)intent.getSerializableExtra("info_apply");
+        size = intent.getExtras().getString("size");
+        total_fee = intent.getExtras().getString("total_fee");
+        info_apply = (ApplyInfo) intent.getSerializableExtra("info_apply");
         waste_basket = (ArrayList<WasteInfoItem>) intent.getSerializableExtra("wastebasket");
         System.out.println(waste_basket.get(0).getWaste_No());
         Toolbar toolbar = findViewById(R.id.toolbar7);
@@ -119,19 +125,21 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         //apply_info hjy
-        SharedPreferences sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
-        String user_id = sp.getString("token","");
+        SharedPreferences sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        String user_id = sp.getString("token", "");
+
         JSONObject jo = new JSONObject();
         try {
 
-            jo.put("apply_info_name",info_apply.getUser_name());
-            jo.put("apply_info_address",info_apply.getAddress());
-            jo.put("apply_info_phone",info_apply.getPhone_No());
-            jo.put("apply_info_waste_type_no",waste_basket.get(0).getWaste_No());
-            jo.put("apply_info_fee",Integer.toString(waste_basket.get(0).getWaste_fee()));
-            jo.put("apply_info_code",code);
-            jo.put("apply_info_user_no",user_id.toString());
-            jo.put("apply_info_reg_date",info_apply.getApply_date());
+            jo.put("apply_info_name", info_apply.getUser_name());
+            jo.put("apply_info_address", info_apply.getAddress());
+            jo.put("apply_info_phone", info_apply.getPhone_No());
+            jo.put("total_size",size);
+            jo.put("apply_info_waste_type_no", waste_basket.get(0).getWaste_No());
+            jo.put("apply_info_fee", total_fee);
+            jo.put("apply_info_code", code);
+            jo.put("apply_info_user_no", user_id.toString());
+            jo.put("apply_info_reg_date", info_apply.getApply_date());
             System.out.println("info_apply : " + jo.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -313,8 +321,7 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
             // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
-        }
-        else if (id == R.id.nav_community) {
+        } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -366,6 +373,7 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
             // 결과에 따른 UI 수정 등은 여기서 합니다.
         }
     }
+
     public String sendPaymentData(String values) throws JSONException {
 
         String result = "";
@@ -394,7 +402,7 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
             StringBuffer buffer = new StringBuffer();
             String regdata = "data=" + values;
             Log.d("board_data", regdata);
-            System.out.println("regdata : "+ regdata);
+            System.out.println("regdata : " + regdata);
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
@@ -409,7 +417,7 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
             BufferedReader reader = new BufferedReader(tmp);
             StringBuilder builder = new StringBuilder();
             String str;
-            System.out.println("Builder ; "+builder);
+            System.out.println("Builder ; " + builder);
 
 
             while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
