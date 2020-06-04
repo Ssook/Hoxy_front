@@ -175,7 +175,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
                 R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-
+        //navigationView.
         navigationView.setNavigationItemSelectedListener(this);
 
     }
@@ -557,6 +557,8 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         if (flag.equals("NEW")){
             getMenuInflater().inflate(R.menu.detail_main2, menu);
         }
+
+
 
         return true;
     }
