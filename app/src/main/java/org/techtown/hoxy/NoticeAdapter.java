@@ -7,18 +7,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.techtown.hoxy.community.PostItem;
 import org.techtown.hoxy.waste.WasteInfoItem;
 
 import java.util.ArrayList;
 
 public class NoticeAdapter extends BaseAdapter {
 
-    private ArrayList<NoticeItem> noticeItems = new ArrayList<>();
+    private ArrayList<NoticeItem> noticeItems = new ArrayList<NoticeItem>();
 
-    public NoticeAdapter(ArrayList<NoticeItem> noticeItems){
+   /* public NoticeAdapter(ArrayList<NoticeItem> noticeItems){
         this.noticeItems = noticeItems;
 
-    }
+    }*/
 
     @Override
     public int getCount() {
@@ -35,6 +36,10 @@ public class NoticeAdapter extends BaseAdapter {
         return position;
     }
 
+    public void addItem(NoticeItem item){
+        noticeItems.add(item);
+
+    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final int pos = position;

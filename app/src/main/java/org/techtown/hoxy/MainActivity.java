@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -69,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String text_content3_time;
     private TextView home_main_textView, content_textView, content2_textView, content3_textView, content1_time_textView, content2_time_textView, content3_time_textView;
 
-
+    private ListView noticeList;
+    private NoticeAdapter noticeAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,12 +113,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //
 
         home_main_textView = findViewById(R.id.text_home); //혹시 어떻게 버리지??
-        content_textView = findViewById(R.id.text_content1); // 첫번째 게시글
-        content2_textView = findViewById(R.id.text_content2); // 두번째 게시글
-        content3_textView = findViewById(R.id.text_content3); // 세번째 게시글
+
+        /////////////////////////////////////////////////////////////////////////////
+        //content_textView = findViewById(R.id.text_content1); // 첫번째 게시글
+        //content2_textView = findViewById(R.id.text_content2); // 두번째 게시글
+        //content3_textView = findViewById(R.id.text_content3); // 세번째 게시글
 //        content1_time_textView = findViewById(R.id.text_content1_time); // 첫번째 게시글 작성일
 //        content2_time_textView = findViewById(R.id.text_content2_time); // 첫번째 게시글 작성일
 //        content3_time_textView = findViewById(R.id.text_content3_time); // 첫번째 게시글 작성일*/
+
+        noticeList = findViewById(R.id.noticeList);
+
+        noticeAdapter = new NoticeAdapter();
+        noticeAdapter.addItem(new NoticeItem("폐기물 수거는 평일 오전 7시 ~ 오후 4시(월~토)까지이며, 일요일(공휴일)은 수거하지 않습니다."));
+        noticeAdapter.addItem(new NoticeItem("배출일시는 수거 시간이 아니며, 수거는 사정에 따라 1~2일 소요됩니다."));
+        noticeAdapter.addItem(new NoticeItem("배출 당일 또는 익일에 수거, 상황에 따라 수거가 지연될 수 있습니다."));
+        noticeList.setAdapter(noticeAdapter);
 
         text_title = "혹시 어떻게 버리지..?";
         home_main_textView.setText(text_title);

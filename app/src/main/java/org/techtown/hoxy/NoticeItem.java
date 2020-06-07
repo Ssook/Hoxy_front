@@ -3,6 +3,8 @@ package org.techtown.hoxy;
 
 import android.graphics.Bitmap;
 
+import org.techtown.hoxy.community.PostItem;
+
 public class NoticeItem {
         String notice;
 
@@ -12,6 +14,7 @@ public class NoticeItem {
         public NoticeItem(){
                 this.notice = "";
         }
+
 
         public String getNotice() {
                 return notice;
