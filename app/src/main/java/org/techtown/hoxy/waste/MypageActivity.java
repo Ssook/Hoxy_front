@@ -313,7 +313,7 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
         for (int i = 0; i < ja.length(); i++) {
             try {
                 JSONObject jo=new JSONObject(ja.get(i).toString());
-                adapter.addItem(jo.getString("apply_info_code"), jo.getString("apply_info_waste_type_name"), jo.getString("apply_info_reg_date"), jo.getString("apply_info_fee"), jo.getString("apply_info_address"));
+                adapter.addItem(jo.getString("apply_info_code"), jo.getString("apply_info_waste_type_name"), jo.getString("apply_info_reg_date"), jo.getString("apply_info_fee")+"원", jo.getString("apply_info_address"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
