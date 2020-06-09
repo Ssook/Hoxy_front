@@ -120,27 +120,6 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initLayoutPostListActivity();
-/////////////////////////////////////////////////
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
-        setSupportActionBar(toolbar);
-        setView_NavHeader();
-        setView_Profile();
-
-
-        drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-
-        setView_Drawer(toolbar);
-
-
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
-                .setDrawerLayout(drawer)
-                .build();
-
-        navigationView.setNavigationItemSelectedListener(this);
-
 
 
         listView = (ListView) findViewById(R.id.listView);
@@ -166,9 +145,9 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
 
                 String contents = intent.getStringExtra("contents");
                 String commentTitle = intent.getStringExtra("title");
-                //System.out.print(commentTitle);
+
                 Toast.makeText(getApplicationContext(),"메뉴화면으로부터 응답 : "+ commentTitle, Toast.LENGTH_LONG).show();
-                //adapter.addItem(new PostItem(R.drawable.user1, contents, "김성수", 1, commentTitle));
+
                 adapter.notifyDataSetChanged();
             }
         }
@@ -183,16 +162,13 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             // Handle the camera action
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
+
             startActivity(intent);
             finish();
 
         } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
 
             startActivity(intent);
             finish();
@@ -208,36 +184,11 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         return false;
     }
 
-    public void set_button_action(){
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                item = (PostItem) adapter.getItem(position);
-
-
-                onCommand("showDetail",data);
-
-            }
-        });
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //showCommentWriteActivity();
-
-                onCommand("writeComment",data);
-
-            }
-        });
-
-    }
 
     public class PostAdapter extends BaseAdapter {
 
         ArrayList<PostItem> postItems; // main으로부터 modellist들을 전달 받을 객체
-        //ArrayList<PostItem> postList; // modellist로부터 받은 모델을 array형으로 받을 객체
-        //postList = postItems;
+
         ArrayList<PostItem> arrayList; // filter 작업시 필요한 arrarylist
         public PostAdapter(ArrayList<PostItem> postItems)
         {
@@ -246,10 +197,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             this.arrayList.addAll(postItems);
         }
 
-        // ArrayList<PostItem>items = new ArrayList<PostItem>();
-        /*public class ViewHolder{
 
-        }*/
 
         @Override
         public int getCount() {
@@ -323,35 +271,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             notifyDataSetChanged();
         }//filter func
     }
-    //public void search
-   /* // 검색을 수행하는 메소드
-    public void search(String charText) {
 
-        // 문자 입력시마다 리스트를 지우고 새로 뿌려준다.
-        Li.clear();
-
-        // 문자 입력이 없을때는 모든 데이터를 보여준다.
-        if (charText.length() == 0) {
-            list.addAll(arraylist);
-        }
-        // 문자 입력을 할때..
-        else
-        {
-            // 리스트의 모든 데이터를 검색한다.
-            for(int i = 0;i < arraylist.size(); i++)
-            {
-                // arraylist의 모든 데이터에 입력받은 단어(charText)가 포함되어 있으면 true를 반환한다.
-                if (arraylist.get(i).toLowerCase().contains(charText))
-                {
-                    // 검색된 데이터를 리스트에 추가한다.
-                    list.add(arraylist.get(i));
-                }
-            }
-        }
-        // 리스트 데이터가 변경되었으므로 아답터를 갱신하여 검색된 데이터를 화면에 보여준다.
-        adapter.notifyDataSetChanged();
-    }
-*/
     public void onCommand(String command,Bundle data){
         /*
          *postList 혹은 fab버튼을 click시 화면 전환을 위한 함수
@@ -379,49 +299,115 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             finish();
         }
     }
-    /*public void removePost(String command){
-        int check;
-        if(command.equals("remove")) {
-            check = listView.getCheckedItemPosition();
-            if (check != listView.INVALID_POSITION) {
-                items.remove(check);
-                listView.clearChoices();
-                adapter.notifyDataSetChanged();
-            }
-        }
-    }*/
+
     public void initLayoutPostListActivity() {           //레이아웃 정의
         setContentView(R.layout.activity_community_main);
-        /*setView_Toolbar();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        setSupportActionBar(toolbar);
         setView_NavHeader();
-        setView_Drawer();
-*/
-    }
+        setView_Profile();
 
-    /*private void setView_Drawer() {
+
         drawer = findViewById(R.id.drawer_layout);
 
+        setView_Drawer(toolbar);
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
+                .setDrawerLayout(drawer)
+                .build();
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+
+
+    public void set_button_action(){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                item = (PostItem) adapter.getItem(position);
+
+
+                onCommand("showDetail",data);
+
+            }
+        });
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //showCommentWriteActivity();
+
+                onCommand("writeComment",data);
+
+            }
+        });
+
+    }
+
+    private void setView_NavHeader() {//은석
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        nav_header_view = navigationView.getHeaderView(0);
+        nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
+        nav_header_id_text.setText(sp.getString("name", ""));
+
+
+    }
+
+    private void setView_Profile() {//은석
+        profile = nav_header_view.findViewById(R.id.profileimage);
+
+        String urlStr;
+        urlStr = sp.getString("image_url", "");
+        new Thread() {
+            public void run() {
+                try {
+                    System.out.println("test!" + sp);
+                    String urlStr = sp.getString("image_url", "");
+                    URL url = new URL(urlStr);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+                    final Bitmap bm = BitmapFactory.decodeStream(bis);
+                    bis.close();
+                    if (bm == null) {
+                    }
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 사용하고자 하는 코드
+                            if (bm != null) {
+                                profile.setImageBitmap(bm);
+                            } else return;
+                        }
+                    }, 0);
+
+
+                } catch (IOException e) {
+                    Logger.e("Androes", " " + e);
+                }
+
+            }
+        }.start();
+
+
+    }
+
+
+    private void setView_Drawer(Toolbar toolbar) {
+        drawer = findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open , R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
     }
 
-    private void setView_NavHeader() {
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
-        nav_header_view = navigationView.getHeaderView(0);
-        //  nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
-
-        //nav_header_id_text.setText(sp.getString("name", ""));
-    }
-
-    private void setView_Toolbar() {
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Community");
-        toolbar.setTitleMargin(5, 0, 5, 0);
-    }*/
     public class http_task extends AsyncTask<String, String, String> {
         String sub_url = "";
         http_task(String sub_url){
@@ -520,7 +506,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
                 }
             }
             System.out.println("arraytitle.Size()"+arraytitle.size());
-            for (int i = 0; i < arraytitle.size(); i++) {
+            for (int i = arraytitle.size() - 1; i >=0 ; i--) {
                 PostItem postItem = new PostItem(R.drawable.user1, arraytitle.get(i), arrayregUser.get(i), arrayPostNo.get(i),arrayregDate.get(i));
                 //bind all strings in an array
                 postList.add(postItem);
@@ -617,92 +603,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
                 || super.onSupportNavigateUp();
     }
 
-    private void setView_NavHeader() {//은석
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-
-        nav_header_view = navigationView.getHeaderView(0);
-        nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
-        nav_header_id_text.setText(sp.getString("name", ""));
 
 
-    }
-
-    private void setView_Profile() {//은석
-        profile = nav_header_view.findViewById(R.id.profileimage);
-
-        String urlStr;
-        urlStr = sp.getString("image_url", "");
-        new Thread() {
-            public void run() {
-                try {
-                    System.out.println("test!" + sp);
-                    String urlStr = sp.getString("image_url", "");
-                    URL url = new URL(urlStr);
-                    URLConnection conn = url.openConnection();
-                    conn.connect();
-                    BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-                    final Bitmap bm = BitmapFactory.decodeStream(bis);
-                    bis.close();
-                    if (bm == null) {
-                    }
-                    Handler mHandler = new Handler(Looper.getMainLooper());
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            // 사용하고자 하는 코드
-                            if (bm != null) {
-                                profile.setImageBitmap(bm);
-                            } else return;
-                        }
-                    }, 0);
-
-
-                } catch (IOException e) {
-                    Logger.e("Androes", " " + e);
-                }
-
-            }
-        }.start();
-
-
-    }
-
-
-    private void setView_Drawer(Toolbar toolbar) {
-        drawer = findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-    }
-
-    /*@Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        int id = menuItem.getItemId();
-
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
-            startActivity(intent);
-            finish();
-        }
-        else if (id == R.id.nav_community) {
-            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
-            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            //intent.putExtra("태그","전체");
-            startActivity(intent);
-            finish();
-        } else if (id == R.id.nav_slideshow) {
-
-        }
-        drawer = findViewById(R.id.drawer_layout);//??
-        drawer.closeDrawer(GravityCompat.START);
-        return false;
-
-    }*/
 
 }
