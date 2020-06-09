@@ -154,7 +154,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
 
     }
     public void initLayoutPostWriteActivity() {           //레이아웃 정의
-        setContentView(R.layout.activity_comment_detail);
+        setContentView(R.layout.activity_post_detail);
         /*setView_Toolbar();
         setView_NavHeader();
         setView_Drawer();*/
@@ -571,12 +571,12 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             int curId = item.getItemId();
             System.out.println("curid 작동 : "+curId);
            if(curId == R.id.menu_update){
-              Toast.makeText(this, "게시글 수정", Toast.LENGTH_LONG).show();
+              //Toast.makeText(this, "게시글 수정", Toast.LENGTH_LONG).show();
                 updatePost();
                return true;
            }
            if(curId == R.id.menu_delete){
-               Toast.makeText(this, "게시글 삭제", Toast.LENGTH_LONG).show();
+              // Toast.makeText(this, "게시글 삭제", Toast.LENGTH_LONG).show();
                deletePost();
                return true;
            }
