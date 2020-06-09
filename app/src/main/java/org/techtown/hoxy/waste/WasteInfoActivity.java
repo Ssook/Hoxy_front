@@ -383,6 +383,9 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_slideshow) {
+            Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
+            startActivity(intent);
+            finish();
 
         }
         drawer = findViewById(R.id.drawer_layout);//??
