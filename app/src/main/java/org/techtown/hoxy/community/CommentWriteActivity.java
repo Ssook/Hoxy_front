@@ -317,8 +317,8 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         int height = bitmap.getHeight(); // 축소시킬 높이
 
         if(bitmap.getWidth() > 1000 || bitmap.getHeight() > 1000) {
-            width = width / 10;
-            height = height / 10;
+            width = width / 5;
+            height = height / 5;
         }
         else return bitmap;
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -334,7 +334,8 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             float scale = width/ mWidth;
             bmpWidth *= (scale / 100);
             bmpHeight *= (scale / 100);
-        } else if (bmpHeight > height) {
+        }
+        if (bmpHeight > height) {
             // 원하는 높이보다 클 경우의 설정
             float mHeight = bmpHeight / 100;
             float scale = height/ mHeight;
