@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -290,7 +291,15 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 if (resultCode == RESULT_OK && data.hasExtra("data")) {
                     waste_bitmap = (Bitmap) data.getExtras().get("data");
                     if (waste_bitmap != null) {
-                           bitmap2 = waste_bitmap;
+                        Matrix matrix = new Matrix();
+
+                        matrix.postRotate(90);
+
+                        Bitmap scaledBitmap = Bitmap.createScaledBitmap(waste_bitmap, waste_bitmap.getWidth(), waste_bitmap.getHeight(), true);
+
+                        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+                        waste_bitmap = rotatedBitmap;
+                        bitmap2 = waste_bitmap;
                         image_send(waste_bitmap);
                     }
 
@@ -299,7 +308,6 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
         }
 
     }
-
     public void image_send(Bitmap waste_bitmap) {
         SharedPreferences sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         String user_id = sp.getString("token", "");

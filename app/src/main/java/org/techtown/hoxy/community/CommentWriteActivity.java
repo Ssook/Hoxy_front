@@ -330,17 +330,17 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
 
         if (bmpWidth > width) {
             // 원하는 너비보다 클 경우의 설정
-            float mWidth = bmpWidth / 100;
+            float mWidth = bmpWidth / 10;
             float scale = width/ mWidth;
-            bmpWidth *= (scale / 100);
-            bmpHeight *= (scale / 100);
+            bmpWidth *= (scale / 10);
+            bmpHeight *= (scale / 10);
         }
         if (bmpHeight > height) {
             // 원하는 높이보다 클 경우의 설정
-            float mHeight = bmpHeight / 100;
+            float mHeight = bmpHeight / 10;
             float scale = height/ mHeight;
-            bmpWidth *= (scale / 100);
-            bmpHeight *= (scale / 100);
+            bmpWidth *= (scale / 10);
+            bmpHeight *= (scale / 10);
         }
 
         Bitmap resizedBmp = Bitmap.createScaledBitmap(bitmap, (int) bmpWidth, (int) bmpHeight, true);

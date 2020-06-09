@@ -136,33 +136,32 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@drawable/border_red"
+            android:text="취소"
+            android:translationY="7dp"
+            android:textColor="#FFFFFF"/>
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
         <Button
             android:id="@+id/saveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_margin="7dp"
-            android:background="#8BC34A"
+            android:background="@drawable/border_next"
             android:text="저장"
             android:textColor="#FFFFFF"
             android:translationY="7dp"
             android:layout_marginLeft="50dp"
             />
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-        <Button
-            android:id="@+id/cancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-
-            android:background="#B3FF6464"
-            android:text="취소"
-            android:translationY="7dp"
-            android:textColor="#FFFFFF"/>4
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"

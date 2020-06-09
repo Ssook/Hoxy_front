@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="개수" />
+                    android:text="물품 수" />
 
                 <TextView
                     android:id="@+id/tv5"
@@ -181,11 +181,21 @@
                 android:background="#80000000" />
 
 
+            <ImageView
+                android:id="@+id/nameimg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete_black_24dp"
+                app:layout_constraintStart_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/div_line10"
+
+                />
             <TextView
                 android:id="@+id/text_user_name"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                app:layout_constraintStart_toEndOf="@+id/nameimg"
+                app:layout_constraintTop_toBottomOf="@+id/div_line10"
                 android:text="이름" />
 
             <EditText
@@ -202,7 +212,6 @@
                 android:id="@+id/text_phone_num"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
                 android:text="휴대폰 번호" />
 
             <EditText
@@ -221,14 +230,13 @@
                 android:id="@+id/text_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
                 android:text="폐기물 배출 장소" />
 
             <EditText
                 android:id="@+id/edit_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
 
                 android:hint="배출 주소"
                 android:nextFocusUp="@+id/edit_phone_num"
@@ -249,19 +257,19 @@
                 android:id="@+id/text_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
+
                 android:text="폐기물 배출 일시" />
 
             <TextView
                 android:id="@+id/edit_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
                 android:hint="0000년 00월 00일"
                 android:maxLines="1"
                 android:nextFocusUp="@+id/edit_address_detail"
                 android:singleLine="true"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:textSize="18sp" />
 
             <TextView
@@ -273,8 +281,9 @@
                 android:maxLines="1"
                 android:nextFocusUp="@+id/edit_date"
                 android:singleLine="true"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:textSize="18sp" />
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -287,7 +296,7 @@
                     android:layout_marginStart="100dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
-                    android:background="#B3FF6464"
+                    android:background="@drawable/border_red"
                     android:text="취소"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
@@ -302,7 +311,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="100dp"
                     android:layout_marginBottom="10dp"
-                    android:background="#8BC34A"
+                    android:background="@drawable/border_next"
                     android:text="결제"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
