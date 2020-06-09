@@ -506,7 +506,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
                 }
             }
             System.out.println("arraytitle.Size()"+arraytitle.size());
-            for (int i = 0; i < arraytitle.size(); i++) {
+            for (int i = arraytitle.size() - 1; i >=0 ; i--) {
                 PostItem postItem = new PostItem(R.drawable.user1, arraytitle.get(i), arrayregUser.get(i), arrayPostNo.get(i),arrayregDate.get(i));
                 //bind all strings in an array
                 postList.add(postItem);
