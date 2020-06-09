@@ -72,14 +72,13 @@
         android:id="@+id/text_community"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
         android:text="공지사항"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/cameraButton"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/cameraButton" />
 
     <View
         android:id="@+id/div_line4"
@@ -91,18 +90,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_community" />
 
-
-    <TextView
-        android:id="@+id/text_content1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
+    <ListView
+        android:id="@+id/noticeList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="1dp"
         android:layout_marginTop="20dp"
-        android:text="공지사항 1"
+        app:layout_constraintBottom_toBottomOf="@+id/nav_host_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/div_line4" />
+        app:layout_constraintTop_toBottomOf="@+id/div_line4"
+         />
 
-<!--    <TextView
+
+    <!--    <TextView
         android:id="@+id/text_content1_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -112,17 +113,7 @@
         app:layout_constraintTop_toBottomOf="@id/text_community"
         app:layout_constraintEnd_toEndOf="parent"/>-->
 
-    <TextView
-        android:id="@+id/text_content2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="60dp"
-        android:text="공지사항 2"
-        app:layout_constraintTop_toBottomOf="@id/text_content1"
-        app:layout_constraintStart_toStartOf="parent" />
-
-   <!-- <TextView
+    <!-- <TextView
         android:id="@+id/text_content2_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -133,23 +124,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/div_line3" />
 -->
-    <TextView
-        android:id="@+id/text_content3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="60dp"
-        android:text="공지사항 3"
-        app:layout_constraintTop_toBottomOf="@id/text_content2"
-        app:layout_constraintStart_toStartOf="parent" />
 
-   <!-- <TextView
-        android:id="@+id/text_content3_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />-->
+    <!-- <TextView
+         android:id="@+id/text_content3_time"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginEnd="15dp"
+         android:text="TextView"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
