@@ -124,7 +124,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
     private DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
 
-
+private Bitmap rated_bitmap;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,7 +236,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                 System.out.print("rudfhr3");
                 intent2.putExtra("position", position);
                 System.out.print("rudfhr4");
-                WasteImage.setBitmaps(bitmap2);
+                WasteImage.setBitmaps(rated_bitmap);
 
             /*    ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 System.out.print("rudfhr5");
@@ -367,7 +367,7 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
             } else {
                 exifDegree = 0;
             }
-            Bitmap rated_bitmap = rotate(bitmap, exifDegree);
+            rated_bitmap = rotate(bitmap, exifDegree);
             ((ImageView)findViewById(R.id.imageView)).setImageBitmap(rated_bitmap);
             image_send(rated_bitmap);
 
