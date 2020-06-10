@@ -144,7 +144,8 @@
             android:background="@drawable/border_red"
             android:text="취소"
             android:translationY="7dp"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            android:foreground="?attr/selectableItemBackgroundBorderless"/>
 
         <View
             android:layout_width="0dp"
@@ -161,6 +162,7 @@
             android:textColor="#FFFFFF"
             android:translationY="7dp"
             android:layout_marginLeft="50dp"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             />
         <View
             android:layout_width="0dp"

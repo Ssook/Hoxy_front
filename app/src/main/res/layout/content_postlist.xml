@@ -35,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:backgroundTint="@android:color/background_light"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:src="@drawable/ic_review_selected"
         app:fabSize="normal" />
