@@ -236,7 +236,7 @@ private Bitmap rated_bitmap;
                 System.out.print("rudfhr3");
                 intent2.putExtra("position", position);
                 System.out.print("rudfhr4");
-                WasteImage.setBitmaps(rated_bitmap);
+                WasteImage.setBitmaps(bitmap2);
 
             /*    ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 System.out.print("rudfhr5");
@@ -368,8 +368,9 @@ private Bitmap rated_bitmap;
                 exifDegree = 0;
             }
             rated_bitmap = rotate(bitmap, exifDegree);
-            ((ImageView)findViewById(R.id.imageView)).setImageBitmap(rated_bitmap);
-            image_send(rated_bitmap);
+            waste_bitmap = rated_bitmap;
+            bitmap2 = waste_bitmap;
+            image_send(waste_bitmap);
 
 /*
             if (requestCode == TAKE_PICTURE)

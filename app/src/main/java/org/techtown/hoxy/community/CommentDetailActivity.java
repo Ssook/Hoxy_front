@@ -155,14 +155,8 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     }
     public void initLayoutPostWriteActivity() {           //레이아웃 정의
         setContentView(R.layout.activity_post_detail);
-        /*setView_Toolbar();
-        setView_NavHeader();
-        setView_Drawer();*/
+
         Toolbar toolbar = findViewById(R.id.toolbar);
-        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
-        setSupportActionBar(toolbar);
-        setView_NavHeader();
-        setView_Profile();
 
 
         drawer = findViewById(R.id.drawer_layout);
@@ -176,6 +170,21 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
                 .setDrawerLayout(drawer)
                 .build();
         //navigationView.
+        navigationView.setNavigationItemSelectedListener(this);
+       ////
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        setSupportActionBar(toolbar);
+        setView_NavHeader();
+        setView_Profile();
+
+
+
+        setView_Drawer(toolbar);
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
+                .setDrawerLayout(drawer)
+                .build();
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
     }
