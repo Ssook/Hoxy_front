@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -20,9 +21,12 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
@@ -66,6 +70,7 @@ import org.techtown.hoxy.waste.WasteInfoActivity;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -83,11 +88,13 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 public class ResultActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final static int TAKE_PICTURE = 1;
     private static final int REQUEST_CODE = 0;
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
 
     private String intent_text;
     private ImageView waste_ImageView;
@@ -178,8 +185,9 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
         }
         //카메라로 이동
         else if (intent_text.equals("camera")) {
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, TAKE_PICTURE);
+            sendTakePhotoIntent();
+           // Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+           // startActivityForResult(cameraIntent, TAKE_PICTURE);
         }
 
 
@@ -244,6 +252,42 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
         //////////////////
     }//onCreate
 
+    private String imageFilePath;
+    private String photoUri;
+    private Uri photoUri2;
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "TEST_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,      /* prefix */
+                ".jpg",         /* suffix */
+                storageDir          /* directory */
+        );
+        imageFilePath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void sendTakePhotoIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+
+            if (photoFile != null) {
+                System.out.println("FileProvider : " + getPackageName() + "////" + photoFile);
+                photoUri2 = FileProvider.getUriForFile(this, getPackageName(), photoFile);
+
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri2);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
 
     public static String encodeTobase64(Bitmap image) {
         Bitmap immagex = image;
@@ -258,6 +302,23 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
 
+    }
+    //주용
+    private int exifOrientationToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
+        return 0;
+    }
+
+    private Bitmap rotate(Bitmap bitmap, float degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -286,7 +347,31 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
             }// if requestcode
         }// if image
 
-        else if (intent_text.equals("camera")) {
+        //주용
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
+            ExifInterface exif = null;
+
+            try {
+                exif = new ExifInterface(imageFilePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            int exifOrientation;
+            int exifDegree;
+
+            if (exif != null) {
+                exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                exifDegree = exifOrientationToDegrees(exifOrientation);
+            } else {
+                exifDegree = 0;
+            }
+            Bitmap rated_bitmap = rotate(bitmap, exifDegree);
+            ((ImageView)findViewById(R.id.imageView)).setImageBitmap(rated_bitmap);
+            image_send(rated_bitmap);
+
+/*
             if (requestCode == TAKE_PICTURE)
                 if (resultCode == RESULT_OK && data.hasExtra("data")) {
                     waste_bitmap = (Bitmap) data.getExtras().get("data");
@@ -302,11 +387,10 @@ public class ResultActivity extends AppCompatActivity implements NavigationView.
                         bitmap2 = waste_bitmap;
                         image_send(waste_bitmap);
                     }
-
                 }// if result code
-
         }
-
+ */
+        }
     }
     public void image_send(Bitmap waste_bitmap) {
         SharedPreferences sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
