@@ -44,7 +44,6 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.UnLinkResponseCallback;
 import com.kakao.util.helper.log.Logger;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,7 +51,7 @@ import org.techtown.hoxy.CodeActivity;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
-import org.techtown.hoxy.community.CommentAllViewActivity;
+import org.techtown.hoxy.community.PostListActivity;
 import org.techtown.hoxy.login.LoginActivity;
 
 
@@ -567,7 +566,7 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
             finish();
         }
         else if (id == R.id.nav_community) {
-            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             //intent.putExtra("태그","전체");

@@ -49,9 +49,9 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".CodeActivity" />
-        <activity android:name=".community.CommentWriteActivity" />
-        <activity android:name=".community.CommentDetailActivity" />
-        <activity android:name=".community.CommentAllViewActivity" />
+        <activity android:name=".community.PostWriteActivity" />
+        <activity android:name=".community.PostDetailActivity" />
+        <activity android:name=".community.PostListActivity" />
         <activity android:name=".waste.MypageActivity" />
 
         <meta-data

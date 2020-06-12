@@ -44,7 +44,7 @@ import org.json.JSONObject;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.TrashName;
-import org.techtown.hoxy.community.CommentAllViewActivity;
+import org.techtown.hoxy.community.PostListActivity;
 import org.techtown.hoxy.login.LoginActivity;
 
 import java.io.BufferedInputStream;
@@ -376,7 +376,7 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_community) {
-            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             //intent.putExtra("태그","전체");

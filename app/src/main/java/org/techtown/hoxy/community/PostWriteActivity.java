@@ -30,12 +30,10 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
-import com.kakao.network.NetworkTask;
 import com.kakao.util.helper.log.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
@@ -44,7 +42,6 @@ import org.techtown.hoxy.waste.MypageActivity;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -61,7 +58,7 @@ import static android.util.Base64.encodeToString;
 
 //import static org.techtown.hoxy.waste.ResultActivity.encodeTobase64;
 
-public class CommentWriteActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
+public class PostWriteActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
     private final int REQUEST_WIDTH = 120;
     private final int REQUEST_HEIGHT = 160;
     final String TAG = getClass().getSimpleName();
@@ -218,7 +215,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
             finish();
 
         } else if (id == R.id.nav_community) {
-            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             // intent.putExtra("태그","전체");
@@ -250,10 +247,10 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
 
     }*/
     public void clicked_CancelButton(){
-        intent = new Intent(getApplicationContext(),CommentAllViewActivity.class);
+        intent = new Intent(getApplicationContext(), PostListActivity.class);
         startActivity(intent);
         finish();
-        Toast.makeText(CommentWriteActivity.this, "게시글 등록 취소", Toast.LENGTH_SHORT).show();
+        Toast.makeText(PostWriteActivity.this, "게시글 등록 취소", Toast.LENGTH_SHORT).show();
     }
     @Override
     public void onBackPressed() {
@@ -407,13 +404,13 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         NetworkTask networkTask = new NetworkTask(board_data);
         networkTask.execute();
 
-        intent = new Intent(getApplicationContext(),CommentAllViewActivity.class);
+        intent = new Intent(getApplicationContext(), PostListActivity.class);
 /*
         intent.putExtra("title",title);
         intent.putExtra("contents",contents);*/
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
-        Toast.makeText(CommentWriteActivity.this, "게시글 등록 성공", Toast.LENGTH_SHORT).show();
+        Toast.makeText(PostWriteActivity.this, "게시글 등록 성공", Toast.LENGTH_SHORT).show();
     }
     //--------------------------------
     /* 게시글 정보를 서버에 보내는 Class*/
@@ -547,7 +544,7 @@ public class CommentWriteActivity extends AppCompatActivity  implements Navigati
         network_update_post_task update_post_task = new network_update_post_task(board_data.toString());
         update_post_task.execute();
 
-        Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+        Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
         //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
         //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);

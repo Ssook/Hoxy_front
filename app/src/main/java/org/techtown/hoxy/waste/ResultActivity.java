@@ -14,7 +14,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,7 +28,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -40,7 +38,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -60,12 +57,9 @@ import org.techtown.hoxy.MainActivity;
 
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
-import org.techtown.hoxy.TrashName;
-import org.techtown.hoxy.community.CommentAllViewActivity;
-import org.techtown.hoxy.community.CommentWriteActivity;
-import org.techtown.hoxy.community.PostItem;
+import org.techtown.hoxy.community.PostListActivity;
+import org.techtown.hoxy.community.PostWriteActivity;
 import org.techtown.hoxy.login.LoginActivity;
-import org.techtown.hoxy.waste.WasteInfoActivity;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -80,7 +74,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static android.util.Base64.DEFAULT;
 import static android.util.Base64.NO_WRAP;
 import static android.util.Base64.encodeToString;
 
@@ -403,7 +396,7 @@ private Bitmap rated_bitmap;
 
         String file_name = format_time1 + user_id + ".jpg";
         System.out.println("뭐나옴" + file_name);
-        waste_bitmap = CommentWriteActivity.bitmap_resize(waste_bitmap);
+        waste_bitmap = PostWriteActivity.bitmap_resize(waste_bitmap);
         files = encodeTobase64(waste_bitmap);
 
         int area_no = 1;
@@ -652,7 +645,7 @@ private Bitmap rated_bitmap;
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_community) {
-            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             //intent.putExtra("태그","전체");

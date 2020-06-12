@@ -77,7 +77,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class CommentDetailActivity extends AppCompatActivity implements Serializable, NavigationView.OnNavigationItemSelectedListener {
+public class PostDetailActivity extends AppCompatActivity implements Serializable, NavigationView.OnNavigationItemSelectedListener {
    // private PostItem item;
     private int post_List_post_no;
     //private int post_detail_post_no;
@@ -263,7 +263,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             finish();
 
         } else if (id == R.id.nav_community) {
-            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             // intent.putExtra("태그","전체");
@@ -344,7 +344,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
 
     }
     public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(),CommentAllViewActivity.class);
+        Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
         finish();
         startActivity(intent);
 
@@ -862,7 +862,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         Network_comment_insert_task comment_insert_task = new Network_comment_insert_task(board_data.toString());
         comment_insert_task.execute();
 
-        Toast.makeText(CommentDetailActivity.this, "댓글 등록 성공", Toast.LENGTH_SHORT).show();
+        Toast.makeText(PostDetailActivity.this, "댓글 등록 성공", Toast.LENGTH_SHORT).show();
     }
     //--------------------------------
     /* 댓글 정보를 서버에 보내는 Class*/
@@ -899,7 +899,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
             /*
             * 댓글 추가 후 댓글리스트 갱신을 위한 작업
             * */
-            Intent intent = new Intent(CommentDetailActivity.this, CommentDetailActivity.class);
+            Intent intent = new Intent(PostDetailActivity.this, PostDetailActivity.class);
             intent.putExtra("post_no",post_List_post_no);
             intent.putExtra("user_id",assess_reg_userId);
             startActivity(intent);
@@ -1001,7 +1001,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
-            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
@@ -1061,7 +1061,7 @@ public class CommentDetailActivity extends AppCompatActivity implements Serializ
     } // sendDeleteMessage
     public void updatePost(){
 
-        Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
+        Intent intent = new Intent(getApplicationContext(), PostWriteActivity.class);
         intent.putExtra("flag","update");
         intent.putExtra("board_no",post_List_post_no);
         //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함

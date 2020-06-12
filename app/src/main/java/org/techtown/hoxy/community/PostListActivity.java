@@ -1,8 +1,6 @@
 package org.techtown.hoxy.community;
 
 import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -13,7 +11,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +27,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -41,7 +37,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -56,15 +51,12 @@ import org.json.JSONObject;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
-import org.techtown.hoxy.TrashName;
 import org.techtown.hoxy.login.LoginActivity;
 import org.techtown.hoxy.waste.MypageActivity;
-import org.techtown.hoxy.waste.ResultActivity;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -74,12 +66,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
-public class CommentAllViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Serializable {
+public class PostListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Serializable {
     private PostAdapter adapter;
     private Bundle data;
     private PostItem item;
@@ -167,7 +156,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
             finish();
 
         } else if (id == R.id.nav_community) {
-            Intent intent = new Intent(getApplicationContext(), CommentAllViewActivity.class);
+            Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
 
             startActivity(intent);
@@ -279,7 +268,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
          * */
         if (command.equals("writeComment")) {
             // 액티비티를 띄우는 경우
-            Intent intent = new Intent(getApplicationContext(), CommentWriteActivity.class);
+            Intent intent = new Intent(getApplicationContext(), PostWriteActivity.class);
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.putExtra("flag","insert");
             startActivity(intent);
@@ -289,7 +278,7 @@ public class CommentAllViewActivity extends AppCompatActivity implements Navigat
         if (command.equals("showDetail")){
            // sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
             String userid = sp.getString("token","");
-            Intent intent = new Intent(getApplicationContext(), CommentDetailActivity.class);
+            Intent intent = new Intent(getApplicationContext(), PostDetailActivity.class);
             intent.putExtra("post_no",item.getPost_no());
             intent.putExtra("user_id",item.getUserId());
             //intent.putExtra("")

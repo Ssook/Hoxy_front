@@ -1,7 +1,6 @@
 package org.techtown.hoxy.login;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,10 +8,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.inputmethod.InputMethod;
-import android.view.inputmethod.InputMethodSession;
-import android.widget.Toast;
 
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -24,15 +19,9 @@ import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.techtown.hoxy.MainActivity;
 import org.techtown.hoxy.R;
 import org.techtown.hoxy.RequestHttpURLConnection;
-import org.techtown.hoxy.community.CommentAllViewActivity;
-import org.techtown.hoxy.community.PostItem;
-import org.techtown.hoxy.waste.ResultActivity;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
