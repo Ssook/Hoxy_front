@@ -115,11 +115,11 @@ public class PostDetailActivity extends AppCompatActivity implements Serializabl
 
     private String flag;
 
-    ArrayList<Integer> arrayReviewNo = new ArrayList<Integer>();
-    ArrayList<String> arrayReviewContent = new ArrayList<String>();
-    ArrayList<String> arrayReviewUser = new ArrayList<String>();
-    ArrayList<String> arrayReviewDate = new ArrayList<String>();
-    ArrayList<CommentItem> commentList = new ArrayList<CommentItem>();
+    private ArrayList<Integer> arrayReviewNo = new ArrayList<Integer>();
+    private ArrayList<String> arrayReviewContent = new ArrayList<String>();
+    private ArrayList<String> arrayReviewUser = new ArrayList<String>();
+    private ArrayList<String> arrayReviewDate = new ArrayList<String>();
+    private ArrayList<CommentItem> commentList = new ArrayList<CommentItem>();
 
     private MenuItem deleteItem;
     private MenuItem updateItem;

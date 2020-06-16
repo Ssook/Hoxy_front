@@ -88,7 +88,7 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
 
     private ImageView profile;
 
-    JSONArray ja_title_data;
+    //JSONArray ja_title_data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

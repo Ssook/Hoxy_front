@@ -79,17 +79,17 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
     private EditText search_text;
     private Button search_button;
     //postItem의 객체정보 값을 갖는 array들
-    ArrayList<String> arrayregDate = new ArrayList<String>();
+    private ArrayList<String> arrayregDate = new ArrayList<String>();
     ArrayList<String> arrayregUser = new ArrayList<String>();
     //ArrayList<String> arraytag = new ArrayList<String>();
-    ArrayList<String> arraytitle = new ArrayList<String>();
+    private ArrayList<String> arraytitle = new ArrayList<String>();
     //ArrayList<String> arrayctnt = new ArrayList<String>();
-    ArrayList<Integer> arrayPostNo = new ArrayList<Integer>();
-    ArrayList<Integer> arrayimage = new ArrayList<Integer>();
-    ArrayList<String> arrayContetnt = new ArrayList<String>();
+    private ArrayList<Integer> arrayPostNo = new ArrayList<Integer>();
+    private ArrayList<Integer> arrayimage = new ArrayList<Integer>();
+    private ArrayList<String> arrayContetnt = new ArrayList<String>();
     //PostItem 클래스 타입의 ArrayList
-    ArrayList<PostItem> postList = new ArrayList<PostItem>();
-    ArrayList<Bitmap> files = new ArrayList<Bitmap>();
+    private ArrayList<PostItem> postList = new ArrayList<PostItem>();
+    private ArrayList<Bitmap> files = new ArrayList<Bitmap>();
 
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -99,9 +99,9 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
     private TextView nav_header_id_text;
     private ImageView profile;
     private DrawerLayout drawer;
-    ActionBarDrawerToggle toggle;
+    private ActionBarDrawerToggle toggle;
     private EditText editTextFilter;
-    JSONArray ja_title_data;
+    //JSONArray ja_title_data;
 
 
 
