@@ -2,7 +2,7 @@ package org.techtown.hoxy.waste;
 
 import android.graphics.Bitmap;
 
-public class Item  {
+public class RecyclerItem {
     Bitmap image;
     String title;
 
@@ -20,7 +20,7 @@ public class Item  {
         return fee;
     }
 
-    public Item( String title, int fee, Bitmap image) {
+    public RecyclerItem(String title, int fee, Bitmap image) {
         this.image = image;
         this.title = title;
         this.fee = fee;

@@ -187,11 +187,11 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         recyclerView.setLayoutManager(layoutManager);
         int ITEM_SIZE = waste_basket.size();
 
-        List<Item> items = new ArrayList<>();
-        Item[] item = new Item[ITEM_SIZE];
+        List<RecyclerItem> items = new ArrayList<>();
+        RecyclerItem[] item = new RecyclerItem[ITEM_SIZE];
         for(int i = 0; i < ITEM_SIZE; i++) {
 //            Bitmap waste_bitmap = BitmapFactory.decodeByteArray(waste_basket.get(i).getWaste_bitmap(), 0, waste_basket.get(i).getWaste_bitmap().length);
-            item[i] = new Item( waste_basket.get(i).getWaste_name(),waste_basket.get(i).getWaste_fee(), WasteImage.bitmaps.get(i));
+            item[i] = new RecyclerItem( waste_basket.get(i).getWaste_name(),waste_basket.get(i).getWaste_fee(), WasteImage.bitmaps.get(i));
         }
         
         for (int i = 0; i < ITEM_SIZE; i++) {
