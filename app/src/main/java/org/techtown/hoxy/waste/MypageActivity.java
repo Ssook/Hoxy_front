@@ -94,20 +94,8 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mypage);
-//////////////////////////////////////////
-
-        ///////////////////////////////////
         http_task http_task = new http_task("select_waste_apply_info");
         http_task.execute();
-
-//        Button but=findViewById(R.id.button_asd);
-//        but.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                http_task http_task = new http_task("KakaoPay");
-//                http_task.execute();
-//            }
-//        });
 
         Toolbar toolbar = findViewById(R.id.toolbar6);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
@@ -117,30 +105,16 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
         setView_NavHeader();
         setView_Profile();
 
-
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-// Passing each menu ID as a set of Ids because each
-// menu should be considered as top level destinations.
-
         setView_Drawer(toolbar);
-
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-//NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//NavigationUI.setupWithNavController(navigationView, navController);
-
         navigationView.setNavigationItemSelectedListener(this);
-
-//
-
-
     }
-
 
     public class http_task extends AsyncTask<String, String, String> {
         String sub_url = "";
@@ -154,22 +128,8 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
             String res = "";
             try {
 
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        // runOnUiThread를 추가하고 그 안에 UI작업을 한다.
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                progressBar.setVisibility(View.VISIBLE);
-//                            }
-//                        });
-//                    }
-//                }).start();
-
                 String str = "";
                 String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/select_waste_apply_info/";
-                System.out.println("str_URL : " + str_URL);
                 URL url = new URL(str_URL);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 //--------------------------
@@ -186,7 +146,6 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
                 String data = "data={\"user_no\":" + "\"" + user_no + "\"" + "}";
-                System.out.println("ssssss" + data);
                 buffer.append(data);
 
                 OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
@@ -203,10 +162,8 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
                 while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
                     builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
                 }
-
                 res = builder.toString();
                 res = res.replace("&#39;", "\"");
-                System.out.println("ssook!!res : " + res);
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             } catch (Exception ex) {
@@ -225,29 +182,18 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
                 e.printStackTrace();
             }
             setMypageList(ja);
-
-            ////
-
-            ////
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_settings) {
             onClickLogout();
@@ -261,19 +207,14 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
         UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
-                System.out.println(errorResult + "????");
             }
 
             @Override
             public void onNotSignedUp() {
-                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
             }
 
             @Override
             public void onSuccess(Long result) {
-                Log.e("session success", "카카오 로그아웃 onSuccess");
-
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
@@ -299,8 +240,6 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
         listview.setAdapter(adapter);
 
         // 첫 번째 아이템 추가.
-
-
         for (int i = 0; i < ja.length(); i++) {
             try {
                 JSONObject jo=new JSONObject(ja.get(i).toString());
@@ -308,29 +247,22 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
-
     }
-    private void setView_NavHeader() {//은석
+    private void setView_NavHeader() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-
         nav_header_view = navigationView.getHeaderView(0);
         nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
         nav_header_id_text.setText(sp.getString("name", ""));
-
-
     }
 
-    private void setView_Profile() {//은석
+    private void setView_Profile() {
         profile = nav_header_view.findViewById(R.id.profileimage);
-
         String urlStr;
         urlStr = sp.getString("image_url", "");
         new Thread() {
             public void run() {
                 try {
-                    System.out.println("test!" + sp);
                     String urlStr = sp.getString("image_url", "");
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection();
@@ -351,15 +283,10 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
                         }
                     }, 0);
 
-
                 } catch (IOException e) {
-                    Logger.e("Androes", " " + e);
                 }
-
             }
         }.start();
-
-
     }
 
 
@@ -379,27 +306,20 @@ public class MypageActivity extends AppCompatActivity implements NavigationView.
             // Handle the camera action
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            //intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_slideshow) {
             Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
             startActivity(intent);
             finish();
-
         }
         drawer = findViewById(R.id.drawer_layout);//??
         drawer.closeDrawer(GravityCompat.START);
         return false;
-
     }
-
 }

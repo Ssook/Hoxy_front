@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
 
         setView_Drawer(toolbar);
 
@@ -90,33 +88,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-        //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        //NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        //NavigationUI.setupWithNavController(navigationView, navController);
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        //
-
         if (sp == null) {
-            System.out.println("??????");
         }
         setView_Profile();
-        // setView_Navigationview();
 
-
-
-        //
 
         home_main_textView = findViewById(R.id.text_home); //혹시 어떻게 버리지??
-
-        /////////////////////////////////////////////////////////////////////////////
-        //content_textView = findViewById(R.id.text_content1); // 첫번째 게시글
-        //content2_textView = findViewById(R.id.text_content2); // 두번째 게시글
-        //content3_textView = findViewById(R.id.text_content3); // 세번째 게시글
-//        content1_time_textView = findViewById(R.id.text_content1_time); // 첫번째 게시글 작성일
-//        content2_time_textView = findViewById(R.id.text_content2_time); // 첫번째 게시글 작성일
-//        content3_time_textView = findViewById(R.id.text_content3_time); // 첫번째 게시글 작성일*/
 
         noticeList = findViewById(R.id.noticeList);
 
@@ -128,27 +108,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         text_title = "혹시 어떻게 버리지..?";
         home_main_textView.setText(text_title);
-/*
-        text_content1 = "1번 게시글";
-        text_content2 = "2번 게시글";
-        text_content3 = "3번 게시글";
 
-        content_textView.setText(text_content1);
-        content2_textView.setText(text_content2);
-        content3_textView.setText(text_content3);
-
-        text_content1_time = "2020-04-08";
-        text_content2_time = "2020-04-09";
-        text_content3_time = "2020-04-10";
-
-
-
-        content1_time_textView.setText(text_content1_time);
-        content2_time_textView.setText(text_content2_time);
-        content3_time_textView.setText(text_content3_time);*/
-
-
-        ////////////////갤러리로 넘어가기
+        //갤러리로 넘어가기
         ImageButton imageButton = findViewById(R.id.galleryButton);
         imageButton.setOnClickListener(new View.OnClickListener() {
 
@@ -160,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
             }
         });
-        //////////////////////
         //카메라 클릭시
         ImageButton cameraButton = findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(new View.OnClickListener() {
@@ -176,19 +136,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             onClickLogout();
             return true;
@@ -200,19 +155,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
-                System.out.println(errorResult+"????");
             }
 
             @Override
             public void onNotSignedUp() {
-                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
             }
 
             @Override
             public void onSuccess(Long result) {
-                Log.e("session success", "카카오 로그아웃 onSuccess");
-
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
@@ -226,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 || super.onSupportNavigateUp();
     }
 
-    private void setView_NavHeader() {//은석
+    private void setView_NavHeader() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         nav_header_view = navigationView.getHeaderView(0);
@@ -244,7 +194,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         new Thread() {
             public void run() {
                 try {
-                    System.out.println("test!" + sp);
                     String urlStr = sp.getString("image_url", "");
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection();
@@ -267,41 +216,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
                 } catch (IOException e) {
-                    Logger.e("Androes", " " + e);
                 }
 
             }
         }.start();
-
-
     }
-
-
-    //    public void onon(View view){
-//        Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
-//        //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-//        startActivity(intent);
-//    }
-    /*public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_comment) {
-            Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
-            startActivity(intent);
-
-        }
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }*/
-   /* private void setView_Navigationview() {
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    }*/
-
-    //
-
 
     private void setView_Drawer(Toolbar toolbar) {
         drawer = findViewById(R.id.drawer_layout);
@@ -316,12 +235,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = menuItem.getItemId();
 
         if (id == R.id.nav_home) {
-            // Handle the camera action
         } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            //intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_slideshow) {
@@ -332,8 +248,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer = findViewById(R.id.drawer_layout);//??
         drawer.closeDrawer(GravityCompat.START);
         return false;
-
     }
-
-
 }

@@ -91,39 +91,29 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
         total_fee = intent.getExtras().getString("total_fee");
         info_apply = (ApplyInfo) intent.getSerializableExtra("info_apply");
         waste_basket = (ArrayList<WasteInfoItem>) intent.getSerializableExtra("wastebasket");
-        System.out.println(waste_basket.get(0).getWaste_No());
         Toolbar toolbar = findViewById(R.id.toolbar7);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         setSupportActionBar(toolbar);
         setView_NavHeader();
         setView_Profile();
 
-
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-// Passing each menu ID as a set of Ids because each
-// menu should be considered as top level destinations.
 
         setView_Drawer(toolbar);
-
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-//NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//NavigationUI.setupWithNavController(navigationView, navController);
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        //apply_info hjy
         SharedPreferences sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         String user_id = sp.getString("token", "");
 
         JSONObject jo = new JSONObject();
         try {
-
             jo.put("apply_info_name", info_apply.getUser_name());
             jo.put("apply_info_address", info_apply.getAddress());
             jo.put("apply_info_phone", info_apply.getPhone_No());
@@ -133,23 +123,19 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
             jo.put("apply_info_code", code);
             jo.put("apply_info_user_no", user_id.toString());
             jo.put("apply_info_reg_date", info_apply.getApply_date());
-            System.out.println("info_apply : " + jo.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         NetworkTask networkTask = new NetworkTask(jo.toString());
         networkTask.execute();
 
-
         codeView.setText(code);
-
         btn_clip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clip_click(code);
             }
         });
-
         btn_finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,17 +144,6 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
             }
         });
-
-
-     /*   List<String> spinnerArray = new ArrayList<String>();
-        spinnerArray.add("item1");
-        spinnerArray.add("item2");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, trashSizeArray);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        trash_size_spinner.setAdapter(adapter);*/
-
-
     }
 
     private void clip_click(String string) {
@@ -176,11 +151,8 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
         String strCopy = string;
 
         ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
         ClipData clipData = ClipData.newPlainText(strLabel, strCopy);
-
         clipboardManager.setPrimaryClip(clipData);
-
         toastMessage("code " + string + " 가 복사되었습니다.");
     }
 
@@ -191,19 +163,13 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_settings) {
             onClickLogout();
@@ -217,19 +183,14 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
         UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
-                System.out.println(errorResult + "????");
             }
 
             @Override
             public void onNotSignedUp() {
-                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
             }
 
             @Override
             public void onSuccess(Long result) {
-                Log.e("session success", "카카오 로그아웃 onSuccess");
-
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
@@ -243,7 +204,7 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
                 || super.onSupportNavigateUp();
     }
 
-    private void setView_NavHeader() {//은석
+    private void setView_NavHeader() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         nav_header_view = navigationView.getHeaderView(0);
@@ -253,7 +214,7 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void setView_Profile() {//은석
+    private void setView_Profile() {
         profile = nav_header_view.findViewById(R.id.profileimage);
 
         String urlStr;
@@ -261,7 +222,6 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
         new Thread() {
             public void run() {
                 try {
-                    System.out.println("test!" + sp);
                     String urlStr = sp.getString("image_url", "");
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection();
@@ -284,13 +244,9 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
 
 
                 } catch (IOException e) {
-                    Logger.e("Androes", " " + e);
                 }
-
             }
         }.start();
-
-
     }
 
 
@@ -307,25 +263,19 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
         int id = menuItem.getItemId();
 
         if (id == R.id.nav_home) {
-            // Handle the camera action
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            //intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_slideshow) {
             Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
             startActivity(intent);
             finish();
-
         }
         drawer = findViewById(R.id.drawer_layout);//??
         drawer.closeDrawer(GravityCompat.START);
@@ -337,7 +287,6 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
     /* 결제 정보를 서버에 보내는 Class*/
     //--------------------------------
     public class NetworkTask extends AsyncTask<Void, Void, String> {
-
         String values;
 
         NetworkTask(String values) {
@@ -381,7 +330,6 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
 
             URL url = new URL(str_URL);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
-            //Log.d("eee", values);
 
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
@@ -392,13 +340,11 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
             http.setRequestMethod("POST");         // 전송 방식은 POST
 
             // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
-            http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+            http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
             //   서버로 값 전송
             //--------------------------
             StringBuffer buffer = new StringBuffer();
             String regdata = "data=" + values;
-            Log.d("board_data", regdata);
-            System.out.println("regdata : " + regdata);
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
@@ -413,18 +359,15 @@ public class CodeActivity extends AppCompatActivity implements NavigationView.On
             BufferedReader reader = new BufferedReader(tmp);
             StringBuilder builder = new StringBuilder();
             String str;
-            System.out.println("Builder ; " + builder);
 
 
             while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
                 builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
             }
             result = builder.toString();
-            System.out.println("result in commentWriteActivity : " + result);
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println(result);
         return result;
     } // HttpPostDat
 }

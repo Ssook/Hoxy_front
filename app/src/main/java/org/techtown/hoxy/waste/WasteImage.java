@@ -5,13 +5,8 @@ import android.graphics.Bitmap;
 import java.util.ArrayList;
 
 public class WasteImage {
-
     public static ArrayList<Bitmap> bitmaps;
 
-   /* public WasteImage(Bitmap bitmap) {
-        bitmaps = new ArrayList<>();
-        bitmaps.add(bitmap);
-    }*/
     public static void initBitmaps(){
         bitmaps = new ArrayList<>();
     }

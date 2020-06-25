@@ -66,8 +66,6 @@ import java.util.List;
 
 
 public class WasteApplyActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-
     private ApplyInfo applyInfo;
     private EditText editText_user_name, editText_phone_num, editText_address, editText_address_detail;
     private TextView textView_count, textView_all_fee, textView_date, textView_time;
@@ -83,13 +81,11 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
     private String user_name, phone_num, address, address_detail;
     private int total_fee;
 
-    //추가 05 14
     private ArrayList<String> LIST_MENU = new ArrayList<>();
     private ArrayList<WasteInfoItem> waste_basket;
     private WasteInfoItem wasteInfoItem;
     private int position;
 
-    //추가 05 21
     private String date;//날짜 받아온 결과
     private String time;//시간 받아온 결과
 
@@ -105,9 +101,6 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
     private final int hour = calendar.get(Calendar.HOUR_OF_DAY);//시간을 24시간으로
     private final int minute = calendar.get(Calendar.MINUTE);
 
-
-
-
     DatePickerDialog.OnDateSetListener setDateListener;
     TimePickerDialog.OnTimeSetListener setTimeListner;
 
@@ -122,10 +115,8 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waste_apply);
-        //가져오기
         editText_address = findViewById(R.id.edit_address);
         editText_address_detail = findViewById(R.id.edit_address_detail);
         editText_user_name = findViewById(R.id.edit_user_name);
@@ -134,11 +125,9 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         textView_time = findViewById(R.id.edit_time);
         button_cancle = findViewById(R.id.button_cancle);
         button_next = findViewById(R.id.button_next);
-//        listView_applied_waste = findViewById(R.id.waste_list_view);
         textView_count = findViewById(R.id.tv_count);
         textView_all_fee = findViewById(R.id.tv_fee);
 
-        //
         Toolbar toolbar = findViewById(R.id.toolbar5);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         sp2 = getSharedPreferences("apply", Activity.MODE_PRIVATE);
@@ -147,38 +136,20 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         setView_Profile();
         setApplyInfo();
 
-
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-// Passing each menu ID as a set of Ids because each
-// menu should be considered as top level destinations.
 
         setView_Drawer(toolbar);
-
-
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-//NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//NavigationUI.setupWithNavController(navigationView, navController);
-
         navigationView.setNavigationItemSelectedListener(this);
-
-//
-
 
         Intent intent_get = getIntent();
         waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
-
-        System.out.println("jy_test : " + waste_basket.get(0).getWaste_No());
         position = intent_get.getExtras().getInt("position");
         wasteInfoItem = waste_basket.get(position);
-        System.out.println(waste_basket.size());
-        System.out.println(wasteInfoItem.getWaste_name());
-        System.out.println(position);
-
 
         //////////// RecyclerView ////////////////
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
@@ -190,7 +161,6 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         List<RecyclerItem> items = new ArrayList<>();
         RecyclerItem[] item = new RecyclerItem[ITEM_SIZE];
         for(int i = 0; i < ITEM_SIZE; i++) {
-//            Bitmap waste_bitmap = BitmapFactory.decodeByteArray(waste_basket.get(i).getWaste_bitmap(), 0, waste_basket.get(i).getWaste_bitmap().length);
             item[i] = new RecyclerItem( waste_basket.get(i).getWaste_name(),waste_basket.get(i).getWaste_fee(), WasteImage.bitmaps.get(i));
         }
         
@@ -199,14 +169,6 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         }
 
         recyclerView.setAdapter(new RecyclerAdapter(getApplicationContext(), items, R.layout.activity_waste_apply));
-        ////////////////////////////////////////////
-        //리스트 뷰 만들기
-        /*WasteListAdapter adapter;
-
-        adapter = new WasteListAdapter(waste_basket);
-
-        listView_applied_waste.setAdapter(adapter);
-        */
 
         total_fee = 0;
 
@@ -216,13 +178,10 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         textView_all_fee.setText(String.valueOf(total_fee));
         textView_count.setText(String.valueOf(waste_basket.size()));
 
-//        setListViewHeightBasedOnChildren(listView_applied_waste);
-        //// 신청 버튼 클릭시
+        // 신청 버튼 클릭시
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //여기서 널체크 해줘야댐
-
                 if (!check_validate()){
                     createApplyInfo();
                 saveShared(user_name, phone_num, address, address_detail);
@@ -231,8 +190,6 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
                     Intent intent = new Intent(WasteApplyActivity.this, PaymentActivity.class);
                     sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
                     sp2 = getSharedPreferences("apply", Activity.MODE_PRIVATE);
-
-                    System.out.println("rudfhr" + total_fee + waste_basket.size() + waste_basket.get(0).getWaste_name() + "Waste_No : " + waste_basket.get(0).getWaste_No());
 
                     intent.putExtra("apply_info", info_apply);
                     intent.putExtra("user", sp.getString("token", ""));
@@ -249,14 +206,9 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
-
             }
-
-
-
             } //onClick
         }); // SetOnclickListner
-
 
         button_cancle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,7 +250,6 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
                 inputMonth = month;
                 inputDay = dayOfMonth;
                 textView_date.setText(date);
-
             }
         };
 
@@ -311,7 +262,6 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
                         WasteApplyActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth
                         , setTimeListner, hour, minute, false);//true로 하면 24시간 //false로 하면 오전/오후 선택
                 timePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
                 timePickerDialog.show();
             }
         });
@@ -336,32 +286,10 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
 
                 textView_time.setText(time);
                 inputHour = hourOfDay;//사용자가 지정한 시간 삽입
-
             }
         };
     }
 
-
-
-/*    class WebClient extends WebViewClient {
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-    }
-
-    public void goingWeb(String src) {
-        mWebView.loadUrl(src); //loadUrl메서드를 사용하면 웹브라우저를 띄운다.
-    }*/
-
-    //뒤로가기 앞으로 가기 기능
-//    public void forwardAndBack(View v){
-//        if(v.getId() == R.id.goForward){
-//            mWebView.goForward();
-//        }else if(v.getId() == R.id.goBack){
-//            mWebView.goBack();
-//        }
-//    }
     public void createApplyInfo(){
         info_apply.setAddress(editText_address.getText()+" "+editText_address_detail.getText());
         info_apply.setApply_fee(total_fee);
@@ -370,51 +298,6 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         info_apply.setPhone_No(editText_phone_num.getText().toString());
         info_apply.setUser_name(editText_user_name.getText().toString());
 
-    }
-    public class payThread extends Thread {
-        @Override
-        public void run() {
-//            try {
-//            OkHttpClient client = new OkHttpClient();
-//            Request request = new Request.Builder()
-//                    .addHeader("x-api-key", RestTestCommon.API_KEY)
-//                    .url(requestURL)
-//                    .post(RequestBody.create(MediaType.parse("application/json"), jsonMessage)) //POST로 전달할 내용 설정
-//                    .build();
-
-
-            //
-//                String url= "http://"+RequestHttpURLConnection.server_ip+":"+RequestHttpURLConnection.server_port+"/KakaoPay/";
-//                OkHttpClient client = new OkHttpClient().newBuilder()
-//                        .build();
-//                MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded,application/x-www-form-urlencoded");
-//                RequestBody body = RequestBody.create(mediaType, "cid=TC0ONETIME&partner_order_id=1001&partner_user_id=gorany&item_name=test&quantity=1&total_amount=22230&tax_free_amount=0&approval_url=http://localhost:8000&cancel_url=http://localhost:8000&fail_url=http://localhost:8000");
-//                Request request = new Request.Builder()
-//                        .url(url)
-//                        .method("POST", body)
-//                        .addHeader("Authorization", "KakaoAK 07bd56b63267b53895005b8792088d79")
-//                        .addHeader("Content-Type", "application/x-www-form-urlencoded")
-//                        .build();
-//                ///
-//                System.out.println("err1");
-//                //동기 처리시 execute함수 사용
-//                Response response = client.newCall(request).execute();
-//                //출력
-//                String message = response.body().toString();
-//                System.out.println("ssook"+message);
-//                //JSONObject jo1 = new JSONObject(message);
-//                System.out.println("err2");
-//                //System.out.println(jo1.getString("android_app_scheme") + "111ssook");
-//                System.out.println(message + "ssook");
-//                Intent intent = new Intent();
-//                intent.setAction(Intent.ACTION_VIEW);
-//                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-//                intent.addCategory(Intent.CATEGORY_DEFAULT);
-//                //intent.setData(Uri.parse(jo1.getString("android_app_scheme")));
-//                startActivity(intent);
-//            } catch (Exception e) {
-//                System.out.println(e+"여기서에러");
-        }
     }
 
     public boolean check_validate() {
@@ -450,59 +333,23 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         else {
             return false;
         }
-
         return true;
     }
-
-
-// }//onCreate
 
     private void toastMessage(String string) {
         Toast myToast = Toast.makeText(this.getApplicationContext(), string, Toast.LENGTH_SHORT);
         myToast.show();
     }
 
-
-    //리스트뷰 사이즈 조정
-  /*  public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            // pre-condition
-            return;
-        }
-
-        int totalHeight = 0;
-
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-
-        listView.requestLayout();
-    }*/
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_settings) {
             onClickLogout();
@@ -516,19 +363,14 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
-                System.out.println(errorResult + "????");
             }
 
             @Override
             public void onNotSignedUp() {
-                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
             }
 
             @Override
             public void onSuccess(Long result) {
-                Log.e("session success", "카카오 로그아웃 onSuccess");
-
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
@@ -542,14 +384,11 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
                 || super.onSupportNavigateUp();
     }
 
-    private void setView_NavHeader() {//은석
+    private void setView_NavHeader() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-
         nav_header_view = navigationView.getHeaderView(0);
         nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
         nav_header_id_text.setText(sp.getString("name", ""));
-
-
     }
     private  void setApplyInfo(){
         editText_user_name = findViewById(R.id.edit_user_name);
@@ -557,11 +396,8 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         editText_address = findViewById(R.id.edit_address);
         editText_address_detail = findViewById(R.id.edit_address_detail);
 
-
-
         new Thread() {
             public void run() {
-                System.out.println("!!!!test!!!!" + sp2);
                 user_name = sp2.getString("name", "");
                 phone_num = sp2.getString( "phone_num" , "");
                 address = sp2.getString("address", "");
@@ -578,14 +414,11 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
                            editText_address_detail.setText(address_detail);
                     }
                 }, 0);
-
-
             }
         }.start();
-
     }
 
-    private void setView_Profile() {//은석
+    private void setView_Profile() {
         profile = nav_header_view.findViewById(R.id.profileimage);
 
         String urlStr;
@@ -593,7 +426,6 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         new Thread() {
             public void run() {
                 try {
-                    System.out.println("test!" + sp);
                     String urlStr = sp.getString("image_url", "");
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection();
@@ -613,16 +445,10 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
                             } else return;
                         }
                     }, 0);
-
-
                 } catch (IOException e) {
-                    Logger.e("Androes", " " + e);
                 }
-
             }
         }.start();
-
-
     }
 
 
@@ -639,30 +465,23 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         int id = menuItem.getItemId();
 
         if (id == R.id.nav_home) {
-            // Handle the camera action
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            //intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_slideshow) {
             Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
             startActivity(intent);
             finish();
-
         }
         drawer = findViewById(R.id.drawer_layout);//??
         drawer.closeDrawer(GravityCompat.START);
         return false;
-
     }
 
     private void saveShared(String name, String phone_num, String address, String address_detail) {
@@ -673,11 +492,8 @@ public class WasteApplyActivity extends AppCompatActivity implements NavigationV
         editor.putString("address", address);
         editor.putString("address2", address_detail);
 
-        System.out.println( name + phone_num + address + address_detail);
-
         editor.apply();
     }
-
 }
 
 

@@ -5,12 +5,9 @@ import android.graphics.Bitmap;
 public class RecyclerItem {
     Bitmap image;
     String title;
-
-
-
     int fee;
 
-   Bitmap getImage() {
+    Bitmap getImage() {
        return this.image;
    }
     String getTitle() {

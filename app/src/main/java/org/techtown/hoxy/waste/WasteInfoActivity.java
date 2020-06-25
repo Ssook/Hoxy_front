@@ -53,24 +53,18 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class WasteInfoActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private String wasteName = TrashName.getTrash();
     String select_name, select_size, select_fee;
     int select_no;
     ArrayList<String> spinnerArray = new ArrayList<String>();
     private Button next_button, cancle_button, again_button;
     private TextView waste_code_textView, waste_fee_textView;
-    //  private String waste_code, waste_fee;
     private Spinner waste_size_spinner;
     private String intent_text;
-    //추가
     private JSONArray wasteInfoItems;
     private int position;
     private ArrayList<Integer> waste_type_no = new ArrayList<>();
     private ArrayList<String> waste_name = new ArrayList<>(), waste_fee = new ArrayList<>(), waste_size = new ArrayList<>();
-
     private ArrayList<WasteInfoItem> waste_basket;
-    //추가
-
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
     private SharedPreferences sp;
@@ -99,34 +93,21 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
         setView_NavHeader();
         setView_Profile();
 
-
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-// Passing each menu ID as a set of Ids because each
-// menu should be considered as top level destinations.
-
         setView_Drawer(toolbar);
-
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-//NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//NavigationUI.setupWithNavController(navigationView, navController);
-
         navigationView.setNavigationItemSelectedListener(this);
-
-//
-
 
         //전 화면에서 받아오기
         Intent intent_get = getIntent();
         intent_text = intent_get.getExtras().getString("intent_text");
         String temp_wasteInfoItems = (String) intent_get.getSerializableExtra("wasteInfoItems");
         waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
-//        waste_bitmap = getIntent().getByteArrayExtra("image");
 
         try {
             wasteInfoItems = new JSONArray(temp_wasteInfoItems);
@@ -134,8 +115,6 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
             e.printStackTrace();
         }
         position = intent_get.getExtras().getInt("position");
-        //System.out.println(wasteInfoItem.getWaste_name());
-        System.out.println(position);
 
         for (int i = 0; i < wasteInfoItems.length(); i++) {
             try {
@@ -147,13 +126,9 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
         }
 
-
         //스피너 아이템 추가
-        // spinnerArray.add(wasteInfoItem.getWaste_size());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, waste_size);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -167,33 +142,26 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
                 select_size = waste_size.get(position);
                 select_name = waste_name.get(position);
                 select_no = waste_type_no.get(position);
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                //textView.setText(trashName);
             }
         });
-
-
-        //// 취소
+        // 취소
         cancle_button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
                 finish();
                 Intent intent = new Intent(WasteInfoActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
-        //// 다음
+        // 다음
         next_button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(WasteInfoActivity.this, WasteApplyActivity.class);
                 intent.putExtra("position", position);
                 addBasket(select_name, select_fee, select_size, select_no);
@@ -201,8 +169,6 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
                 startActivity(intent);
             }
         });
-
-
     }
 
     //한번 더
@@ -210,12 +176,10 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
         final CharSequence[] items = {"카메라", "갤러리", "취소"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("방법 선택")        // 제목 설정
-
                 .setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
 
                     public void onClick(DialogInterface dialog, int index) {
                         if (index == 0) {
-
                             Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
                             intent.putExtra("intent_text", "camera");
                             intent.putExtra("position", ++position);
@@ -223,9 +187,7 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
                             addBasket(select_name, select_fee, select_size, select_no);
                             intent.putExtra("wastebasket", waste_basket);
                             startActivity(intent);
-
                         } else if (index == 1) {
-
                             Intent intent = new Intent(WasteInfoActivity.this, ResultActivity.class);
                             intent.putExtra("intent_text", "image");
                             intent.putExtra("position", ++position);
@@ -233,13 +195,11 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
                             addBasket(select_name, select_fee, select_size, select_no);
                             intent.putExtra("wastebasket", waste_basket);
                             startActivity(intent);
-
                         } else {
                             dialog.cancel();
                         }
                     }
                 });
-
         AlertDialog dialog = builder.create();    // 알림창 객체 생성
         dialog.show();    // 알림창 띄우기
     }
@@ -251,25 +211,18 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_settings) {
             onClickLogout();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -277,19 +230,14 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
         UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
-                System.out.println(errorResult + "????");
             }
 
             @Override
             public void onNotSignedUp() {
-                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
             }
 
             @Override
             public void onSuccess(Long result) {
-                Log.e("session success", "카카오 로그아웃 onSuccess");
-
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
@@ -303,25 +251,22 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
                 || super.onSupportNavigateUp();
     }
 
-    private void setView_NavHeader() {//은석
+    private void setView_NavHeader() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         nav_header_view = navigationView.getHeaderView(0);
         nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
         nav_header_id_text.setText(sp.getString("name", ""));
-
-
     }
 
-    private void setView_Profile() {//은석
+    private void setView_Profile() {
         profile = nav_header_view.findViewById(R.id.profileimage);
-
         String urlStr;
         urlStr = sp.getString("image_url", "");
+
         new Thread() {
             public void run() {
                 try {
-                    System.out.println("test!" + sp);
                     String urlStr = sp.getString("image_url", "");
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection();
@@ -342,15 +287,10 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
                         }
                     }, 0);
 
-
                 } catch (IOException e) {
-                    Logger.e("Androes", " " + e);
                 }
-
             }
         }.start();
-
-
     }
 
 
@@ -367,30 +307,23 @@ public class WasteInfoActivity extends AppCompatActivity implements NavigationVi
         int id = menuItem.getItemId();
 
         if (id == R.id.nav_home) {
-            // Handle the camera action
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            //intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_slideshow) {
             Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
             startActivity(intent);
             finish();
-
         }
         drawer = findViewById(R.id.drawer_layout);//??
         drawer.closeDrawer(GravityCompat.START);
         return false;
-
     }
 }
 

@@ -76,5 +76,4 @@ public class CommentItem implements Serializable {
         }
         return jsonobj;
     }
-
 }

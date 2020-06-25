@@ -19,7 +19,6 @@ public class ApplyInfo implements Serializable {
 
     private ArrayList<WasteInfoItem> apply_waste_list;
     public ApplyInfo(){
-
     }
     public ApplyInfo(String user_No, int apply_fee, String address, String phone_No, int waste_No, String img_Url,String apply_date,String user_name) {
         this.user_No = user_No;
@@ -102,8 +101,6 @@ public class ApplyInfo implements Serializable {
         }
         return jsonobj;
     }
-
-
     public String getUser_name() {
         return user_name;
     }

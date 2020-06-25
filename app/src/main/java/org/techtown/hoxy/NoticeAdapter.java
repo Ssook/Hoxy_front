@@ -16,11 +16,6 @@ public class NoticeAdapter extends BaseAdapter {
 
     private ArrayList<NoticeItem> noticeItems = new ArrayList<NoticeItem>();
 
-   /* public NoticeAdapter(ArrayList<NoticeItem> noticeItems){
-        this.noticeItems = noticeItems;
-
-    }*/
-
     @Override
     public int getCount() {
         return noticeItems.size();

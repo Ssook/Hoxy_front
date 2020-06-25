@@ -39,8 +39,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         final RecyclerItem item = items.get(position);
         String feeString;
-        /*Drawable drawable = ContextCompat.getDrawable(context, item.getImage());
-        holder.image.setBackground(drawable);*/
         holder.image.setImageBitmap(item.getImage());
         holder.title.setText(item.getTitle());
         feeString = item.getFee() + "원";
@@ -67,7 +65,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
-           image = (ImageView) itemView.findViewById(R.id.image);
+            image = (ImageView) itemView.findViewById(R.id.image);
             title = (TextView) itemView.findViewById(R.id.title);
             cardview = (CardView) itemView.findViewById(R.id.cardview);
             fee = itemView.findViewById(R.id.fee);
@@ -78,6 +76,4 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
          viewToAnimate.startAnimation(animation);
          lastPosition = position;
          } }
-
-
 }

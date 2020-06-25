@@ -10,39 +10,21 @@ public class WasteInfoItem  implements Serializable {
     private String waste_size;
     private int waste_fee;
     private int waste_No;
-
-
-
     private String img_Url;
-//    private byte[] waste_bitmap;
-
-
 
     public WasteInfoItem(String waste_name, String waste_size, int waste_fee, int waste_No) {
         this.waste_name = waste_name;
         this.waste_size = waste_size;
         this.waste_fee = waste_fee;
         this.waste_No = waste_No;
-//       this.waste_bitmap = waste_bitmap;
     }
-
-
 
     public String getImg_Url() {
         return img_Url;
     }
-
     public void setImg_Url(String img_Url) {
         this.img_Url = img_Url;
     }
-
-//    public byte[] getWaste_bitmap() {
-//        return waste_bitmap;
-//    }
-
-//    public void setWaste_bitmap(byte[] waste_bitmap) {
-//        this.waste_bitmap = waste_bitmap;
-//    }
 
     public String getWaste_name() {
         return waste_name;
@@ -75,6 +57,5 @@ public class WasteInfoItem  implements Serializable {
     public void setWaste_No(int waste_No) {
         this.waste_No = waste_No;
     }
-
 
 }

@@ -81,16 +81,13 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
     //postItem의 객체정보 값을 갖는 array들
     private ArrayList<String> arrayregDate = new ArrayList<String>();
     ArrayList<String> arrayregUser = new ArrayList<String>();
-    //ArrayList<String> arraytag = new ArrayList<String>();
     private ArrayList<String> arraytitle = new ArrayList<String>();
-    //ArrayList<String> arrayctnt = new ArrayList<String>();
     private ArrayList<Integer> arrayPostNo = new ArrayList<Integer>();
     private ArrayList<Integer> arrayimage = new ArrayList<Integer>();
     private ArrayList<String> arrayContetnt = new ArrayList<String>();
     //PostItem 클래스 타입의 ArrayList
     private ArrayList<PostItem> postList = new ArrayList<PostItem>();
     private ArrayList<Bitmap> files = new ArrayList<Bitmap>();
-
 
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
@@ -101,28 +98,21 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private EditText editTextFilter;
-    //JSONArray ja_title_data;
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initLayoutPostListActivity();
 
-
         listView = (ListView) findViewById(R.id.listView);
         data = new Bundle();
-
 
         //----------------------------
         /*      게시글을 전부 가져옴  */
         //----------------------------
-
         http_task http_task = new http_task("select_board_title");
         http_task.execute();
         set_button_action();
-
     }
 
     @Override
@@ -131,16 +121,13 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
 
         if (requestCode == 101) {
             if (intent != null) {
-
                 String contents = intent.getStringExtra("contents");
                 String commentTitle = intent.getStringExtra("title");
 
                 Toast.makeText(getApplicationContext(),"메뉴화면으로부터 응답 : "+ commentTitle, Toast.LENGTH_LONG).show();
-
                 adapter.notifyDataSetChanged();
             }
         }
-
     }
 
     @Override
@@ -151,7 +138,6 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
             // Handle the camera action
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-
             startActivity(intent);
             finish();
 
@@ -161,7 +147,6 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
 
             startActivity(intent);
             finish();
-
         }else if (id == R.id.nav_slideshow) {
             Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
             startActivity(intent);
@@ -173,11 +158,8 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
         return false;
     }
 
-
     public class PostAdapter extends BaseAdapter {
-
         ArrayList<PostItem> postItems; // main으로부터 modellist들을 전달 받을 객체
-
         ArrayList<PostItem> arrayList; // filter 작업시 필요한 arrarylist
         public PostAdapter(ArrayList<PostItem> postItems)
         {
@@ -186,8 +168,6 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
             this.arrayList.addAll(postItems);
         }
 
-
-
         @Override
         public int getCount() {
             return postItems.size();
@@ -195,7 +175,6 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
 
         public void addItem(PostItem item){
             postItems.add(item);
-
         }
         @Override
         public Object getItem(int position) {
@@ -210,15 +189,12 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-
             view = null;
             if(convertView == null){
                 view = new CommentItemView(getApplicationContext());
-
             }
             else{
                 view = (CommentItemView) convertView;
-
             }
             PostItem item = postItems.get(position);
             view.setUserId(item.getUserId());
@@ -253,7 +229,6 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
                             postItems.add(postItem);
                         }
                     }
-
                 }
             }
             //listView 갱신
@@ -272,19 +247,13 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
             //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.putExtra("flag","insert");
             startActivity(intent);
-            //finish();
-
         }
         if (command.equals("showDetail")){
-           // sp=getSharedPreferences("profile", Activity.MODE_PRIVATE);
             String userid = sp.getString("token","");
             Intent intent = new Intent(getApplicationContext(), PostDetailActivity.class);
             intent.putExtra("post_no",item.getPost_no());
             intent.putExtra("user_id",item.getUserId());
-            //intent.putExtra("")
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
-            //startActivityForResult(intent, 102);
             finish();
         }
     }
@@ -297,7 +266,6 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
         setView_NavHeader();
         setView_Profile();
 
-
         drawer = findViewById(R.id.drawer_layout);
 
         setView_Drawer(toolbar);
@@ -307,10 +275,7 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
                 .build();
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
     }
-
-
 
     public void set_button_action(){
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -318,36 +283,27 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 item = (PostItem) adapter.getItem(position);
 
-
                 onCommand("showDetail",data);
-
             }
         });
-
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //showCommentWriteActivity();
-
                 onCommand("writeComment",data);
-
             }
         });
 
     }
 
-    private void setView_NavHeader() {//은석
+    private void setView_NavHeader() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-
         nav_header_view = navigationView.getHeaderView(0);
         nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
         nav_header_id_text.setText(sp.getString("name", ""));
-
-
     }
 
-    private void setView_Profile() {//은석
+    private void setView_Profile() {
         profile = nav_header_view.findViewById(R.id.profileimage);
 
         String urlStr;
@@ -355,7 +311,6 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
         new Thread() {
             public void run() {
                 try {
-                    System.out.println("test!" + sp);
                     String urlStr = sp.getString("image_url", "");
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection();
@@ -376,17 +331,11 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
                         }
                     }, 0);
 
-
                 } catch (IOException e) {
-                    Logger.e("Androes", " " + e);
                 }
-
             }
         }.start();
-
-
     }
-
 
     private void setView_Drawer(Toolbar toolbar) {
         drawer = findViewById(R.id.drawer_layout);
@@ -396,7 +345,6 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
         toggle.syncState();
     }
 
-
     public class http_task extends AsyncTask<String, String, String> {
         String sub_url = "";
         http_task(String sub_url){
@@ -404,8 +352,6 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
         }
         @Override
         protected String doInBackground(String... params) {
-
-            System.out.println("check_point_1");
             String res = "";
             try {
                 String str = "";
@@ -428,32 +374,22 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
                 StringBuffer buffer = new StringBuffer();
                 buffer.append(data);
 
-                System.out.println("check_point_2");
-
                 OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
                 PrintWriter writer = new PrintWriter(outStream);
                 writer.write(buffer.toString());
                 writer.flush();
 
-                System.out.println("check_point_3");
                 //--------------------------
                 //   서버에서 전송받기
                 //--------------------------
-                System.out.println("check_point_3_0");
                 InputStreamReader tmp = new InputStreamReader(conn.getInputStream(), "UTF-8");
-                System.out.println("check_point_3_1");
                 BufferedReader reader = new BufferedReader(tmp);
-                System.out.println("check_point_3_2");
                 StringBuilder builder = new StringBuilder();
-                System.out.println("check_point_3_3");
                 while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
                     builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
                 }
-                System.out.println("check_point_4");
-
                 res = builder.toString();
                 res = res.replace("&#39;","\"");
-                System.out.println("res : " + res);
                 } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             } catch (Exception ex) {
@@ -471,11 +407,6 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
         try {
             String str_res = data;
             JSONArray ja_res = new JSONArray(str_res);
-            System.out.println("data : " + ja_res);
-            System.out.println("ja_res.length(): " + ja_res.length());
-            System.out.println("ja_res.getJSONObject(0): " + ja_res.getJSONObject(0));
-
-
 
             if(ja_res != null) {
                 for (int i = 0; i < ja_res.length(); i++) {
@@ -484,36 +415,26 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
                         arrayPostNo.add(jo_data.getInt("board_no"));
                         arraytitle.add( jo_data.getString("board_title"));
                         arrayregUser.add(jo_data.getString("board_user_name"));
-                        //int area_no = jo_data.getInt("board_waste_area_no"));
                         arrayregDate.add(jo_data.getString("board_reg_date"));
-
-                        //adapter.addItem(new PostItem(R.drawable.user1, title, user_name, post_no/*, reg_date*/));
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
-            System.out.println("arraytitle.Size()"+arraytitle.size());
             for (int i = arraytitle.size() - 1; i >=0 ; i--) {
                 PostItem postItem = new PostItem(R.drawable.user1, arraytitle.get(i), arrayregUser.get(i), arrayPostNo.get(i),arrayregDate.get(i));
                 //bind all strings in an array
                 postList.add(postItem);
-                System.out.println("postList.Size(): "+i+" "+postList.size());
-
             }
             adapter = new PostAdapter(postList);
             listView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-    /////////////////////////////////
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.postlist_menu, menu);
         //----------------------------
         /* 메뉴의 SearchView 설정  */
@@ -547,18 +468,12 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_settings) {
             onClickLogout();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -566,19 +481,12 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
         UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
-                System.out.println(errorResult + "????");
             }
-
             @Override
             public void onNotSignedUp() {
-                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
             }
-
             @Override
             public void onSuccess(Long result) {
-                Log.e("session success", "카카오 로그아웃 onSuccess");
-
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
@@ -591,8 +499,4 @@ public class PostListActivity extends AppCompatActivity implements NavigationVie
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
-
-
-
 }

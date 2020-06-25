@@ -64,7 +64,6 @@ public class LoginActivity extends Activity {
 
         @Override
         public void onSessionOpened() {
-            Log.e("kakao login result", "카카오 로그인 성공 ");
             requestMe();
             redirectMainActivity();
         }
@@ -83,7 +82,6 @@ public class LoginActivity extends Activity {
         keys.add("properties.profile_image");
         keys.add("properties.thumbnail_image");
         keys.add("kakao_account.email");
-        System.out.println(keys + "add");
         UserManagement.getInstance().me(keys, new MeV2ResponseCallback() {
             @Override
             public void onFailure(ErrorResult errorResult) {
@@ -93,15 +91,11 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("onsuccess close", errorResult.getErrorMessage());
                 redirectLoginActivity();
             }
 
         @Override
         public void onSuccess(MeV2Response response) {
-            Log.e("kakao nickname is", response.getProperties().get("nickname"));
-            System.out.println("user id : " + response.getId());
-            System.out.println("thumb" + response.getProperties().get("thumbnail_image"));
             user_data=new User(String.valueOf(response.getId()),response.getNickname());
             http_task http_task = new http_task("insert_user_info");
             http_task.execute();
@@ -127,7 +121,6 @@ public class LoginActivity extends Activity {
             try {
                 String str = "";
                 String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/" + sub_url + "/";
-                System.out.println("str_URL : " + str_URL);
                 URL url = new URL(str_URL);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 //--------------------------
@@ -144,7 +137,6 @@ public class LoginActivity extends Activity {
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
                 String data = "data=" + user_data.userToJSON().toString();
-                System.out.println("ssssss"+data);
                 buffer.append(data);
 
                 OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
@@ -164,7 +156,6 @@ public class LoginActivity extends Activity {
 
                 res = builder.toString();
                 res = res.replace("&#39;", "\"");
-                System.out.println("res : " + res);
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             } catch (Exception ex) {
@@ -195,19 +186,14 @@ public class LoginActivity extends Activity {
         UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
-                System.out.println(errorResult+"????");
             }
 
             @Override
             public void onNotSignedUp() {
-                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
             }
 
             @Override
             public void onSuccess(Long result) {
-                Log.e("session success", "카카오 로그아웃 onSuccess");
-
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }

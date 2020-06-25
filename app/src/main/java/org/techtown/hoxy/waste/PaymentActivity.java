@@ -105,20 +105,10 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
         size = intent_get.getExtras().getString("size");
         name = intent_get.getExtras().getString("name");
         waste_basket = (ArrayList<WasteInfoItem>) intent_get.getSerializableExtra("wastebasket");
-        System.out.println(total_fee + size + "testest" + name);
         mContext=this.getApplicationContext();
 
         http_task http_task = new http_task("KakaoPay");
         http_task.execute();
-
-//        Button but=findViewById(R.id.button_asd);
-//        but.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                http_task http_task = new http_task("KakaoPay");
-//                http_task.execute();
-//            }
-//        });
 
         Toolbar toolbar = findViewById(R.id.toolbar6);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
@@ -129,25 +119,14 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
 
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-// Passing each menu ID as a set of Ids because each
-// menu should be considered as top level destinations.
 
         setView_Drawer(toolbar);
-
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_community, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-//NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//NavigationUI.setupWithNavController(navigationView, navController);
-
         navigationView.setNavigationItemSelectedListener(this);
-
-//
-
-
     }
 
     public JSONObject apply_info_json(String name, String total_fee, String size,String user_name) throws JSONException {
@@ -190,7 +169,6 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
 
                 String str = "";
                 String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/KakaoPay/";
-                System.out.println("str_URL : " + str_URL);
                 URL url = new URL(str_URL);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 //--------------------------
@@ -207,7 +185,6 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
                 String data = "data="+apply_info_json(name,total_fee,size,user_name).toString();
-                System.out.println("ssssss" + data);
                 buffer.append(data);
 
                 OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
@@ -227,7 +204,6 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
 
                 res = builder.toString();
                 res = res.replace("&#39;", "\"");
-                System.out.println("res : " + res);
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             } catch (Exception ex) {
@@ -240,19 +216,11 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
         @Override
         protected void onPostExecute(String result) {
             JSONObject jo1 = new JSONObject();
-            System.out.println("ssook" + result);
             try {
                 jo1 = new JSONObject(result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            System.out.println("err2");
-            System.out.println(result + "ssook");
-
-            ////
-
-            ////
-
 
             WebSettings webSettings = webView.getSettings();
             webSettings.setJavaScriptEnabled(true);
@@ -261,12 +229,8 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
             try {
                 String weburl = jo1.getString("next_redirect_app_url");
                 webView.loadUrl(weburl);
-                //webView.getWebViewClient().shouldOverrideUrlLoading(webView,"http://www.naver.com");
-                System.out.println(weburl + "durlrkdbdkfdpf");
             } catch (JSONException e) {
-                System.out.println(e + "durltjdpfj");
             }
-
         }
     }
 
@@ -277,13 +241,11 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
         public static final String INTENT_PROTOCOL_END = ";end;";
         public static final String GOOGLE_PLAY_STORE_PREFIX = "market://details?id=";
 
-
         // 로딩이 시작될 때
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             progressBar.setVisibility(View.VISIBLE);
-
         }
 
         // 리소스를 로드하는 중 여러번 호출
@@ -342,7 +304,6 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
                 case ERROR_UNSUPPORTED_SCHEME:
                     break;          // URI가 지원되지 않는 방식
             }
-
         }
 
         @Override
@@ -357,7 +318,6 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
         }
 
         // 잘못된 키 입력이 있는 경우
-
         // 새로운 URL이 webview에 로드되려 할 경우 컨트롤을 대신할 기회를 줌
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -391,9 +351,6 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
                 intent.putExtra("total_fee",total_fee);
                 intent.putExtra("size",size);
                 intent.putExtra("info_apply", info_apply);
-
-
-                System.out.println(code+"은석");
                 startActivity(intent);
                 return true;
             }
@@ -401,65 +358,24 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
             else {
                 view.loadUrl(url);
             }
-
             return true;
         }
-
-
-//            if (url != null && url.startsWith("intent://")) {
-//                try {
-//                    Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
-//                    Intent existPackage = getPackageManager().getLaunchIntentForPackage(intent.getPackage());
-//                    if (existPackage != null) {
-//                        startActivity(intent);
-//                    } else {
-//                        Intent marketIntent = new Intent(Intent.ACTION_VIEW);
-//                        marketIntent.setData(Uri.parse("market://details?id=" + intent.getPackage()));
-//                        startActivity(marketIntent);
-//                    }
-//                    return false;
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            } else if (url != null && url.startsWith("market://")) {
-//                try {
-//                    Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
-//                    if (intent != null) {
-//                        startActivity(intent);
-//                    }
-//                    return true;
-//                } catch (URISyntaxException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            view.loadUrl(url);
-//            return false;
-//        }
-
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_settings) {
             onClickLogout();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -467,19 +383,14 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
         UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("successclosed", "카카오 로그아웃 onSessionClosed");
-                System.out.println(errorResult + "????");
             }
 
             @Override
             public void onNotSignedUp() {
-                Log.e("session on not signedup", "카카오 로그아웃 onNotSignedUp");
             }
 
             @Override
             public void onSuccess(Long result) {
-                Log.e("session success", "카카오 로그아웃 onSuccess");
-
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
@@ -493,17 +404,14 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
                 || super.onSupportNavigateUp();
     }
 
-    private void setView_NavHeader() {//은석
+    private void setView_NavHeader() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-
         nav_header_view = navigationView.getHeaderView(0);
         nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
         nav_header_id_text.setText(sp.getString("name", ""));
-
-
     }
 
-    private void setView_Profile() {//은석
+    private void setView_Profile() {
         profile = nav_header_view.findViewById(R.id.profileimage);
 
         String urlStr;
@@ -511,7 +419,6 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
         new Thread() {
             public void run() {
                 try {
-                    System.out.println("test!" + sp);
                     String urlStr = sp.getString("image_url", "");
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection();
@@ -531,16 +438,10 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
                             } else return;
                         }
                     }, 0);
-
-
                 } catch (IOException e) {
-                    Logger.e("Androes", " " + e);
                 }
-
             }
         }.start();
-
-
     }
 
 
@@ -560,28 +461,21 @@ public class PaymentActivity extends AppCompatActivity implements NavigationView
             // Handle the camera action
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         }
         else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            //intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_slideshow) {
             Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
             startActivity(intent);
             finish();
-
         }
         drawer = findViewById(R.id.drawer_layout);//??
         drawer.closeDrawer(GravityCompat.START);
         return false;
-
     }
-
 }

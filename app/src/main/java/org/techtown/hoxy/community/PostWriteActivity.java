@@ -56,8 +56,6 @@ import java.util.Date;
 import static android.util.Base64.NO_WRAP;
 import static android.util.Base64.encodeToString;
 
-//import static org.techtown.hoxy.waste.ResultActivity.encodeTobase64;
-
 public class PostWriteActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
     private final int REQUEST_WIDTH = 120;
     private final int REQUEST_HEIGHT = 160;
@@ -88,7 +86,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
 
     private ImageView profile;
 
-    //JSONArray ja_title_data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,50 +93,35 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
         intent = new Intent(this.getIntent());
         set_inflate();
 
-
-
         call_the_camera();
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 flag = intent.getStringExtra("flag");
-                System.out.println("update_flag : "+flag);
-
                 if(flag.equals("update") ){
-
                     post_no = intent.getIntExtra("board_no",0);
-                    System.out.println("post_no in detail: "+post_no);
-                    //updatePost();
-                    System.out.println("업데이트 포스트함수 시작");
                     updatePost();
                 }
                 else insertPostData();
             }
         });
-
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clicked_CancelButton();
             }
         });
-
     }
     public void initLayoutPostWriteActivity() {           //레이아웃 정의
         setContentView(R.layout.activity_comment_write);
-
         setView_Toolbar();
         setView_NavHeader();
         setView_Drawer();
         setView_Profile();
-
-
     }
     private void setView_Drawer() {
         drawer = findViewById(R.id.drawer_layout);
-
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open , R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -149,11 +131,7 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
     private void setView_NavHeader() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         nav_header_view = navigationView.getHeaderView(0);
-        //  nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
-
-        //nav_header_id_text.setText(sp.getString("name", ""));
     }
 
     private void setView_Toolbar() {
@@ -169,7 +147,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
         new Thread() {
             public void run() {
                 try {
-                    System.out.println("test!" + sp);
                     String urlStr = sp.getString("image_url", "");
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection();
@@ -189,16 +166,10 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
                             } else return;
                         }
                     }, 0);
-
-
                 } catch (IOException e) {
-                    Logger.e("Androes", " " + e);
                 }
-
             }
         }.start();
-
-
     }
 
     @Override
@@ -209,16 +180,12 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
             // Handle the camera action
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
 
         } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         }else if (id == R.id.nav_slideshow) {
@@ -236,16 +203,10 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG, "onRequestPermissionsResult");
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
-            Log.d(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
         }
     }
- /*   //모든 리스트뷰에 데이터 돌려보내기
-    protected void returnToMain(){
 
-
-    }*/
     public void clicked_CancelButton(){
         intent = new Intent(getApplicationContext(), PostListActivity.class);
         startActivity(intent);
@@ -258,9 +219,7 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
         super.onBackPressed();
     }
 
-
     public void call_the_camera(){
-
         picture = (ImageView)findViewById(R.id.pictureView);
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,7 +229,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
                         // 카메라 앱을 여는 소스
                         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(cameraIntent, TAKE_PICTURE);
-                        System.out.println("사진창띄우기 성공");
                         break;
                 }
             }
@@ -279,9 +237,7 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
         // 6.0 마쉬멜로우 이상일 경우에는 권한 체크 후 권한 요청
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ) {
-                Log.d(TAG, "권한 설정 완료");
             } else {
-                Log.d(TAG, "권한 설정 요청");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
         }
@@ -292,22 +248,16 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == TAKE_PICTURE){
-            System.out.println("코드확인");
-                if (resultCode == RESULT_OK && intent.hasExtra("data")) {
-                    waste_bitmap = (Bitmap) intent.getExtras().get("data");
-
-                    System.out.println("사진데이터 갖고 오기 성공");
-                    if (waste_bitmap != null) {
-                        picture.setImageBitmap(waste_bitmap);
-                        System.out.println("사진등록완료");
-                    }
+            if (resultCode == RESULT_OK && intent.hasExtra("data")) {
+                waste_bitmap = (Bitmap) intent.getExtras().get("data");
+                if (waste_bitmap != null) {
+                    picture.setImageBitmap(waste_bitmap);
                 }
+            }
         }
-
 
         waste_bitmap = bitmap_resize(waste_bitmap);
         files = encodeTobase64(waste_bitmap);
-
     }
     public static Bitmap bitmap_resize(Bitmap bitmap){
         int width = bitmap.getWidth(); // 축소시킬 너비
@@ -354,9 +304,7 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
     }
     public void set_inflate(){
         contentsInput = (EditText) findViewById(R.id.contentsInput);
-
         commentTitle = (EditText) findViewById(R.id.commentTitle);
-
         saveButton = (Button) findViewById(R.id.saveButton);
         cancelButton = (Button) findViewById(R.id.cancelButton);
     }
@@ -378,16 +326,9 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
     입력된 게시글의 정보를 서버에 보냄
     * */
     public void insertPostData(){
-        System.out.println("insert");
-
         input_data();
-
-        System.out.println("review_reg_date = "+ board_reg_date);
         //서버로 보내기
         // URL 설정.
-        //String url = "192.168.1.238:8080/select_board_title";
-        //JSONObject에 서버로 보낼 게시글 정보를 담음
-        //JSONObject board_data = new JSONObject();
         String board_data = "";
         board_data = "{\"board_title\":\""+ title + "\"," +
                 "\"board_ctnt\":\""+ contents + "\"," +
@@ -396,8 +337,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
                 "\"board_reg_date\":\""+ board_reg_date + "\"," +
                 "\"files\":\""+ files + "\"," +
                 "\"file_name\":\""+ file_name + "\"}";
-        System.out.println("board_data : " + board_data);
-
         //--------------------------------
         /* 게시글 정보를 서버에 보냄   Part*/
         //--------------------------------
@@ -405,9 +344,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
         networkTask.execute();
 
         intent = new Intent(getApplicationContext(), PostListActivity.class);
-/*
-        intent.putExtra("title",title);
-        intent.putExtra("contents",contents);*/
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
         Toast.makeText(PostWriteActivity.this, "게시글 등록 성공", Toast.LENGTH_SHORT).show();
@@ -416,7 +352,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
     /* 게시글 정보를 서버에 보내는 Class*/
     //--------------------------------
     public class NetworkTask extends AsyncTask<Void, Void, String> {
-
         String values;
 
         NetworkTask(String values) {
@@ -449,7 +384,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
         }
     }
     public String sendCommentWrite(String values) throws JSONException {
-
         String result = "";
         try {
             //--------------------------
@@ -459,8 +393,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
 
             URL url = new URL(str_URL);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
-            //Log.d("eee", values);
-
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
             //--------------------------
@@ -475,8 +407,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
             //--------------------------
             StringBuffer buffer = new StringBuffer();
             String regdata = "data=" + values;
-            Log.d("board_data", regdata);
-            System.out.println("regdata : "+ regdata);
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
@@ -491,62 +421,31 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
             BufferedReader reader = new BufferedReader(tmp);
             StringBuilder builder = new StringBuilder();
             String str;
-            System.out.println("Builder ; "+builder);
-
-
             while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
                 builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
             }
             result = builder.toString();
-            System.out.println("result in commentWriteActivity : " + result);
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println(result);
         return result;
     } // HttpPostDat
 
     public void updatePost(){
         input_data();
-
-        /*JSONObject board_data = new JSONObject();
-        try {
-            board_data.put("board_no", post_no);
-            //board_data.put("files", 인코딩 값);
-            board_data.put("board_title", title);
-            board_data.put("board_ctnt", contents);
-            //board_data.put("board_reg_user_no", user_id);
-            board_data.put("board_area_no", 1);
-            //board_data.put("board_reg_date",board_reg_date);
-            board_data.put("files",files);
-            board_data.put("file_name",file_name);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
-        /*board_data = "{\"board_title\":\""+ title + "\"," +
-                "\"board_ctnt\":\""+ contents + "\"," +
-                "\"board_reg_user_no\":\""+ user_id + "\"," +
-                "\"board_area_no\":"+ "1" + "," +
-                "\"board_reg_date\":\""+ board_reg_date + "\"," +
-                "\"files\":\""+ files + "\"," +
-                "\"file_name\":\""+ file_name + "\"}";*/
         String board_data = "";
         board_data = "{" +"\"board_no\":\""+ post_no + "\"," +
                 "\"board_title\":\""+ title + "\"," +
                 "\"board_ctnt\":\""+ contents + "\"," +
-                /*"\"board_reg_user_no\":\""+ user_id + "\"," +*/
                 "\"board_area_no\":"+ "1" + "," +
-                //"\"board_reg_date\":\""+ board_reg_date + "\"," +
                 "\"files\":\""+ files + "\"," +
                 "\"file_name\":\""+ file_name + "\"}";
-        System.out.println("update_board_data : " + board_data);
 
         network_update_post_task update_post_task = new network_update_post_task(board_data.toString());
         update_post_task.execute();
 
         Intent intent = new Intent(getApplicationContext(), PostListActivity.class);
         //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-        //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
         finish();
     }
@@ -560,7 +459,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //progress bar를 보여주는 등등의 행위
         }//실행 이전에 작업되는 것들을 정의하는 함수
 
         @Override
@@ -580,9 +478,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
         //---------------------------------------------
         @Override
         protected void onPostExecute(String result) {
-            // 통신이 완료되면 호출됩니다.
-            // 결과에 따른 UI 수정 등은 여기서 합니다.
-           // finish();
         }//onPostExecute func()
     }//NetWorkTask Class
 
@@ -593,7 +488,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
             //   URL 설정하고 접속하기
             //--------------------------
             String str_URL = "http://" + RequestHttpURLConnection.server_ip + ":" + RequestHttpURLConnection.server_port + "/update_board/";
-            System.out.println("str_update_URL : " + str_URL);
             URL url = new URL(str_URL);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
@@ -610,7 +504,6 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
             //--------------------------
             StringBuffer buffer = new StringBuffer();
             String regdata = "data=" + values;
-            System.out.println("update_data : " + regdata);
             buffer.append(regdata);                // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
@@ -624,17 +517,14 @@ public class PostWriteActivity extends AppCompatActivity  implements NavigationV
             BufferedReader reader = new BufferedReader(tmp);
             StringBuilder builder = new StringBuilder();
             String str;
-            System.out.println("comment_Builder ; "+builder);
 
             while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
                 builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
             }
             result = builder.toString();
-            System.out.println("result in commentWriteActivity : " + result);
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println(result);
         return result;
     } // sendDeleteMessage
 }

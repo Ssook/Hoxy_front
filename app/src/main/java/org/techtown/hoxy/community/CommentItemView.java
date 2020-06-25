@@ -20,9 +20,6 @@ public class CommentItemView extends LinearLayout {
 
     private TextView reg_date;
 
-
-
-
     public CommentItemView(Context context) {
         super(context);
         init(context);
@@ -47,13 +44,9 @@ public class CommentItemView extends LinearLayout {
     public void setUserId(String userId) {
         userIdView.setText(userId);
     }
-
     public void setComment(String comment){commentView.setText(comment);}
     public void setImage(int resId) {
         userImageView.setImageResource(resId);
     }
     public void setReg_date(String _reg_date){ reg_date.setText(_reg_date);}
-    //public void setTime(String time){}
-
-
 }

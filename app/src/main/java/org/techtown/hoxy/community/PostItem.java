@@ -19,7 +19,6 @@ public class PostItem  implements Serializable {
         this.resId = resId;
         this.content = content;
         this.userId = userId;
-        // this.image = image;
         this.post_no = post_no;
         this.title = title;
         this.reg_date = reg_date;
@@ -28,7 +27,6 @@ public class PostItem  implements Serializable {
         this.resId = 1;
         this.content = "";
         this.userId = "";
-       // this.image = image;
         this.post_no = 1;
         this.title = "";
         this.reg_date = "";
