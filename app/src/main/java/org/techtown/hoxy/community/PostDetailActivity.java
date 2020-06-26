@@ -214,7 +214,6 @@ public class PostDetailActivity extends AppCompatActivity implements Serializabl
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            // intent.putExtra("태그","전체");
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_community) {
@@ -227,7 +226,7 @@ public class PostDetailActivity extends AppCompatActivity implements Serializabl
             startActivity(intent);
             finish();
         }
-        drawer = findViewById(R.id.drawer_layout);//??
+        drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
         return false;
